@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon2.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon2.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="scala,Docker,python,Linux,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="0x01Scala隐式转换使用隐式转换对类的功能进行拓展，通常可以用于扩展第三方类的方法（如添加show()展示元素），而无需派生（extends、with等）出新的类型。以拓展String类型为例，将String作为入参（其他类型同理），通常使用隐式扩展功能，要么返回一个已定义的class（spark源码使用的方式），要么隐式定义一个新的class，如下： 1234567891011121314">
+<meta name="keywords" content="scala,Docker,python,Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ARTS_Tip">
+<meta property="og:url" content="http://Rianico.github.io/2019/09/07/ARTS-Tip/index.html">
+<meta property="og:site_name" content="zxk | Blog">
+<meta property="og:description" content="0x01Scala隐式转换使用隐式转换对类的功能进行拓展，通常可以用于扩展第三方类的方法（如添加show()展示元素），而无需派生（extends、with等）出新的类型。以拓展String类型为例，将String作为入参（其他类型同理），通常使用隐式扩展功能，要么返回一个已定义的class（spark源码使用的方式），要么隐式定义一个新的class，如下： 1234567891011121314">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://rianico.github.io/2019/09/07/ARTS-Tip/1567913041480.png">
+<meta property="og:image" content="http://rianico.github.io/2019/09/07/ARTS-Tip/1567913049463.png">
+<meta property="og:image" content="http://rianico.github.io/2019/09/07/ARTS-Tip/1567913307175.png">
+<meta property="og:updated_time" content="2019-09-09T08:21:04.173Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ARTS_Tip">
+<meta name="twitter:description" content="0x01Scala隐式转换使用隐式转换对类的功能进行拓展，通常可以用于扩展第三方类的方法（如添加show()展示元素），而无需派生（extends、with等）出新的类型。以拓展String类型为例，将String作为入参（其他类型同理），通常使用隐式扩展功能，要么返回一个已定义的class（spark源码使用的方式），要么隐式定义一个新的class，如下： 1234567891011121314">
+<meta name="twitter:image" content="http://rianico.github.io/2019/09/07/ARTS-Tip/1567913041480.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://Rianico.github.io/2019/09/07/ARTS-Tip/">
+
+
+
+
+
+  <title>ARTS_Tip | zxk | Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fbc2552fde7f0ffe147bf4fd6f88acdc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zxk | Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rianico</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://Rianico.github.io/2019/09/07/ARTS-Tip/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zxk">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zxk | Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ARTS_Tip</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-07T19:31:34+00:00">
+                2019-09-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ARTS/" itemprop="url" rel="index">
+                    <span itemprop="name">ARTS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/07/ARTS-Tip/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/09/07/ARTS-Tip/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/09/07/ARTS-Tip/" class="leancloud_visitors" data-flag-title="ARTS_Tip">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h2><h3 id="Scala隐式转换"><a href="#Scala隐式转换" class="headerlink" title="Scala隐式转换"></a>Scala隐式转换</h3><p>使用隐式转换对类的功能进行拓展，通常可以用于扩展第三方类的方法（如添加show()展示元素），而<strong>无需派生（extends、with等）出新的类型</strong>。<br>以拓展String类型为例，将String作为入参（其他类型同理），通常使用隐式扩展功能，要么返回一个已定义的class（spark源码使用的方式），要么隐式定义一个新的class，如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Solution1</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RichString</span>(<span class="params">str: <span class="type">String</span></span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">read</span></span>() = &#123;</span><br><span class="line">      println(str + <span class="string">"_fun"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">some</span></span>() = &#123;</span><br><span class="line">      <span class="keyword">if</span>(<span class="type">StringUtils</span>.isBlank(str)) <span class="type">None</span></span><br><span class="line">      <span class="keyword">else</span> <span class="type">Some</span>(str)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">object</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">    <span class="keyword">implicit</span> <span class="keyword">val</span> imStr: <span class="type">String</span> = <span class="string">"this is an implict"</span></span><br><span class="line">    <span class="comment">// 返回一个已定义的class</span></span><br><span class="line">    <span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">fun</span></span>(str: <span class="type">String</span>) = <span class="keyword">new</span> <span class="type">RichString</span>(str)</span><br><span class="line">	<span class="comment">// 新定义一个class</span></span><br><span class="line">    <span class="keyword">implicit</span> <span class="class"><span class="keyword">class</span> <span class="title">myString</span>(<span class="params">str: <span class="type">String</span></span>) </span>&#123;</span><br><span class="line">      <span class="function"><span class="keyword">def</span> <span class="title">read2</span></span>() = &#123;</span><br><span class="line">        println(str + <span class="string">"_class"</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">import</span> <span class="type">Context</span>._</span><br><span class="line"></span><br><span class="line">    <span class="string">""</span>.read()</span><br><span class="line">    <span class="string">""</span>.read2()</span><br><span class="line">    println(<span class="string">"a"</span>.some.getClass.getTypeName)</span><br><span class="line">    println(<span class="string">""</span>.some.getClass.getTypeName)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出：</span></span><br><span class="line">_fun</span><br><span class="line">_class</span><br><span class="line">scala.<span class="type">Some</span></span><br><span class="line">scala.<span class="type">None</span>$</span><br></pre></td></tr></table></figure>
+
+<p>隐式转换函数在同个作用域下，与名字无关，与入参类型有关。</p>
+<hr>
+<h2 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h2><h3 id="Docker内配置git账户"><a href="#Docker内配置git账户" class="headerlink" title="Docker内配置git账户"></a>Docker内配置git账户</h3><p>最近几天在学习docker的时候，使用Dockerfile构建image，但在配置ssh时需要拷贝一份可以访问git的ssh-key，然后注入image，并且想要在Dockerfile直接运行git clone等操作也会提示失败，需要对Dockerfile作出比较复杂的配置，详见：<a href="https://stackoverflow.com/questions/18136389/using-ssh-keys-inside-docker-container" target="_blank" rel="noopener">Using SSH keys inside docker container</a>。</p>
+<p>因此最后决定使用https方式，通过在github端生成tokens的url，接着配置在Dockerfile里的RUN即可，详见<br><a href="https://medium.com/paperchain/fetching-private-github-repos-from-a-docker-container-273f25ec5a74" target="_blank" rel="noopener">Fetching private GitHub repos from a Docker container</a>。</p>
+<p>github端： Your Profile → Settings → Personal Access Tokens → Generate New Token生成token，然后配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global url.<span class="string">"https://&#123;token&#125;:@github.com/"</span>.insteadOf <span class="string">"https://github.com/"</span></span><br></pre></td></tr></table></figure>
+
+<p>其实无论ssh-key方式还是https方式，都会导致image中存储这些访问信息，生产环境下不推荐使用。</p>
+<hr>
+<h2 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h2><h3 id="偏函数（PartialFunction）、部分应用函数（Partial-Applied-Function）和柯里化-Currying"><a href="#偏函数（PartialFunction）、部分应用函数（Partial-Applied-Function）和柯里化-Currying" class="headerlink" title="偏函数（PartialFunction）、部分应用函数（Partial Applied Function）和柯里化(Currying)"></a>偏函数（PartialFunction）、部分应用函数（Partial Applied Function）和柯里化(Currying)</h3><h4 id="偏函数"><a href="#偏函数" class="headerlink" title="偏函数"></a>偏函数</h4><p>在scala中，可以利用模式匹配来扩展创建偏函数，偏函数是一种特殊的一元函数，<strong>并不支持处理所输入参数的所有情况</strong>。类型为PartialFunction[-T,+V]。<code>T是接收的类型，V是返回的结果类型</code></p>
+<p>如下，下列偏函数是求平方根，并且在input为负数的时候不做处理。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> squareRoot: <span class="type">PartialFunction</span>[<span class="type">Double</span>, <span class="type">Double</span>] = &#123;</span><br><span class="line">  <span class="keyword">case</span> x <span class="keyword">if</span> x &gt;= <span class="number">0</span> =&gt; <span class="type">Math</span>.sqrt(x)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以使用isDefinedAt来确认该偏函数是否能够处理某个特定的值。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">squareRoot.isDefinedAt(<span class="number">2</span>) shouldEqual <span class="literal">true</span></span><br><span class="line">squareRoot.isDefinedAt(<span class="number">-2</span>) shouldEqual <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>偏函数之间彼此也可以使用<strong>orElse</strong> 或者 <strong>andThen</strong>相互连接。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> positive: <span class="type">PartialFunction</span>[<span class="type">Int</span>, <span class="type">Int</span>] = &#123;</span><br><span class="line">  <span class="keyword">case</span> x <span class="keyword">if</span> x &gt;= <span class="number">0</span> =&gt; x</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> odd: <span class="type">PartialFunction</span>[<span class="type">Int</span>, <span class="type">Boolean</span>] = &#123;</span><br><span class="line">  <span class="keyword">case</span> x <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">1</span> =&gt; <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> even: <span class="type">PartialFunction</span>[<span class="type">Int</span>, <span class="type">Boolean</span>] = &#123;</span><br><span class="line">  <span class="keyword">case</span> x <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">0</span> =&gt; <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> evenCheck: <span class="type">PartialFunction</span>[<span class="type">Int</span>, <span class="type">Boolean</span>] = positive andThen even</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> oddCheck: <span class="type">PartialFunction</span>[<span class="type">Int</span>, <span class="type">Boolean</span>] = positive andThen odd</span><br></pre></td></tr></table></figure>
+
+<p><strong>compose</strong>可以进行一次预处理。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 只处理1</span></span><br><span class="line"><span class="keyword">val</span> parfun1:<span class="type">PartialFunction</span>[<span class="type">Int</span>,<span class="type">Int</span>] = &#123;<span class="keyword">case</span> <span class="number">1</span> =&gt; <span class="number">1</span>&#125; </span><br><span class="line">parfun1(<span class="number">1</span>)	<span class="comment">// 1</span></span><br><span class="line">parfun1.isDefinedAt(<span class="number">2</span>)	<span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 做一层预处理</span></span><br><span class="line"><span class="keyword">val</span> compfun:<span class="type">Function1</span>[<span class="type">String</span>,<span class="type">Int</span>] = parfun1.compose&#123;</span><br><span class="line">	<span class="keyword">case</span> x=&gt;<span class="type">System</span>.out.println(<span class="string">"compose:"</span> + x);<span class="type">Integer</span>.valueOf(x)</span><br><span class="line">&#125;</span><br><span class="line">compfun(<span class="number">1</span>)</span><br><span class="line"><span class="comment">// compose:1</span></span><br><span class="line"><span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<p>偏函数的这项特性，在实现一个验证系统的时候非常有用，我们可以实现一系列的检查去验证输入的数据是否符合要求。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> finalCheck = check1 andThen check2 andThen check3 ...</span><br></pre></td></tr></table></figure>
+
+<p>当新增或者移除的时候也十分方便。</p>
+<p>Scala也可以将偏函数应用于collections，<strong>collect</strong>方法将一个偏函数作为输入参数，将这个偏函数作用于各个值上，跳过超出函数中定义的元素。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> greaterThan20: <span class="type">PartialFunction</span>[<span class="type">Any</span>, <span class="type">Int</span>] = &#123;</span><br><span class="line">  <span class="keyword">case</span> i: <span class="type">Int</span> <span class="keyword">if</span> i &gt; <span class="number">20</span> =&gt; i</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">List</span>(<span class="number">1</span>, <span class="number">45</span>, <span class="number">10</span>, <span class="string">"blah"</span>, <span class="literal">true</span>, <span class="number">25</span>) collect greaterThan20 </span><br><span class="line">shouldEqual <span class="type">List</span>(<span class="number">45</span>, <span class="number">25</span>)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="部分应用函数（Partially-Applied-Functions）"><a href="#部分应用函数（Partially-Applied-Functions）" class="headerlink" title="部分应用函数（Partially Applied Functions）"></a>部分应用函数（Partially Applied Functions）</h4><p>在函数式编程中，对一个有参数的函数的调用也可以看成<strong>将函数应用到参数上</strong>。</p>
+<p>当一个函数带着所有参数被调用时，就叫做将函数完整（fully applied）的应用到每个参数上。当<strong>只传递参数的子集到函数</strong>也是可以通过的，将返回一个<strong>部分应用函数（Partially Applied Functions）</strong>。Scala中不会因为你只传递部分参数而抛出一个异常，而是简单的将其应用并返回一个新的带着剩余需要你传递的参数的函数。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> divide = (num: <span class="type">Double</span>, den: <span class="type">Double</span>) =&gt; &#123;</span><br><span class="line">  num / den</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">val</span> halfOf: (<span class="type">Double</span>) =&gt; <span class="type">Double</span> = divide(_, <span class="number">2</span>)</span><br><span class="line">halfOf <span class="number">20</span> shouldEqual <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<p>我们在求某个值的一般的时候，可以知道分母必定为2，所以<code>halfOf</code>通过部分应用<strong>除</strong>的函数得到求半的功能。<code>_</code>占位符表示剩余的参数。</p>
+<p>部分应用函数很容易跟Scala中的<strong>柯里化（Currying）</strong>混淆。两者都能减少函数中的参数数量，但是柯里化将部分应用函数的概念进行了更加深层次的扩展。</p>
+<p><strong>柯里化是将一个带有多个参数的函数拆分为一系列函数，每个函数带有单独的参数</strong>。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> curriedDivide: (<span class="type">Double</span>) =&gt; (<span class="type">Double</span>) =&gt; <span class="type">Double</span></span><br></pre></td></tr></table></figure>
+
+<p><code>curriedDivide</code>函数的类型为<code>(Double) =&gt; (Double) =&gt; (Double)</code>，表示将<code>divid</code>函数拆分为两个函数，每个函数各自带着一个参数，参数根据原本的顺讯决定。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> halfOf: (<span class="type">Double</span>) =&gt; <span class="type">Double</span> = curriedDivide(_)(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">halfOf(<span class="number">20</span>) shouldEqual <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<p>柯里化跟部分应用函数的好处是能够根据原本的通用函数，创建出一个特定的函数而不用创建新的代码，使得代码较为简洁，避免冗余。</p>
+<hr>
+<h2 id="0x04"><a href="#0x04" class="headerlink" title="0x04"></a>0x04</h2><h3 id="Scala中的Left与Right"><a href="#Scala中的Left与Right" class="headerlink" title="Scala中的Left与Right"></a>Scala中的Left与Right</h3><p>Scala中的Either代表两个可能的值中的其中一个，有<code>Left</code>跟<code>Right</code>组成。除了作为二选一之外，通常也可作为异常值的处理，约定Left代表异常值，Right代表正常输出（与Try等价，也是代表异常的一种）。</p>
+<p>Left，Right可以用match匹配（跟Option类似）：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> in = <span class="type">Console</span>.readLine(<span class="string">"Type Either a string or an Int: "</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> result: <span class="type">Either</span>[<span class="type">String</span>,<span class="type">Int</span>] = <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="type">Right</span>(in.toInt)</span><br><span class="line">  &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> e: <span class="type">Exception</span> =&gt;</span><br><span class="line">      <span class="type">Left</span>(in)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">println( result <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="type">Right</span>(x) =&gt; <span class="string">"You passed me the Int: "</span> + x + <span class="string">", which I will increment. "</span> + x + <span class="string">" + 1 = "</span> + (x+<span class="number">1</span>)</span><br><span class="line">  <span class="keyword">case</span> <span class="type">Left</span>(x) =&gt; <span class="string">"You passed me the String: "</span> + x</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>Either还提供了投影（projection）操作，可单独对<strong>任意一边</strong>进行操作，也可改变类型，但是<strong>最终结果仍为原本有值的那边</strong>。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> l: <span class="type">Either</span>[<span class="type">String</span>, <span class="type">Int</span>] = <span class="type">Left</span>(<span class="string">"flower"</span>)</span><br><span class="line">l.left.map(_.size): <span class="type">Either</span>[<span class="type">Int</span>, <span class="type">Int</span>] <span class="comment">// Left(6)</span></span><br><span class="line">l.right.map(_.toDouble): <span class="type">Either</span>[<span class="type">String</span>, <span class="type">Double</span>] <span class="comment">// Left("flower")</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>fold：对两边同时进行操作。</li>
+<li>swap：对两边的内容进行交换。</li>
+<li>merge：合并两边的结果，通常为Any。</li>
+</ul>
+<p>与<code>Try[A &lt;: Exception,  B]</code> 可相互进行转化：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scala.util.&#123; <span class="type">Either</span>, <span class="type">Failure</span>, <span class="type">Left</span>, <span class="type">Right</span>, <span class="type">Success</span>, <span class="type">Try</span> &#125;</span><br><span class="line"><span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">eitherToTry</span></span>[<span class="type">A</span> &lt;: <span class="type">Exception</span>, <span class="type">B</span>](either: <span class="type">Either</span>[<span class="type">A</span>, <span class="type">B</span>]): <span class="type">Try</span>[<span class="type">B</span>] = &#123;</span><br><span class="line">  either <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Right</span>(obj) =&gt; <span class="type">Success</span>(obj)</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Left</span>(err) =&gt; <span class="type">Failure</span>(err)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">tryToEither</span></span>[<span class="type">A</span>](obj: <span class="type">Try</span>[<span class="type">A</span>]): <span class="type">Either</span>[<span class="type">Throwable</span>, <span class="type">A</span>] = &#123;</span><br><span class="line">  obj <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Success</span>(something) =&gt; <span class="type">Right</span>(something)</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Failure</span>(err) =&gt; <span class="type">Left</span>(err)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x05"><a href="#0x05" class="headerlink" title="0x05"></a>0x05</h2><h3 id="马克飞象与mathpix"><a href="#马克飞象与mathpix" class="headerlink" title="马克飞象与mathpix"></a>马克飞象与mathpix</h3><p>给大家推荐两个提高工作效率的软件</p>
+<ul>
+<li><a href="https://maxiang.io/" target="_blank" rel="noopener">马克飞象</a>：一个很方便的markdown编辑器，<strong>支持与印象笔记同步绑定</strong>，主要是使用简单，没有那么多繁琐的界面之类的，</li>
+<li><a href="https://mathpix.com/" target="_blank" rel="noopener">mathpix</a>：数学公式利器，只要通过快捷键截取数学公式，即可自动转为markdown语法。</li>
+</ul>
+<hr>
+<h2 id="0x06"><a href="#0x06" class="headerlink" title="0x06"></a>0x06</h2><h3 id="关于mkfs-ex4的inode"><a href="#关于mkfs-ex4的inode" class="headerlink" title="关于mkfs.ex4的inode"></a>关于mkfs.ex4的inode</h3><p>最近在工作中遇到服务器磁盘格式化的事后，对相关查询命令进行了一点挖掘，命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs.ext4 /dev/sda1</span><br></pre></td></tr></table></figure>
+
+<p>查询资料后发现，上述命令存在着优化空间，可以增大bytes per inode来节省部分磁盘空间，默认按照<strong>每16k建立一个inode</strong>来得到inode数量。<br>inode：用于存储文件的元数据，inode越多，磁盘可以存放的文件数量越多，但是过多的inode会占用磁盘空间（一个inode占用128/256字节），若磁盘上的文件都是大文件，显然16k会导致建立较多不必要的inode，从而浪费磁盘空间。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## -T 指定默认参数，其中largefile 每1M建立一个inode</span></span><br><span class="line"><span class="comment">## -n 为模拟运行，但不格式化</span></span><br><span class="line">mkfs.ext4 -T largefile /dev/sdc1</span><br><span class="line"></span><br><span class="line"><span class="comment">## 查看每个inode占用的字节</span></span><br><span class="line">dumpe2fs -h /dev/sda1 | grep <span class="string">"Inode size"</span></span><br></pre></td></tr></table></figure>
+
+<p>访问文件的实际流程：<br>访问(<code>ls -i</code>)文件（夹）名对应的inode号码-&gt;通过inode号码，获取inode信息-&gt;根据inode信息，找到文件数据所在的block，读取数据。</p>
+<p>所以文件（夹）实际上只存储了名字跟inode号码，如果只有读权限，那么只能访问到名字，其余信息都存在inode里，而访问inode则需要执行权限（X）。</p>
+<hr>
+<h2 id="0x07"><a href="#0x07" class="headerlink" title="0x07"></a>0x07</h2><h3 id="Coursera"><a href="#Coursera" class="headerlink" title="Coursera"></a>Coursera</h3><p>最近发现有个国外的网络课程平台Coursera，有各种知名大学教授的课程，其中台湾大学林轩田教授的<a href="https://www.coursera.org/learn/ntumlone-mathematicalfoundations/home/welcome" target="_blank" rel="noopener">机器学习基石</a>课程对于没什么相关基础的人来说，是一个很好的入门课程，在此推荐下。</p>
+<hr>
+<h2 id="0x08"><a href="#0x08" class="headerlink" title="0x08"></a>0x08</h2><h3 id="StringBuilder的一些使用事项"><a href="#StringBuilder的一些使用事项" class="headerlink" title="StringBuilder的一些使用事项"></a>StringBuilder的一些使用事项</h3><p>关于StringBuilder，有几个需要注意的使用特性：</p>
+<ol>
+<li><strong>非线程安全(重要)</strong>，使用到StringBuffer的场景很少，因为几个线程轮流append的场景以目前的工作经验来看并没遇到，而且方法间并不保障线程安全。  </li>
+</ol>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">PathUtil</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">val</span> buffer = <span class="keyword">new</span> <span class="type">StringBuffer</span>()</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">buildPath</span></span>(time: <span class="type">String</span>): <span class="type">String</span> = &#123;</span><br><span class="line">	  <span class="comment">// 多线程调用buildPath时，append之间的操作也不是线程安全的</span></span><br><span class="line">	  buffer.append(time)</span><br><span class="line">	  buffer.append(time)</span><br><span class="line">	  buffer.toString()</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>Java中<strong>一次性</strong>使用多个<code>+</code>拼接字符串时，会自动优化为<strong>一个</strong><code>StringBUilder()</code>拼接多个字符串，分为多条语句使用<code>+</code>则会有多个StringBilder(可查看编译后的字节码)。</li>
+<li>设定好<code>StringBuilder(int length)</code>的初始长度，可以避免发生内部<code>char[]</code>数组发生扩容（类似ArrayList扩容）。<strong>eg：假如使用StringBuilder的默认长度，会为129长度的字符串拼接，合共申请625字符的数组</strong>。</li>
+<li>重用StringBuilder()，可以使用<code>clear()</code>方法，进行重用，StringBuilder的toString()源码为<code>return new String(value, 0, count)</code>，clear()方法本质上是将count置为0。重用的时候要注意线程安全，使用ThreadLocal，但要权衡使用的代价。<br>此处可以参考BigDecimal源码的写法：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BigDecimal</span> <span class="keyword">extends</span> <span class="title">Number</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">BigDecimal</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ......</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;StringBuilderHelper&gt;</span><br><span class="line">	        threadLocalStringBuilderHelper = <span class="keyword">new</span> ThreadLocal&lt;StringBuilderHelper&gt;() &#123;</span><br><span class="line">	        <span class="meta">@Override</span></span><br><span class="line">	        <span class="function"><span class="keyword">protected</span> StringBuilderHelper <span class="title">initialValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	            <span class="keyword">return</span> <span class="keyword">new</span> StringBuilderHelper();</span><br><span class="line">	        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参考：</p>
+<ul>
+<li><a href="http://calvin1978.blogcn.com/articles/stringbuilder.html" target="_blank" rel="noopener">StringBuilder在高性能场景下的正确用法</a></li>
+<li><a href="https://github.com/springside/springside4/blob/master/modules/utils/src/main/java/org/springside/modules/utils/text/StringBuilderHolder.java" target="_blank" rel="noopener">springside/springside4</a></li>
+</ul>
+<hr>
+<h2 id="0x09"><a href="#0x09" class="headerlink" title="0x09"></a>0x09</h2><h3 id="Regex-tutorial-—-A-quick-cheatsheet-by-examples"><a href="#Regex-tutorial-—-A-quick-cheatsheet-by-examples" class="headerlink" title="Regex tutorial — A quick cheatsheet by examples"></a>Regex tutorial — A quick cheatsheet by examples</h3><p><a href="https://medium.com/factory-mind/regex-tutorial-a-simple-cheatsheet-by-examples-649dc1c3f285" target="_blank" rel="noopener">A quick cheatsheet by examples</a></p>
+<p>该文章介绍了几个最常用的正则表达式，且条理清晰，层次分明，此处做个总结学习。</p>
+<hr>
+<h4 id="锚——-和"><a href="#锚——-和" class="headerlink" title="锚——^和$"></a>锚——^和$</h4><table>
+<thead>
+<tr>
+<th align="center">regex</th>
+<th align="center">remark</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">^The</td>
+<td align="center">匹配以<code>The</code>开头的字符</td>
+</tr>
+<tr>
+<td align="center">end$</td>
+<td align="center">匹配以<code>end</code>结尾的字符</td>
+</tr>
+<tr>
+<td align="center">^The end$</td>
+<td align="center">匹配<code>The end</code>的字符串</td>
+</tr>
+<tr>
+<td align="center">roar</td>
+<td align="center">匹配任何包含<code>roar</code>的文本</td>
+</tr>
+</tbody></table>
+<h4 id="量词——-和"><a href="#量词——-和" class="headerlink" title="量词—— * + ? 和{}"></a>量词—— * + ? 和{}</h4><table>
+<thead>
+<tr>
+<th align="center">regex</th>
+<th align="center">remark</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">abc*</td>
+<td align="center">匹配<code>ab</code>后面跟着0个或者多个<code>c</code>的字符</td>
+</tr>
+<tr>
+<td align="center">abc?</td>
+<td align="center">匹配<code>ab</code>后面跟着0个或者1个<code>c</code>的字符</td>
+</tr>
+<tr>
+<td align="center">abc+</td>
+<td align="center">匹配<code>ab</code>后面跟着1个或者多个<code>c</code>的字符</td>
+</tr>
+<tr>
+<td align="center">abc{2}</td>
+<td align="center">匹配<code>ab</code>后面跟着2个<code>c</code>的字符</td>
+</tr>
+<tr>
+<td align="center">abc{2,}</td>
+<td align="center">匹配<code>ab</code>后面跟着2个或者多个<code>c</code>的字符</td>
+</tr>
+<tr>
+<td align="center">abc{2,5}</td>
+<td align="center">匹配<code>ab</code>后面跟着2到5个<code>c</code>的字符</td>
+</tr>
+<tr>
+<td align="center">a(bc)*</td>
+<td align="center">匹配<code>a</code>后面跟着0个或者多个<code>bc</code>的字符</td>
+</tr>
+<tr>
+<td align="center">a(bc){2,5}</td>
+<td align="center">匹配<code>a</code>后面跟着2到5个<code>bc</code>的字符</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="或操作——-或"><a href="#或操作——-或" class="headerlink" title="或操作—— | 或 []"></a>或操作—— | 或 []</h4><table>
+<thead>
+<tr>
+<th align="center">regex</th>
+<th align="center">remark</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">a(b|c)</td>
+<td align="center">匹配<code>a</code>后面跟着<code>b</code>或<code>c</code>的字符</td>
+</tr>
+<tr>
+<td align="center">a[bc]</td>
+<td align="center">同上</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="字符类——-d-w-s-和"><a href="#字符类——-d-w-s-和" class="headerlink" title="字符类—— \d \w \s 和 ."></a>字符类—— \d \w \s 和 .</h4><table>
+<thead>
+<tr>
+<th align="center">regex</th>
+<th align="center">remark</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">\d</td>
+<td align="center">匹配一个数字的字符</td>
+</tr>
+<tr>
+<td align="center">\w</td>
+<td align="center">匹配一个单词的字符（字母数字下划线）</td>
+</tr>
+<tr>
+<td align="center">\s</td>
+<td align="center">匹配一个空白的字符（包括tabs跟换行符）</td>
+</tr>
+<tr>
+<td align="center">.</td>
+<td align="center">匹配任意字符</td>
+</tr>
+</tbody></table>
+<p><code>.</code>需要谨慎使用，因为类或否定字符类(我们将在下一节讨论)通常更快更精确。</p>
+<p>对于\d, \w 和 \s，其大写通常表示否定，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\D     匹配一个非数字的字符</span><br></pre></td></tr></table></figure>
+
+<p>有时候需要匹配一些特殊字符，如 <code>^.[$()|*+?{\</code>，此时需要在前面添加<code>\</code>进行转义:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\$\d     匹配前面为$的数字字符</span><br></pre></td></tr></table></figure>
+
+<p>一些无法直接打印出来的字符也可以匹配，如tab <code>\t</code>，换行符 <code>\n</code>及<code>\r</code>。</p>
+<hr>
+<h4 id="标记"><a href="#标记" class="headerlink" title="标记"></a>标记</h4><p>正则表达式经常使用<code>/</code>划分为两块，前面部分为上述提到的匹配符，后半部分则为标记：</p>
+<table>
+<thead>
+<tr>
+<th align="center">regex</th>
+<th align="center">remark</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">g(glabal)</td>
+<td align="center">第一次匹配后不停止，继续匹配，最后返回全部匹配到的字符</td>
+</tr>
+<tr>
+<td align="center">m(multi-line)</td>
+<td align="center">若指定了<code>^</code>和<code>$</code>，则会匹配多行后并返回</td>
+</tr>
+<tr>
+<td align="center">i(insensitive)</td>
+<td align="center">忽略大小写区别</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="分组，捕获"><a href="#分组，捕获" class="headerlink" title="分组，捕获"></a>分组，捕获</h4><table>
+<thead>
+<tr>
+<th align="center">regex</th>
+<th align="center">remark</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">a(bc)</td>
+<td align="center">括号内创建了一个具有<code>bc</code>值的分组</td>
+</tr>
+<tr>
+<td align="center">a(?:bc)*</td>
+<td align="center">使用<code>?:</code>禁用分组</td>
+</tr>
+<tr>
+<td align="center">a(?&lt; foo&gt;bc)</td>
+<td align="center">使用<code>?&lt;foo&gt;</code>将分组命名为foo</td>
+</tr>
+</tbody></table>
+<p>假设有下列字符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">abc ac acb aob a2b a42c A87d</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用<code>a(bc)*</code>匹配，部分匹配结果：</li>
+</ul>
+<p><img src="./1567913041480.png" alt></p>
+<ul>
+<li>使用<code>a(?:bc)*</code>匹配，部分匹配结果：</li>
+</ul>
+<p><img src="./1567913049463.png" alt></p>
+<p>分组特性很有用，当我们需要从匹配到的字符中提取信息的时候，分组会以数组的形式存在在Full match中，我们只需要指定下标即可访问对应分组。</p>
+<hr>
+<h4 id="中括号——"><a href="#中括号——" class="headerlink" title="中括号——[]"></a>中括号——[]</h4><table>
+<thead>
+<tr>
+<th align="center">regex</th>
+<th align="center">remark</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">[abc]</td>
+<td align="center">匹配a或b或c的字符</td>
+</tr>
+<tr>
+<td align="center">[a-c]</td>
+<td align="center">同上</td>
+</tr>
+<tr>
+<td align="center">[0-9]</td>
+<td align="center">匹配0-9的数字字符</td>
+</tr>
+<tr>
+<td align="center">[^a-zA-Z]</td>
+<td align="center">匹配非<code>a-z</code>，<code>A-Z</code>的字符，<code>^</code>表示反义</td>
+</tr>
+</tbody></table>
+<p>在中括号<code>[]</code>中，所有特殊符号（如<code>^</code>，<code>$</code>）都会失去特殊意义变成普通的字符，而不需要使用<code>\</code>进行转义。</p>
+<hr>
+<h4 id="贪心与懒匹配"><a href="#贪心与懒匹配" class="headerlink" title="贪心与懒匹配"></a>贪心与懒匹配</h4><p>量词<code>* + {}</code>属于贪心操作，它们会尽可能远的匹配字符。</p>
+<p>例如，使用<code>&lt;.+&gt;</code>去匹配<code>&lt;div&gt;simple div&lt;/div&gt;</code> 会得到<strong><code>&lt;div&gt; simple div&lt;/div&gt;</code></strong>。<br>若要只匹配<code>&lt;div&gt;</code>，则可以使用<code>&lt;.+?&gt;</code> 让其进行懒匹配。</p>
+<p>更好的解决方案是不使用<code>.</code>而是使用更加严谨的表达式<code>&lt;[^&lt;&gt;]+&gt;</code></p>
+<hr>
+<h4 id="边界符——-b和-B"><a href="#边界符——-b和-B" class="headerlink" title="边界符——\b和\B"></a>边界符——\b和\B</h4><table>
+<thead>
+<tr>
+<th align="center">regex</th>
+<th align="center">remark</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">\babc\b</td>
+<td align="center">匹配单独一个单词<code>abc</code>，需要与其他字符隔开（如空格），类似于锚<code>^</code>和<code>$</code>，但不强制局限于每行的开头与结尾</td>
+</tr>
+<tr>
+<td align="center">\Babc\B</td>
+<td align="center">匹配<code>abc</code>，不需要与其他单词隔开，类似于锚<code>^</code>和<code>$</code>，但不强制局限于每行的开头与结尾</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="0x0A"><a href="#0x0A" class="headerlink" title="0x0A"></a>0x0A</h2><h3 id="Kafka越界查询命令"><a href="#Kafka越界查询命令" class="headerlink" title="Kafka越界查询命令"></a>Kafka越界查询命令</h3><p>Kafka查看消费者是否越界：</p>
+<ol>
+<li>首先列出topic对应consumer group的当前offset及其最新可消费的offset。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka-run-class kafka.tools.ConsumerOffsetChecker --zookeeper zkhost:port --topic topic_name --group topic_name_group</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>再列出topic的最早offset。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka-run-class kafka.tools.GetOffsetShell --topic topic_name --time -2 --broker-list kafkahost:port</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>使用excel对partition排序，就能确认消费者消费的offset是向前还是向后越界。</li>
+</ol>
+<hr>
+<h3 id="python数组遍历"><a href="#python数组遍历" class="headerlink" title="python数组遍历"></a>python数组遍历</h3><p>python遍历数组且带下标：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">_list = [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>, <span class="string">'d'</span>, <span class="string">'e'</span>]</span><br><span class="line"><span class="comment">## 使用enumerate</span></span><br><span class="line"><span class="keyword">for</span> idx, i <span class="keyword">in</span> enumerate(_list):</span><br><span class="line">    print(<span class="string">'index：%s，value：%s'</span> % (idx, i))</span><br><span class="line">print(<span class="string">'===================================='</span>)</span><br><span class="line"><span class="comment">## 使用range(start, end, step)</span></span><br><span class="line"><span class="keyword">for</span> idx <span class="keyword">in</span> range(<span class="number">0</span>, len(_list), <span class="number">1</span>):</span><br><span class="line">     print(<span class="string">'index：%s，value：%s'</span> % (idx, _list[idx]))</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x0B"><a href="#0x0B" class="headerlink" title="0x0B"></a>0x0B</h2><h3 id="使用fsck校验hdfs文件完整性及recoverLease修复文件"><a href="#使用fsck校验hdfs文件完整性及recoverLease修复文件" class="headerlink" title="使用fsck校验hdfs文件完整性及recoverLease修复文件"></a>使用fsck校验hdfs文件完整性及recoverLease修复文件</h3><p>hdfs文件系统可以使用fsck来check(校验)文件完整性，语法格式：<code>hdfs fsck [file] [options]</code></p>
+<p>以下option，由上往下需要相继结合使用：  </p>
+<table>
+<thead>
+<tr>
+<th align="center">options</th>
+<th align="center">comment</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-files</td>
+<td align="center">校验时展示文件信息</td>
+</tr>
+<tr>
+<td align="center">-blocks</td>
+<td align="center">展示文件的块信息，通常与-files结合使用</td>
+</tr>
+<tr>
+<td align="center">-locations</td>
+<td align="center">展示文件块所在的datanode地址</td>
+</tr>
+<tr>
+<td align="center">-racks</td>
+<td align="center">展示文件机架信息</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 检查某文件是否完整</span></span></span><br><span class="line">hdfs fsck /zxk/sample.jar -file -blocks -locations -racks</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 检查某文件夹下文件是否完整</span></span></span><br><span class="line">hdfs fsck /zxk</span><br></pre></td></tr></table></figure>
+
+<p>示例输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">Connecting to namenode via http://localhost:50070/fsck?ugi=hdfs&amp;files=1&amp;blocks=1&amp;racks=1&amp;path=%2Fdata%2Fsw%2Fhttp%2FCZ%2F20190805%2F0000%2Fpart-0</span><br><span class="line">FSCK started by hdfs (auth:SIMPLE) from /node1for path /zxk/sample.jar at Fri Aug 23 10:47:39 CST 2019</span><br><span class="line">/zxk/sample.jar 185606618 bytes, 1 block(s):  OK</span><br><span class="line">0. BP-1492896228-node2-1553135500323:blk_3942942813_2869317147 len=185606618 Live_repl=2 [/c/S9312-2/node3:50010, /c/S9312-1/node4:50010]</span><br><span class="line"></span><br><span class="line">Status: HEALTHY</span><br><span class="line"> Total size:    185606618 B</span><br><span class="line"> Total dirs:    0</span><br><span class="line"> Total files:   1</span><br><span class="line"> Total symlinks:                0</span><br><span class="line"> Total blocks (validated):      1 (avg. block size 185606618 B)</span><br><span class="line"> Minimally replicated blocks:   1 (100.0 %)</span><br><span class="line"> Over-replicated blocks:        0 (0.0 %)</span><br><span class="line"> Under-replicated blocks:       0 (0.0 %)</span><br><span class="line"> Mis-replicated blocks:         0 (0.0 %)</span><br><span class="line"> Default replication factor:    2</span><br><span class="line"> Average block replication:     2.0</span><br><span class="line"> Corrupt blocks:                0</span><br><span class="line"> Missing replicas:              0 (0.0 %)</span><br><span class="line"> Number of data-nodes:          104</span><br><span class="line"> Number of racks:               2</span><br><span class="line">FSCK ended at Fri Aug 23 10:47:39 CST 2019 in 1 milliseconds</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">The filesystem under path &apos;/zxk/sample.jar&apos; is HEALTHY</span><br></pre></td></tr></table></figure>
+
+<p>假如文件有异常的话，我们可以观察到两种信息：</p>
+<blockquote>
+<p>Under replicated<br>CORRUPT blockpool</p>
+</blockquote>
+<hr>
+<p><strong>修复Under replicated：</strong><br>这种情况意味着还有其他replication存活，可使用<code>recoverLease</code>命令进行恢复：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 寻找under replicated的文件</span></span><br><span class="line">hdfs fsck / | grep -i <span class="string">"under replicated"</span> | awk <span class="string">'&#123;print $1&#125;'</span> |sort | uniq | sed -e <span class="string">'s/://g'</span>&gt; under_replicated.flst</span><br></pre></td></tr></table></figure>
+
+<p>接下来使用recoverLeae命令修复：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## [-path path]	HDFS path for which to recover the lease.</span></span><br><span class="line"><span class="comment">## [-retries num-retries]	Number of times the client will retry calling recoverLease. The default number of retries is 1.</span></span><br><span class="line"><span class="keyword">for</span> f <span class="keyword">in</span> `cat under_replicated.flst` &#123; <span class="built_in">echo</span> <span class="string">"Fixing <span class="variable">$f</span>"</span> ;  hdfs debug recoverLease -path <span class="variable">$f</span>; &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>修复corrupt blocks：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 查找出损坏的文件并删除</span></span><br><span class="line"> hdfs fsck / | egrep -v <span class="string">'^\.+$'</span> | grep -v eplica| awk -F <span class="string">':'</span> <span class="string">'&#123;system("sudo -u hdfs hadoop fs -rm -r "$1" 2&gt;&amp;1")&#125;'</span></span><br></pre></td></tr></table></figure>
+
+<p>参考：<br><a href="https://stackoverflow.com/questions/19205057/how-to-fix-corrupt-hdfs-files" target="_blank" rel="noopener">How to fix corrupt HDFS FIles</a><br><a href="http://fibrevillage.com/storage/658-how-to-use-hdfs-fsck-command-to-identify-corrupted-files" target="_blank" rel="noopener">How to use hdfs fsck command to identify corrupted files?</a></p>
+<hr>
+<h2 id="0x0C"><a href="#0x0C" class="headerlink" title="0x0C"></a>0x0C</h2><h3 id="Docker部署Elastic"><a href="#Docker部署Elastic" class="headerlink" title="Docker部署Elastic"></a>Docker部署Elastic</h3><p>可以通过docker快速部署一个elastic search，步骤如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 拉取elastic官方镜像</span></span><br><span class="line">docker pull docker.elastic.co/elasticsearch/elasticsearch:7.3.1</span><br><span class="line"></span><br><span class="line"><span class="comment">## 创建container，并指定端口为9200,9300</span></span><br><span class="line">docker run -p 9200:9200 -p 9300:9300 -e <span class="string">"discovery.type=single-node"</span> docker.elastic.co/elasticsearch/elasticsearch:7.3.1</span><br></pre></td></tr></table></figure>
+
+<p>对于elastic的其他版本，可以到<a href="https://www.docker.elastic.co/" target="_blank" rel="noopener">Docker @ Elastic</a>下载.</p>
+<p>参考链接：<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html</a></p>
+<hr>
+<h2 id="0x0D"><a href="#0x0D" class="headerlink" title="0x0D"></a>0x0D</h2><h3 id="Linux下排查磁盘文件占满"><a href="#Linux下排查磁盘文件占满" class="headerlink" title="Linux下排查磁盘文件占满"></a>Linux下排查磁盘文件占满</h3><ol>
+<li>首先查看真实文件占用</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## -s, --summarize 只分别计算当前路径下每个文件(夹)的总占用</span></span><br><span class="line"><span class="comment">## -x, --one-file-system  忽略处于不同文件系统上的目录</span></span><br><span class="line">du -shx /xxx</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>查看对应目录下逻辑上的磁盘占用情况</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df -h /xxx</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看被进程占用的文件，并kill对应的pid</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## sort：-n 作为number排序， -k1 以第一列作为key排序，-t 可以指定分隔符</span></span><br><span class="line">lsof -s|grep deleted|sort -n -k1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果df与du仍然不一致，根据具体场景，umount掉不必要的目录后，再次使用du查看占用，之后<code>rm -rf</code>占用大的文件夹内容，再重新挂载。</p>
+</li>
+</ol>
+<hr>
+<h3 id="word文件中插入代码"><a href="#word文件中插入代码" class="headerlink" title="word文件中插入代码"></a>word文件中插入代码</h3><p>可以将代码黏贴到该网站，然后格式化后复制黏贴到word中：<a href="http://pygments.org/" target="_blank" rel="noopener">http://pygments.org/</a></p>
+<hr>
+<h3 id="Linxu下free命令输出相关"><a href="#Linxu下free命令输出相关" class="headerlink" title="Linxu下free命令输出相关"></a>Linxu下free命令输出相关</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 使用free查看</span></span><br><span class="line">free -h</span><br><span class="line">             total       used       free     shared    buffers     cached</span><br><span class="line">Mem:          251G       243G       8.6G       3.8M       3.7G       120G</span><br><span class="line">-/+ buffers/cache:       119G       132G </span><br><span class="line">Swap:         124G        24M       124G</span><br></pre></td></tr></table></figure>
+
+<p><strong>从操作系统(Mem)出发：</strong></p>
+<ol>
+<li>Mem.total = Mem.used + Mem.free</li>
+<li>used：包含了buffers以及cached</li>
+<li>buffers：表示被系统buffer的内存，主要用于存放要输出到disk的数据。</li>
+<li>cached：表示被系统cahce的内存，主要用于存放从disk读取的数据。</li>
+<li>buffer跟cache都是为了提高系统I/O性能。</li>
+</ol>
+<p><strong>从程序角度(-/+ buffers/cache)出发：</strong></p>
+<ol>
+<li>used：表示应用程序认为已经使用了多少内存，不包含buffers以及cached，且<strong>(-/+buffer/cache).used=Mem.used-Mem.buffer-Mem.cache</strong></li>
+<li>free：表示应用程序认为系统还有多少内存，由于buffers以及cached都可以被系统快速回收，因此算在free里。(-/+buffer/cache).free = Mem.free + Mem.buffers + Mem.cached</li>
+</ol>
+<p>大致布局如下：</p>
+<p><img src="./1567913307175.png" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/scala/" rel="tag"># scala</a>
+          
+            <a href="/tags/Docker/" rel="tag"># Docker</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/06/ARTS-Review/" rel="next" title="ARTS_Review">
+                <i class="fa fa-chevron-left"></i> ARTS_Review
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="zxk">
+            
+              <p class="site-author-name" itemprop="name">zxk</p>
+              <p class="site-description motion-element" itemprop="description">In order to be willful!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Rianico" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhxuankun@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01"><span class="nav-number">1.</span> <span class="nav-text">0x01</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Scala隐式转换"><span class="nav-number">1.1.</span> <span class="nav-text">Scala隐式转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02"><span class="nav-number">2.</span> <span class="nav-text">0x02</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker内配置git账户"><span class="nav-number">2.1.</span> <span class="nav-text">Docker内配置git账户</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03"><span class="nav-number">3.</span> <span class="nav-text">0x03</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#偏函数（PartialFunction）、部分应用函数（Partial-Applied-Function）和柯里化-Currying"><span class="nav-number">3.1.</span> <span class="nav-text">偏函数（PartialFunction）、部分应用函数（Partial Applied Function）和柯里化(Currying)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#偏函数"><span class="nav-number">3.1.1.</span> <span class="nav-text">偏函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#部分应用函数（Partially-Applied-Functions）"><span class="nav-number">3.1.2.</span> <span class="nav-text">部分应用函数（Partially Applied Functions）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04"><span class="nav-number">4.</span> <span class="nav-text">0x04</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Scala中的Left与Right"><span class="nav-number">4.1.</span> <span class="nav-text">Scala中的Left与Right</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05"><span class="nav-number">5.</span> <span class="nav-text">0x05</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#马克飞象与mathpix"><span class="nav-number">5.1.</span> <span class="nav-text">马克飞象与mathpix</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06"><span class="nav-number">6.</span> <span class="nav-text">0x06</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关于mkfs-ex4的inode"><span class="nav-number">6.1.</span> <span class="nav-text">关于mkfs.ex4的inode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x07"><span class="nav-number">7.</span> <span class="nav-text">0x07</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Coursera"><span class="nav-number">7.1.</span> <span class="nav-text">Coursera</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x08"><span class="nav-number">8.</span> <span class="nav-text">0x08</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#StringBuilder的一些使用事项"><span class="nav-number">8.1.</span> <span class="nav-text">StringBuilder的一些使用事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x09"><span class="nav-number">9.</span> <span class="nav-text">0x09</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Regex-tutorial-—-A-quick-cheatsheet-by-examples"><span class="nav-number">9.1.</span> <span class="nav-text">Regex tutorial — A quick cheatsheet by examples</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#锚——-和"><span class="nav-number">9.1.1.</span> <span class="nav-text">锚——^和$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#量词——-和"><span class="nav-number">9.1.2.</span> <span class="nav-text">量词—— * + ? 和{}</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#或操作——-或"><span class="nav-number">9.1.3.</span> <span class="nav-text">或操作—— | 或 []</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字符类——-d-w-s-和"><span class="nav-number">9.1.4.</span> <span class="nav-text">字符类—— \d \w \s 和 .</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#标记"><span class="nav-number">9.1.5.</span> <span class="nav-text">标记</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分组，捕获"><span class="nav-number">9.1.6.</span> <span class="nav-text">分组，捕获</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#中括号——"><span class="nav-number">9.1.7.</span> <span class="nav-text">中括号——[]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#贪心与懒匹配"><span class="nav-number">9.1.8.</span> <span class="nav-text">贪心与懒匹配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#边界符——-b和-B"><span class="nav-number">9.1.9.</span> <span class="nav-text">边界符——\b和\B</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0A"><span class="nav-number">10.</span> <span class="nav-text">0x0A</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka越界查询命令"><span class="nav-number">10.1.</span> <span class="nav-text">Kafka越界查询命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python数组遍历"><span class="nav-number">10.2.</span> <span class="nav-text">python数组遍历</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0B"><span class="nav-number">11.</span> <span class="nav-text">0x0B</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用fsck校验hdfs文件完整性及recoverLease修复文件"><span class="nav-number">11.1.</span> <span class="nav-text">使用fsck校验hdfs文件完整性及recoverLease修复文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0C"><span class="nav-number">12.</span> <span class="nav-text">0x0C</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker部署Elastic"><span class="nav-number">12.1.</span> <span class="nav-text">Docker部署Elastic</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0D"><span class="nav-number">13.</span> <span class="nav-text">0x0D</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux下排查磁盘文件占满"><span class="nav-number">13.1.</span> <span class="nav-text">Linux下排查磁盘文件占满</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#word文件中插入代码"><span class="nav-number">13.2.</span> <span class="nav-text">word文件中插入代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linxu下free命令输出相关"><span class="nav-number">13.3.</span> <span class="nav-text">Linxu下free命令输出相关</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zxk</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname, 
+            owner: '32795735',
+            repo: 'Rianico.github.io',
+            
+            lang: "zh-Hans" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'b21ff92a3fada1b09143d7c5f9d75d8412c8b030',
+            
+                client_id: 'ca79bd9bd909da7bc307'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("b0eHvPvUnPEkUzmOUqBllp6S-gzGzoHsz", "eb2on5hpWEIbGANv7SgPs9pu");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

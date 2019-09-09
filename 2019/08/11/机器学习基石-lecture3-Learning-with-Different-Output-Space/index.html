@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon2.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon2.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Learning with Different Output Space根据输出空间来分，通常可以划分为分类（classicfication）与回归（regression）两大类，其中分类通常又可以分为二分类与多分类。除此之外，还有结构化学习，这里一类型的输出数据之间存在着结构化的关系（如语音-&amp;gt;句子等）。 对于区分是与否的问题，通常称为binary Classification（二元分类）">
+<meta name="keywords" content="机器学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习基石--Lecture3_Learning with Different Output Space">
+<meta property="og:url" content="http://Rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/index.html">
+<meta property="og:site_name" content="zxk | Blog">
+<meta property="og:description" content="Learning with Different Output Space根据输出空间来分，通常可以划分为分类（classicfication）与回归（regression）两大类，其中分类通常又可以分为二分类与多分类。除此之外，还有结构化学习，这里一类型的输出数据之间存在着结构化的关系（如语音-&amp;gt;句子等）。 对于区分是与否的问题，通常称为binary Classification（二元分类）">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565518616928.png">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565430870970.png">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565447111627.png">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565447243418.png">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565448806386.png">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565449490630.png">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565449978379.png">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565493129423.png">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565493279886.png">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565494076297.png">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565502646163.png">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565503064625.png">
+<meta property="og:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565503494173.png">
+<meta property="og:updated_time" content="2019-09-09T08:21:04.181Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习基石--Lecture3_Learning with Different Output Space">
+<meta name="twitter:description" content="Learning with Different Output Space根据输出空间来分，通常可以划分为分类（classicfication）与回归（regression）两大类，其中分类通常又可以分为二分类与多分类。除此之外，还有结构化学习，这里一类型的输出数据之间存在着结构化的关系（如语音-&amp;gt;句子等）。 对于区分是与否的问题，通常称为binary Classification（二元分类）">
+<meta name="twitter:image" content="http://rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/1565518616928.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://Rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/">
+
+
+
+
+
+  <title>机器学习基石--Lecture3_Learning with Different Output Space | zxk | Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fbc2552fde7f0ffe147bf4fd6f88acdc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zxk | Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rianico</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://Rianico.github.io/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zxk">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zxk | Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">机器学习基石--Lecture3_Learning with Different Output Space</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-11T01:56:57+00:00">
+                2019-08-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习基石/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习基石</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/08/11/机器学习基石-lecture3-Learning-with-Different-Output-Space/" class="leancloud_visitors" data-flag-title="机器学习基石--Lecture3_Learning with Different Output Space">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Learning-with-Different-Output-Space"><a href="#Learning-with-Different-Output-Space" class="headerlink" title="Learning with Different Output Space"></a>Learning with Different Output Space</h2><p>根据输出空间来分，通常可以划分为<strong>分类（classicfication）</strong>与<strong>回归（regression）</strong>两大类，其中分类通常又可以分为<strong>二分类</strong>与<strong>多分类</strong>。除此之外，还有<strong>结构化学习</strong>，这里一类型的输出数据之间存在着结构化的关系（如语音-&gt;句子等）。</p>
+<p>对于区分是与否的问题，通常称为<strong>binary Classification</strong>（二元分类），后面各种复杂的分类，都是基于二分类展开。</p>
+<h3 id="0x01-多元分类"><a href="#0x01-多元分类" class="headerlink" title="0x01_多元分类"></a>0x01_多元分类</h3><p><img src="1565518616928.png" alt></p>
+<p>区分美国硬币，共有四种2c，5c，10c，25c，该问题是一个四分类，由此可泛化为K分类，二分类是其中特殊的一种。</p>
+<p>多分类的常见应用多为“识别”，如图像识别，人脸识别，医疗图像识别等。</p>
+<hr>
+<h3 id="0x02-回归，结构化学习"><a href="#0x02-回归，结构化学习" class="headerlink" title="0x02_回归，结构化学习"></a>0x02_回归，结构化学习</h3><p><strong>有界回归（bounded regression）</strong>，在统计学中是一个很经典的问题。</p>
+<blockquote>
+<p>$\mathcal{Y}=\mathbb{R}$ or $\mathcal{Y}=[lower,upper] \subset \mathbb{R}$<br>bounded regression——deeply studied in statistics</p>
+</blockquote>
+<p>其他回归类的问题有：</p>
+<ul>
+<li>公司数据=》股票价格</li>
+<li>气候数据=》预测温度</li>
+</ul>
+<p>特点为输入一系列数据，然后输出一个实数。</p>
+<p>线性回归已经较为成熟，有许多线程的工具，也可用于构建其他更加复杂的算法。</p>
+<p><strong>结构化学习（Structured Learning）</strong>：使用机器学习对一个句子里的词性进行分类，表面看是一个多分类问题，但实际上每个单词可能有多个不同的词性，此时进行识别较为困难。但若是将整个句子送进去，从总体来看，就有一定的语法结构可循，属于多分类的一种扩展。</p>
+<p><img src="1565430870970.png" alt></p>
+<p>以上两种学习都是从二分类，多分类延伸而来，都是希望机器能学到输出空间中的某种结构。</p>
+<hr>
+<h2 id="Learning-with-Different-Data-Label-yn"><a href="#Learning-with-Different-Data-Label-yn" class="headerlink" title="Learning with Different Data Label yn"></a>Learning with Different Data Label yn</h2><p>根据样本来分，可分为监督学习（supervised），无监督学习（unsupervised）和半监督学习（semi-supervised）以及强化学习（Reinforcement Learning），其中强化学习对样本依赖较少，而且是通过奖惩制度来训练。</p>
+<hr>
+<p><strong>监督式学习（Supervised）</strong>，有确定的的期望输出$y$，结合带有label的一组输入，求得目标函数。比如多分类区分1c，5c，10c，25c的硬币。</p>
+<p><img src="1565447111627.png" alt></p>
+<hr>
+<p><strong>非监督式学习（Unsupervised）</strong>，目标较为<strong>分散</strong>，并不给一个具体的目标，也没有相应的label，让机器自己去找出某种关联。</p>
+<p><img src="1565447243418.png" alt></p>
+<p>典型的几个应用：</p>
+<ul>
+<li>分群：$\left{\mathbf{x}_{n}\right} \Rightarrow$ cluster $(\mathbf{x})$，可以大致看为“非监督式的多分类问题”，比如自动的将文章分类为多个主题。</li>
+<li>密度估计：$\left{\mathbf{x}_{n}\right} \Rightarrow$ density $(\mathbf{x})$,可以大致当做“非监督式的有界回归”，比如通过多个路口的交通报告，确定哪些区域的交通事故较多。</li>
+<li>异常值检测：比如网络流量的资料，某几个点比较奇怪（如DOS攻击，或者服务器状态不正常），那么机器会自动的从中找出来。</li>
+</ul>
+<p>非监督式学习有很多地方会对应到监督式里的一些概念。</p>
+<hr>
+<p><strong>半监督式学习（Semi-supervised）</strong>：介于监督式与无监督式学习之间，通常是只对部分样本打上label及确定期望输出，然后让机器进行学习，适用于在打标签很“昂贵”的情况。</p>
+<p><img src="1565448806386.png" alt></p>
+<hr>
+<p><strong>强化学习（Reinforcement）</strong>：有隐式的目标${y}_{n}$，但不会明确提出来，而是通过奖惩机制告诉机器好坏，让其一步一步学习。比如：</p>
+<ul>
+<li>输入（用户，广告选择，<strong>用户点击获取收入</strong>）=》从而训练广告系统</li>
+<li>训练游戏AI</li>
+</ul>
+<p><img src="1565449490630.png" alt></p>
+<hr>
+<p>对比几种学习的区别：</p>
+<p><img src="1565449978379.png" alt></p>
+<p>其中无监督，半监督及强化学习，都是从监督式学习中演变出来的。</p>
+<hr>
+<h2 id="Learning-with-Different-Protocol-f-⇒-xn-yn"><a href="#Learning-with-Different-Protocol-f-⇒-xn-yn" class="headerlink" title="Learning with Different Protocol f ⇒ (xn , yn )"></a>Learning with Different Protocol f ⇒ (xn , yn )</h2><p>训练时数据的输入方式，根据数据是否一次性送入到模型中训练将其分为 <strong>batch learning</strong> 和 <strong>online learning</strong>以及<strong>active learning</strong>。</p>
+<hr>
+<p><strong>batch方式</strong>，通过喂给机器批量的数据进行学习，如通过输入给机器一批数据，标识出其中的垃圾邮件，让机器自己学会区分。</p>
+<p><img src="1565493129423.png" alt></p>
+<hr>
+<p><strong>online方式</strong>：会持续不断接收进来的数据，根据资料再不断地更新$g$以提升算法表现。</p>
+<p><img src="1565493279886.png" alt></p>
+<p>以垃圾邮件为例，在当前已有算法${g}<em>{t}(\mathbf{x}</em>{t})$的前提下：</p>
+<ol>
+<li>接收到一个邮件$\mathbf{x}_{t}$</li>
+<li>使用当前算法${g}<em>{t}(\mathbf{x}</em>{t})$判断是否为垃圾邮件</li>
+<li>从用户那里接收期望的输出标签$y_{t}$（如用户认为这是或者不是垃圾邮件），并根据($\mathbf{x}<em>{t},\mathbf{y}</em>{t}$)更新算法${g}_{t}$</li>
+</ol>
+<p>由此可见，online是一个不断更新自己的方式，所以PLA可以很容易的应用到上面。</p>
+<p>online learing也不是每接收一个样本就立刻进行训练更新，而是往往等到积累一批数据后在进行训练更新。</p>
+<p>强化学习也是持续不断的更新自己，经常也以online方式。</p>
+<hr>
+<p><strong>active方式</strong>：通过少量label然后机器学习，当机器无法确认分类时，主动询问$f$（代指人），从而不断地提升$g$的表现，属于半监督学习的一种。</p>
+<p><img src="1565494076297.png" alt></p>
+<p>相比batch（填鸭式），online（被动接收）方式，active会去主动地获取目标$y_n$进行学习。</p>
+<hr>
+<p>Learning with Different Protocol $f ⇒ (x_n ,y_n )$：</p>
+<ul>
+<li>batch方式是通过所有已知的data进行学习；</li>
+<li>online方式使用持续不断输入的data；</li>
+<li>active方式通过有技巧性的获取data；</li>
+<li>… and more！</li>
+</ul>
+<hr>
+<h2 id="Learning-with-Different-Input-Space-X"><a href="#Learning-with-Different-Input-Space-X" class="headerlink" title="Learning with Different Input Space X"></a>Learning with Different Input Space X</h2><p>根据输入的样本的特征来分也可以分为三类：<strong>Input features</strong>，<strong>raw feaures</strong> 和 <strong>abstract features</strong>。</p>
+<hr>
+<p><strong>输入特征（Input features，concrete features）</strong>：样本$\mathcal{X} \subseteq \mathbb{R}^{d}$的各项维度，<strong>都代表了准确，相关的物理意义</strong>。</p>
+<p>通常输入特征都包含了一些人类智能指定的信息，从ML的家度来看，是属于比较简单的一些东西。</p>
+<p><img src="1565502646163.png" alt></p>
+<hr>
+<p><strong>原始特征（Raw Features）</strong>：对象自身带有的一些特性，<strong>只带有一些简单的物理意义</strong>。</p>
+<p>以数字识别为例，比如下列图片每个数字都是由16X16的像素点组成的：</p>
+<p><img src="1565503064625.png" alt></p>
+<p>如果不做任何处理，只看原始数据，那么此时的raw feature就是这样：16 by 16 gray image：$x≡ (0,0,0.9,0.6,···)  \epsilon \mathcal{R}^{256}$。</p>
+<p>此时每个样本就是一个256维度的向量。<strong>每个维度的物理意义只是代表某个点，而判断数字并不是靠某一个点，而是要结合其他的点，到底有没有点等等的关系</strong>，对于ML来说会是一个很复杂的问题。</p>
+<p>若加上人类的一些认知，对其进行一些处理，比如数字可能有是否对称，笔画密度如何等。比如1是比较对称的，5是笔画密度较稠密的，根据这点将数字1和5转为为一个二维平面图，y轴代表对称程度，x轴代表密度：</p>
+<p><img src="1565503494173.png" alt></p>
+<p>那么此时就是一个二维的向量，对于ML来说会容易很多。</p>
+<hr>
+<p><strong>抽象特征（Abstract Features）</strong>：从raw feature更加抽象，<strong>且每个维度并没有太具体的物理意义</strong>，对于ML来说更加困难。</p>
+<p>比如用户对音乐进行打分： (userid, itemid, rating) ，使用这个抽象特征，由此预测出哪些用户会对哪些歌曲给出多少评分。（类似的例子还有学生习题系统，广告在线投放等）</p>
+<p>对于上述的抽象特征，我们需要帮助每个使用者抽取出真正的feature，比如对歌曲的喜好程度的向量，歌曲曲风的向量，作曲家的向量等等，这些也需要由人或者机器（跟raw feature）一样去做预处理。</p>
+<blockquote>
+<p>个人的理解：其实上述提到的Raw feature，Abstract feature就有点分别对应于推荐系统中的维度表以及事实表一样。</p>
+</blockquote>
+<hr>
+<p>对于机器来说，越抽象的数据（如多维）就困难，往往需要我们对原始数据（raw data）或者抽象数据（abstract data）做一个特征工程（feature engineer），经过预处理后的数据再喂给机器。</p>
+<p>特征工程往往能觉得一个机器学习的生死，特征工程可能由人完成（比如手动打标签，过滤，清洗等），也可能由机器自己完成（如深度学习）。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/03/机器学习基石-Learning-to-Answer-Yes-No-PLA/" rel="next" title="机器学习基石--Lecture2_Learning to Answer Yes/No (PLA)">
+                <i class="fa fa-chevron-left"></i> 机器学习基石--Lecture2_Learning to Answer Yes/No (PLA)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/18/机器学习基石--Lecture4_Learning-is-Impossible/" rel="prev" title="机器学习基石-- Lecture4_Learning is Impossible?">
+                机器学习基石-- Lecture4_Learning is Impossible? <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="zxk">
+            
+              <p class="site-author-name" itemprop="name">zxk</p>
+              <p class="site-description motion-element" itemprop="description">In order to be willful!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Rianico" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhxuankun@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Learning-with-Different-Output-Space"><span class="nav-number">1.</span> <span class="nav-text">Learning with Different Output Space</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-多元分类"><span class="nav-number">1.1.</span> <span class="nav-text">0x01_多元分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-回归，结构化学习"><span class="nav-number">1.2.</span> <span class="nav-text">0x02_回归，结构化学习</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Learning-with-Different-Data-Label-yn"><span class="nav-number">2.</span> <span class="nav-text">Learning with Different Data Label yn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Learning-with-Different-Protocol-f-⇒-xn-yn"><span class="nav-number">3.</span> <span class="nav-text">Learning with Different Protocol f ⇒ (xn , yn )</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Learning-with-Different-Input-Space-X"><span class="nav-number">4.</span> <span class="nav-text">Learning with Different Input Space X</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zxk</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname, 
+            owner: '32795735',
+            repo: 'Rianico.github.io',
+            
+            lang: "zh-Hans" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'b21ff92a3fada1b09143d7c5f9d75d8412c8b030',
+            
+                client_id: 'ca79bd9bd909da7bc307'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("b0eHvPvUnPEkUzmOUqBllp6S-gzGzoHsz", "eb2on5hpWEIbGANv7SgPs9pu");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon2.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon2.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="article,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="0x01_9 tips about using cats in Scala you might want to know9 tips about using cats in Scala you might want to know 此篇主要是介绍了scala的9个tips，主要是一些实际工程中较好的实践，但是本人目前英文水平尚浅，scala又较难，只能看到一些比较表面的东西，值得时不时的回顾。sc">
+<meta name="keywords" content="article">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ARTS_Review">
+<meta property="og:url" content="http://Rianico.github.io/2019/09/06/ARTS-Review/index.html">
+<meta property="og:site_name" content="zxk | Blog">
+<meta property="og:description" content="0x01_9 tips about using cats in Scala you might want to know9 tips about using cats in Scala you might want to know 此篇主要是介绍了scala的9个tips，主要是一些实际工程中较好的实践，但是本人目前英文水平尚浅，scala又较难，只能看到一些比较表面的东西，值得时不时的回顾。sc">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://rianico.github.io/2019/09/06/ARTS-Review/1562916580758.png">
+<meta property="og:image" content="http://rianico.github.io/2019/09/06/ARTS-Review/1565419939778.png">
+<meta property="og:updated_time" content="2019-09-09T08:21:04.173Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ARTS_Review">
+<meta name="twitter:description" content="0x01_9 tips about using cats in Scala you might want to know9 tips about using cats in Scala you might want to know 此篇主要是介绍了scala的9个tips，主要是一些实际工程中较好的实践，但是本人目前英文水平尚浅，scala又较难，只能看到一些比较表面的东西，值得时不时的回顾。sc">
+<meta name="twitter:image" content="http://rianico.github.io/2019/09/06/ARTS-Review/1562916580758.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://Rianico.github.io/2019/09/06/ARTS-Review/">
+
+
+
+
+
+  <title>ARTS_Review | zxk | Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fbc2552fde7f0ffe147bf4fd6f88acdc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zxk | Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rianico</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://Rianico.github.io/2019/09/06/ARTS-Review/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zxk">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zxk | Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ARTS_Review</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-06T21:32:56+00:00">
+                2019-09-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ARTS/" itemprop="url" rel="index">
+                    <span itemprop="name">ARTS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/06/ARTS-Review/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/09/06/ARTS-Review/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/09/06/ARTS-Review/" class="leancloud_visitors" data-flag-title="ARTS_Review">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0x01-9-tips-about-using-cats-in-Scala-you-might-want-to-know"><a href="#0x01-9-tips-about-using-cats-in-Scala-you-might-want-to-know" class="headerlink" title="0x01_9 tips about using cats in Scala you might want to know"></a>0x01_9 tips about using cats in Scala you might want to know</h2><p><a href="https://blog.softwaremill.com/9-tips-about-using-cats-in-scala-you-might-want-to-know-e1bafd365f88" target="_blank" rel="noopener">9 tips about using cats in Scala you might want to know</a></p>
+<p>此篇主要是介绍了scala的9个tips，主要是一些实际工程中较好的实践，但是本人目前英文水平尚浅，scala又较难，只能看到一些比较表面的东西，值得时不时的回顾。scala是一门基于jvm生态的十分灵活的语言，但也正因为太灵活了，因此使用难度也较高，但其中的一些思想及用法，很值得深思及细细品味。</p>
+<hr>
+<h2 id="0x02-Goodbye-Object-Oriented-Programming"><a href="#0x02-Goodbye-Object-Oriented-Programming" class="headerlink" title="0x02_Goodbye, Object Oriented Programming"></a>0x02_Goodbye, Object Oriented Programming</h2><p><a href="https://medium.com/@cscalfani/goodbye-object-oriented-programming-a59cda4c0e53" target="_blank" rel="noopener">Goodbye, Object Oriented Programming</a></p>
+<p>这篇文章主要是对面向对象编程里的继承，封装跟多态里存在的一些问题进行了讨论。</p>
+<p><strong>针对继承（Inheritance）</strong>：</p>
+<ul>
+<li>由于继承的层次过深，往往需要从一个项目拷贝一个东西到另一个项目的时候，需要拷贝更多的对象（如父类，父类的父类等），形象的比喻为：只想要一根香蕉，却给了一只拿着香蕉的猩猩跟整片森林。</li>
+<li>经典的菱形继承问题，只能使用多态解决</li>
+<li>脆弱的基类问题，</li>
+</ul>
+<p>基类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">import java.util.ArrayList;</span><br><span class="line"> </span><br><span class="line">public class Array</span><br><span class="line">&#123;</span><br><span class="line">  private ArrayList&lt;Object&gt; a = new ArrayList&lt;Object&gt;();</span><br><span class="line"> </span><br><span class="line">  public void add(Object element)</span><br><span class="line">  &#123;</span><br><span class="line">    a.add(element);</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  public void addAll(Object elements[])</span><br><span class="line">  &#123;</span><br><span class="line">    for (int i = 0; i &lt; elements.length; ++i)</span><br><span class="line">      // 调用了本地array的add方法</span><br><span class="line">      a.add(elements[i]); // this line is going to be changed</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>派生类，新增了count进行计数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class ArrayCount extends Array</span><br><span class="line">&#123;</span><br><span class="line">  private int count = 0;</span><br><span class="line"> </span><br><span class="line">  @Override</span><br><span class="line">  public void add(Object element)</span><br><span class="line">  &#123;</span><br><span class="line">    super.add(element);</span><br><span class="line">    ++count;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  @Override</span><br><span class="line">  public void addAll(Object elements[])</span><br><span class="line">  &#123;</span><br><span class="line">    // 调用父类的addAll()方法</span><br><span class="line">    super.addAll(elements);</span><br><span class="line">    count += elements.length;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码原本能正常工作，但是有一天基类ArrayList发生了改变：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public void addAll(Object elements[])</span><br><span class="line">  &#123;</span><br><span class="line">    for (int i = 0; i &lt; elements.length; ++i)</span><br><span class="line">      // 注意： 由于派生类重写了add方法，因此add方法此时执行的是派生类的方法</span><br><span class="line">      add(elements[i]); // this line was changed</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上述改变中，ArrayList的修改是合情合理的，并且在原本的所有代码也能通过测试，但对于派生类来说，它原本期待的行为发生了改变。</p>
+<p><strong>原本ArrayCount  addAll()调用基类的addAll()，期待由基类的addAll()方法完成操作，但是基类内部却调用了由子类重写的add()方法</strong>，从而导致重复计数！</p>
+<blockquote>
+<p>And they must be informed about every change in the Base class since it could break their Derived class in unpredictable ways.</p>
+</blockquote>
+<p>从上述情况来看，子类的作者必须知道父类是如何实现的。而且他们必须被告知父类的每个变化，因为它们可能以一种不可预知的方式破坏子类。</p>
+<p>通过上述例子，可能内心会对<strong>继承</strong>这个特性开始感到怀疑。但更加本质的是，怀疑通过继承进行层次分类的方案的可行性。</p>
+<p>现实世界实际上有很层次结构，比如一双袜子在你的抽屉里在你的梳妆台在你的房间在你的房子等。所以其实层次分类是好的，只不过当前面向对象编程使用的模型不够好。</p>
+<p>作者提出了使用tag来标记类从而进行分类（其实就跟scala的特质思想很类似了）。</p>
+<p>比如职工手册，就有这几个tag：Document，Company，Handbook</p>
+<hr>
+<p><strong>针对封装（Encapsulation）</strong></p>
+<p>虽然表面看起来，封装隐藏了对象内部状态，保证了对象内部状态的安全。但是，由于OOP中处于性能的考虑，传递给一个方法的通常是一个对象的引用，那么此时假如将一个Object传递给一个构造函数，再传递给另一个构造函数，那么两个构造函数同时拥有了对这个Object的引用，从而导致该Object不是安全的。</p>
+<p>解决方法：对Object进行clone，而且必须是deep clone，而且Object中的Object也要进行deep clone。。。（其实可以通过腌咸菜的方式来避免多层的deep clone）</p>
+<hr>
+<p><strong>多态（Polymorphism）</strong><br>对于多态，作者认为多态只是起到一个支援作用，完全可以通过Interface-base来混进多种行为，并且也没有限制。</p>
+<hr>
+<p>作者最后表示摒弃OOP，转向函数式编程。</p>
+<hr>
+<h2 id="0x03-How-to-think-like-a-programmer-—-lessons-in-problem-solving"><a href="#0x03-How-to-think-like-a-programmer-—-lessons-in-problem-solving" class="headerlink" title="0x03_How to think like a programmer — lessons in problem solving"></a>0x03_How to think like a programmer — lessons in problem solving</h2><p><a href="https://medium.com/free-code-camp/how-to-think-like-a-programmer-lessons-in-problem-solving-d1d8bf1de7d2" target="_blank" rel="noopener">How to think like a programmer — lessons in problem solving</a></p>
+<p>作者认为解决问题的能力是最重要的，并且也是雇主最看重的，胜过编码熟练度，调试，系统设计等。</p>
+<p><strong>Have a framework</strong><br>解决问题好的方式分两步：<br>a）有一套框架<br>b）重复执行直到解决问题</p>
+<p><strong>Understand</strong><br>一个问题之所以难是因为无法确实的搞明白，如何才能将其搞明白？能够以逻辑的方式将其明确的叙述一遍。当你将其从头梳理叙述一边的时候，可能就可以立刻看到之前一些没注意到的逻辑上的漏洞。可以将其画在纸上，或者小黄鸭调试法等。</p>
+<blockquote>
+<p>“If you can’t explain something in simple terms, you don’t understand it.” — Richard Feynman</p>
+</blockquote>
+<p><strong>Plan</strong><br>做每件事之前，不要贸然的直接做，而要进行一次规划，比如可以这样问自己：假设输入了X，那么要输出Y的必要步骤是什么？</p>
+<p><strong>Divide（important）</strong><br>学会将问题拆分，不要试图解决一个大的问题，而是将其拆分为多个小问题，一个一个解决，最后再连接到一起。</p>
+<p><strong>Stuck</strong><br>即便按照上述步骤走，有时候仍然是会卡住，这个是每个人都会遇到的，只不过那些最杰出的程序员比起焦虑对错误的地方持有更大的兴趣。</p>
+<hr>
+<h2 id="0x04-Strings-are-not-the-type-you-are-looking-for"><a href="#0x04-Strings-are-not-the-type-you-are-looking-for" class="headerlink" title="0x04_Strings are not the type you are looking for"></a>0x04_Strings are not the type you are looking for</h2><p><a href="https://pedrorijo.com/blog/strings-as-types/" target="_blank" rel="noopener">Strings are not the type you are looking for</a></p>
+<p>这篇文章开头抛砖引玉的谈论了下静态类型语言以及动态类型语言，然后强调了静态类型语言的编译时类型检查的优点。<br>接着以 java.lang.String class举例，提出了滥用String的缺点：</p>
+<ol>
+<li>多个类型全都是String的话欠缺类型精度，失去了type的意义。</li>
+<li>各个参数容易混淆，比如调用一个方法查询电影的ID，需要传入一个actor id实例，结果传入了actor name，<strong>类型检查却能通过</strong>。</li>
+</ol>
+<p>为了避免以上情况，scala可以通过value class（Kotlin则是data class）对基本类型进行包装，很容易的实现合适的自定义type，通过继承<code>Anyval</code>实现，形如：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// note that the 'Person.' prefix can be omitted</span></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span>(<span class="params">name: <span class="type">Person</span>.<span class="type">Name</span>, age: <span class="type">Person</span>.<span class="type">Age</span>, id: <span class="type">Person</span>.<span class="type">Id</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">object</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Name</span>(<span class="params">value: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">AnyVal</span> </span>&#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">toString</span> </span>= value.toString</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Age</span>(<span class="params">value: <span class="type">Int</span></span>) <span class="keyword">extends</span> <span class="title">AnyVal</span> </span>&#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">toString</span> </span>= value.toString</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Id</span>(<span class="params">value: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">AnyVal</span> </span>&#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">toString</span> </span>= value.toString</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过使用<strong>伴生类的内部类</strong>来描述相关类型，同时避免类名冲突。</p>
+<p>性能考虑：</p>
+<blockquote>
+<p>In summary, Value classes are a mechanism in Scala to avoid allocating runtime objects.</p>
+</blockquote>
+<p><strong>值类在scala中的机制会避免在运行时分配对象</strong>。</p>
+<p>值类只能继承一些通用的trait比如AnyVal，或者继承了Any的trait，而无法对自身进行扩展。通用的trait定义的方法可以对值类进行扩展，但要使用的话，会导致其实例化：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Printable</span> <span class="keyword">extends</span> <span class="title">Any</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">print</span></span>(): <span class="type">Unit</span> = println(<span class="keyword">this</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Wrapper</span>(<span class="params">val underlying: <span class="type">Int</span></span>) <span class="keyword">extends</span> <span class="title">AnyVal</span> <span class="keyword">with</span> <span class="title">Printable</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">val</span> <span class="title">w</span> </span>= <span class="keyword">new</span> <span class="type">Wrapper</span>(<span class="number">3</span>)</span><br><span class="line">w.print() <span class="comment">// actually requires instantiating a Wrapper instance</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x05-Choosing-a-Reactive-Framework-for-the-JVM"><a href="#0x05-Choosing-a-Reactive-Framework-for-the-JVM" class="headerlink" title="0x05_Choosing a Reactive Framework for the JVM"></a>0x05_Choosing a Reactive Framework for the JVM</h2><p><a href="https://medium.com/priceline-labs/choosing-a-reactive-framework-for-the-jvm-ec66f6cde552" target="_blank" rel="noopener">Choosing a Reactive Framework for the JVM</a></p>
+<p>文中主要是由一次项目经历，提到了响应式框架，由此围绕如何选择响应式框架讨论，按照时间线，介绍了其出现的原因，各个框架的出现以及主要解决什么问题，只有需要处理的请求规模到达一定程度（如让服务器同时处理超过1万个请求），响应式编程才能起到一个至关重要的作用。稳重提到的几个响应式框架都是围绕Scale，Latency，Resilience，Event Driven Domains来这几个主题设计的，但是使用响应式框架的门槛比较高，而且不一定能带来收益。</p>
+<p><img src="./1562916580758.png" alt></p>
+<hr>
+<h2 id="0x06-Machine-Learning-is-Fun-Part-2"><a href="#0x06-Machine-Learning-is-Fun-Part-2" class="headerlink" title="0x06_Machine Learning is Fun! Part 2"></a>0x06_Machine Learning is Fun! Part 2</h2><p><a href="https://medium.com/@ageitgey/machine-learning-is-fun-part-2-a26a10b68df3" target="_blank" rel="noopener">Machine Learning is Fun! Part 2</a></p>
+<p>这是一篇系列博文，隐藏了很多机器学习中的细节，以一种简洁的方式去描述机器学习，旨在让那些对机器学习也有兴趣的但毫无经验的人也能够看明白，part2主要讲的是神经网络，列举了几个例子来描述了神经网络一些有趣的应用。</p>
+<hr>
+<h2 id="0x07-Differences-Between-AI-and-Machine-Learning-and-Why-it-Matters"><a href="#0x07-Differences-Between-AI-and-Machine-Learning-and-Why-it-Matters" class="headerlink" title="0x07_Differences Between AI and Machine Learning, and Why it Matters"></a>0x07_Differences Between AI and Machine Learning, and Why it Matters</h2><p><a href="https://medium.com/datadriveninvestor/differences-between-ai-and-machine-learning-and-why-it-matters-1255b182fc6" target="_blank" rel="noopener">Differences Between AI and Machine Learning, and Why it Matters</a></p>
+<p>最近，出炉了一份关于企业在他们的产品或服务滥用AI的报告。根据这份报告，约40%的欧洲创业公司宣称使用了AI但实际并没有使用到了。去年，也有一些使用了AI技术的公司在他们的产品中滥用AI技术获取了数以千计用户的数据。</p>
+<p>即使在当今，仍然有许多群众跟媒体仍然对AI跟机器学习混淆不清，两者的概念经常被当做同一个，此外，也被许多企业利用该噱头用于大肆宣传，以提高他们的收益，而忽略在某些方面上两者属于一个平行的领域。</p>
+<p><strong>什么是机器学习？</strong></p>
+<p><strong>机器学习是AI的一个分支</strong>，Tom M. Mitchell对其作出以下定义：</p>
+<blockquote>
+<p>Machine learning is the study of computer algorithms that allow computer programs to automatically improve through experience. </p>
+</blockquote>
+<p>机器学习是研究能够通过经验自动提升计算机程序表现的算法。</p>
+<p>具体例子有音乐推荐系统，比较成功的应用例子有Netflix, Spotify,以及国内一些厂商（比如网易云，QQ音乐，etc）。</p>
+<p>这里简单介绍几种机器学习类型及其简单的定义：</p>
+<ul>
+<li>有监督学习：通过找到之前输入的数据（nput features）及目标输出（target prediction output）之间的关联及依赖，从而能够根据新的输入预测输出。</li>
+<li>无监督学习：主要是用于模式捕获及描述建模。这类算法没有数据输出的标签。（这类模型通常用未打上标签的数据进行训练）</li>
+<li>强化学习：这类学习主要目标是通过与环境交互获得的观察结果从而让收益最大化或者尽可能的减小风险。从这点出发的话，强化学习算法会持续不断迭代的从环境中学习。一个很好的例子就是dota2训练电脑知道能够与人类对战。</li>
+</ul>
+<p>机器学习是十分具有吸引力的，尤其是其中的两个子分支（如深度学习和神经网络）。事实上，尽管有些人在尝试比较深度学习和神经网络与人类大脑工作方式的区别，两者之间仍有很大不同。</p>
+<p><strong>什么是AI？</strong></p>
+<p>AI，从另一方面来说，是一个非常广泛的领域。按照Carnegie Mellon University的话：</p>
+<blockquote>
+<p>Artificial intelligence is the science and engineering of making computers behave in ways that, until recently, we thought required human intelligence.</p>
+</blockquote>
+<p>从近代来看，AI是能够让计算机能够表现出跟人类相似智能的科学与工程。但这也仅能提现这个领域是多么的广泛。在五十年前，一个下棋游戏程序就能够被称为AI，因为博弈是只有人类大脑才有的功能，但放在今天来看，一个下棋游戏是相当地之能的，几乎在每个OS都能找到这游戏。因此“until recently”是随着时间发展而进化的。</p>
+<p>我们今天所知道的AI，主要代表有谷歌Home、Siri和Alexa等人工智能互动设备，以及Netflix、亚马逊(Amazon)和YouTube等以机器学习为动力的视频预测系统。这些现金技术在我们日常生活中逐渐变得重要。事实上，他们主要是作为智能助手帮助我们提高生产力。</p>
+<p>对比机器学习，AI是一个不断发展的概念，它的定义也会随机技术的发展而做出改变。可能在几十年后，在今天属于十分创新的AI技术到那时也会被当做是很落后的技术。</p>
+<hr>
+<h2 id="0x08-How-a-simple-mix-of-object-oriented-programming-can-sharpen-your-deep-learning-prototype"><a href="#0x08-How-a-simple-mix-of-object-oriented-programming-can-sharpen-your-deep-learning-prototype" class="headerlink" title="0x08_How a simple mix of object-oriented programming can sharpen your deep learning prototype"></a>0x08_How a simple mix of object-oriented programming can sharpen your deep learning prototype</h2><p><a href="https://towardsdatascience.com/how-a-simple-mix-of-object-oriented-programming-can-sharpen-your-deep-learning-prototype-19893bd969bd" target="_blank" rel="noopener">How a simple mix of object-oriented programming can sharpen your deep learning prototype</a><br>文章主要是面向那些没有软件开发背景的数据科学家和机器学习从业者，呼吁在代码中可以适当的引入OOP原则，编写注释文档等，提高代码的可读性跟可用性。<br>文章里的内容相对于软件开发背景的人来说，都是一些较日常的原则，可以当做锻炼英语来看看。</p>
+<hr>
+<h2 id="0x09-Why-Kubernetes-Is-Awesome-A-Beginner’s-Guide"><a href="#0x09-Why-Kubernetes-Is-Awesome-A-Beginner’s-Guide" class="headerlink" title="0x09_Why Kubernetes Is Awesome: A Beginner’s Guide."></a>0x09_Why Kubernetes Is Awesome: A Beginner’s Guide.</h2><p><a href="https://medium.com/@jandavid.staerk/why-kubernetes-is-awesome-9f7ff0186996" target="_blank" rel="noopener">Why Kubernetes Is Awesome: A Beginner’s Guide.</a></p>
+<p>这篇文章对于k8s做了一个初步的介绍。</p>
+<p>k8s是一个软件，允许我们部署，管理，扩展我们的的应用。应用会被打包在容器中，k8s将他们分组成单元。k8s允许我们将数以千计的服务内联起来，而从外部看来它们就只是一个单独的单元。</p>
+<p><img src="./1565419939778.png" alt></p>
+<p>假设有个用户发起了请求，该请求通过负载均衡重定向到了k8s集群里的一个节点，该节点处理完请求后，返回响应。</p>
+<blockquote>
+<p>Note：一个节点是在集群内的一台机器（虚拟/物理）。每个节点可以包含多个pod，一个pod可以包含一个或者多个container。pod的概念对于多个容器很有用，如果它们需要向文件系统一样分享资源的话。</p>
+</blockquote>
+<p>k8s的使用主要由以下五个步骤组成：</p>
+<h4 id="开发一个应用"><a href="#开发一个应用" class="headerlink" title="开发一个应用"></a>开发一个应用</h4><p>创建一个简单的Node.js应用——一个简单的HTTP server，可以返回OS的hostname及平台信息。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> os = <span class="built_in">require</span>(<span class="string">'os'</span>);</span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> requestHandler = <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Request incoming from '</span> + req.connection.remoteAddress);</span><br><span class="line">    res.writeHead(<span class="number">200</span>);</span><br><span class="line">    res.end(<span class="string">'Success! You\'ve hit '</span> + os.hostname() + <span class="string">' on '</span> + os.platform() + <span class="string">'!'</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = http.createServer(requestHandler)</span><br><span class="line"></span><br><span class="line">server.listen(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>node index.js</code>查看效果。请确保本地环境的node又在浏览器的localhost:3000运行。</p>
+<hr>
+<h4 id="容器化应用"><a href="#容器化应用" class="headerlink" title="容器化应用"></a>容器化应用</h4><p>编辑Dockerfile文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FROM node:lts</span><br><span class="line">ADD index.js /index.js</span><br><span class="line">CMD node index.js</span><br></pre></td></tr></table></figure>
+
+<p>确保目录下只有Dockerfile跟前面编写的index.js文件，tag定为simple-http，执行下列命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t simple-http .</span><br></pre></td></tr></table></figure>
+
+<p>运行该image：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm --name k8s -p 3000:3000 -d imgId</span><br></pre></td></tr></table></figure>
+
+<p>确保没问题后，将其上传到自己的Dockerhub：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker tag simple-http &lt;&lt;your_docker_username&gt;&gt;/simple-http</span><br><span class="line"></span><br><span class="line">docker push &lt;&lt;your_docker_username&gt;&gt;/simple-http</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="创建一个k8s集群"><a href="#创建一个k8s集群" class="headerlink" title="创建一个k8s集群"></a>创建一个k8s集群</h4><p>登录GCP: Google Cloud Platform. ，安装<a href="https://cloud.google.com/sdk/docs/quickstarts" target="_blank" rel="noopener">Cloud SDK</a>，使用该工具安装kubectl：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcloud components install kubectl</span><br></pre></td></tr></table></figure>
+
+<p>创建一个新项目：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcloud projects create simple-http-project — set-as-default</span><br></pre></td></tr></table></figure>
+
+<p>创建一个congtainer集群：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcloud container clusters create simple-http-kubes --num-nodes 2 --machine-type f1-micro --region us-east1</span><br></pre></td></tr></table></figure>
+
+<p>由于谷歌账户的限制，最多只能创建2个ndoe。<br>上述步骤之后，可以看到如下信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AME               LOCATION  MASTER_VERSION  MASTER_IP      MACHINE_TYPE  NODE_VERSION  NUM_NODES  STATUS</span><br><span class="line">simple-http-kubes  us-east1  1.10.9-gke.5    35.229.48.250  f1-micro      1.10.9-gke.5  6          RUNNING</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="将container部署到群"><a href="#将container部署到群" class="headerlink" title="将container部署到群"></a>将container部署到群</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl run simple-http-kubes --image=&lt;&lt;your_docker_username&gt;&gt;/simple-http --port=3000 --generator=run/v1</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="暴露并扩展集群"><a href="#暴露并扩展集群" class="headerlink" title="暴露并扩展集群"></a>暴露并扩展集群</h4><p>通过负载均衡，暴露集群</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl expose rc simple-http-kubes --type=LoadBalancer --name simple-http</span><br></pre></td></tr></table></figure>
+
+<p>等待直到取得负载均衡对应的IP，可以使用下列命令查看：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get services</span><br></pre></td></tr></table></figure>
+
+<p>现在有多个k8s节点，但只有一个副本，使用下列命令进行集群扩展：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl scale rc simple-http-kubes --replicas=10</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h4><p>等到一切都执行完成（使用<code>kubectl get pods</code>验证），如果你多次使用curl命令进行查询，应该可以得到多个不同的hostname</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Success! You&apos;ve hit simple-http-kubes-s6l7w on linux!</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x0A-Machine-learning-amp-Kafka-KSQL-stream-processing-—-bug-me-when-I’ve-left-the-heater-on"><a href="#0x0A-Machine-learning-amp-Kafka-KSQL-stream-processing-—-bug-me-when-I’ve-left-the-heater-on" class="headerlink" title="0x0A_Machine learning &amp; Kafka KSQL stream processing — bug me when I’ve left the heater on"></a>0x0A_Machine learning &amp; Kafka KSQL stream processing — bug me when I’ve left the heater on</h2><p><a href="https://medium.com/@simon.aubury/machine-learning-kafka-ksql-stream-processing-bug-me-when-ive-left-the-heater-on-bd47540cd1e8" target="_blank" rel="noopener">Machine learning &amp; Kafka KSQL stream processing — bug me when I’ve left the heater on</a></p>
+<p>这篇文章主要是讲述如何使用<strong>机器学习+KSQL(KAFKA SQL)</strong>实时监控家庭电力的使用，以便在电力使用异常的时候进行告警。</p>
+<p>通过收集几个月家里用电情况的数据后，通过使用<a href="https://www.h2o.ai/" target="_blank" rel="noopener">H2O.ai</a>（<strong>一个开源的Spark机器学习框架</strong>），训练出一个模型，再编写KSQL的UDF（需要一些java基础，方法打包成jar包），将模型嵌进去，从而能够持续的监控电力使用情况。</p>
+<p>做完以上步骤后，在假期偶尔会有误告警（在作者出门度假的时候），因此仍需要更多的假期数据进行训练。</p>
+<hr>
+<h2 id="0x0B-Here’s-why-so-many-data-scientists-are-leaving-their-job"><a href="#0x0B-Here’s-why-so-many-data-scientists-are-leaving-their-job" class="headerlink" title="0x0B_Here’s why so many data scientists are leaving their job"></a>0x0B_Here’s why so many data scientists are leaving their job</h2><p><a href="https://towardsdatascience.com/why-so-many-data-scientists-are-leaving-their-jobs-a1f0329d7ea4" target="_blank" rel="noopener">Here’s why so many data scientists are leaving their jobs</a></p>
+<p>文章作者是数据科学家从业者，文章开头提到 Stack Overflow的一份报告，报告表明，14.3%的数据科学家再寻找新工作，位居第一，第二位则是机器学习工程师。由此展开讨论在当前数据科学家这份工作的一些缺点以及优点。</p>
+<ol>
+<li><p>期望与现实总是差距很大，并非所有但绝大多数的公司在连基础的设备条件下招聘年轻的数据科学家，再加上这类公司往往也没有这方面相关的资深人才，这两者会结合起来没法使人开心起来。数据工程师想要写出足够智能的机器学习算法从而进行挖掘，然而通常他们需要做的第一件事情是搭建环境以及每天出分析报告。相反的，公司只是需要每天在会议上能够出示一份表格。并且公司不久也会觉得他们的投入并没有获得足够的汇报，这些都会导致数据科学家这个角色的人不开心。另一个原因就是数据科学家总是想着做一些能够对人们产生影响的事情，但是如果公司的核心业务不是寄去学习，数据科学家做的好像就只能提供一些收入的增长。</p>
+</li>
+<li><p>权力争斗，只有好的技术是不够的，还需要领导者对你有一个好的印象。这意味着你得经常做一些额外的特殊工作，比如在正确的时间从数据库中取得一些数字给正确的人看，做一些简单无谓的项目以让正确的人对你有个好的印象。即使这很无聊，但很有必要。</p>
+</li>
+<li><p>跟随上述第二点，必须取悦的领导往往不知道“数据科学家”代表什么。这意味着你最后只是时分析专家，报告专家以及数据库专家。不仅非技术出身的领导层会错误的定位你的技能，你的同事也往往认为你知道任何数据相关的东西，比如Spark，Hadoop，Hive，Pig，SQL，Neo4J，Python等。（如果有哪家公司的招聘基本全写了，那么要注意，可能他们自身都知道他们的数据战略是什么，他们可以雇佣数据相关的人可以解决他们所有的问题。）</p>
+</li>
+</ol>
+<hr>
+<h2 id="0x0C-Issues"><a href="#0x0C-Issues" class="headerlink" title="0x0C_Issues"></a>0x0C_Issues</h2><h3 id="About-Kafka"><a href="#About-Kafka" class="headerlink" title="About Kafka"></a>About Kafka</h3><h4 id="1-Automated-leader-rebalance-causes-replication-downtime-for-clusters-with-too-many-partitions"><a href="#1-Automated-leader-rebalance-causes-replication-downtime-for-clusters-with-too-many-partitions" class="headerlink" title="1. Automated leader rebalance causes replication downtime for clusters with too many partitions"></a>1. Automated leader rebalance causes replication downtime for clusters with too many partitions</h4><p><a href="https://issues.apache.org/jira/browse/KAFKA-4084" target="_blank" rel="noopener">Automated leader rebalance causes replication downtime for clusters with too many partitions</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Type: Bug</span><br><span class="line">Status: RESOLVED</span><br><span class="line">Priority: Major</span><br><span class="line">Resolution: Fixed</span><br><span class="line">Affects Version/s: 0.8.2.2, 0.9.0.0, 0.9.0.1, 0.10.0.0, 0.10.0.1 </span><br><span class="line">Fix Version/s: 1.1.0</span><br><span class="line">Component/s: controller</span><br><span class="line">Labels: reliability</span><br></pre></td></tr></table></figure>
+
+<p>Kafka集群在开启<code>auto.leader.rebalance.enable</code>后（默认开启），如果集群中有较多数量的partition，那么在重启的时候将会有大量的replication处于不可服务的时间。这回导致<code>UnderReplicatedPartitions</code>大量爆发，并且副本停止。</p>
+<p>本质上是因为leader重选举平衡的时候，对于不平衡的partition立刻改变leader，而没有进行恰当的处理。这个操作实际上停止了集群中所有的replica fetcher。在繁忙的集群中，这个可能会持续数分钟，在这期间副本复制也不会发生，从而会导致用户数据处于不可靠的状态。</p>
+<p>实际上在0.11版本也不会见到上述问题，应该是已经修复了。</p>
+<h4 id="2-batch-LeaderAndIsr-requests-during-auto-preferred-leader-election"><a href="#2-batch-LeaderAndIsr-requests-during-auto-preferred-leader-election" class="headerlink" title="2. batch LeaderAndIsr requests during auto preferred leader election"></a>2. batch LeaderAndIsr requests during auto preferred leader election</h4><p><a href="https://issues.apache.org/jira/browse/KAFKA-7299" target="_blank" rel="noopener">batch LeaderAndIsr requests during auto preferred leader election
+</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Type: Sub-task</span><br><span class="line">Status:RESOLVED</span><br><span class="line">Priority: Major</span><br><span class="line">Resolution: Fixed</span><br><span class="line">Affects Version/s: 2.0.0</span><br><span class="line">Fix Version/s: 1.1.2, 2.0.1, 2.1.0</span><br><span class="line">Component/s: core</span><br><span class="line">Labels: None</span><br></pre></td></tr></table></figure>
+
+<p>当前，Controller发送LeaderAndIsrRequest的时候是一个partition发送一次。为了提高效率，可以将多个paritition的LeaderAndIsrRequest打包为一个batch再发送。</p>
+<hr>
+<h3 id="About-Spark"><a href="#About-Spark" class="headerlink" title="About Spark"></a>About Spark</h3><h4 id="1-Spark-performance-tuning-from-the-trenches"><a href="#1-Spark-performance-tuning-from-the-trenches" class="headerlink" title="1. Spark performance tuning from the trenches"></a>1. Spark performance tuning from the trenches</h4><p><a href="https://medium.com/teads-engineering/spark-performance-tuning-from-the-trenches-7cbde521cf60" target="_blank" rel="noopener">Spark performance tuning from the trenches</a></p>
+<p>1.借助Tungsten的力量，Tungsten是Spark做出的一个有史以来最大的改动，为了能够最大限度的使用CPU及能存，为了充分使用Tungsten，有以下几点需要注意：</p>
+<ul>
+<li>使用Dataset而不是DataFrames，使用DataSet有很多好处，但也需要权衡DataSet在map跟filter的function上性能也较差。</li>
+<li>尽可能不要使用UDFs以及UDAFs，而是尽量使用一些内建（built-in）的方法。这样才能被Spark充分的优化，参考例子：<a href="https://stackoverflow.com/questions/45491339/udfs-vs-spark-sql-vs-column-expressions-performance-optimization?rq=1" target="_blank" rel="noopener">UDF’s vs Spark sql vs column expressions performance optimization</a></li>
+</ul>
+<hr>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/article/" rel="tag"># article</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/06/ARTS-Algorithm/" rel="next" title="ARTS_Algorithm">
+                <i class="fa fa-chevron-left"></i> ARTS_Algorithm
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/07/ARTS-Tip/" rel="prev" title="ARTS_Tip">
+                ARTS_Tip <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="zxk">
+            
+              <p class="site-author-name" itemprop="name">zxk</p>
+              <p class="site-description motion-element" itemprop="description">In order to be willful!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Rianico" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhxuankun@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-9-tips-about-using-cats-in-Scala-you-might-want-to-know"><span class="nav-number">1.</span> <span class="nav-text">0x01_9 tips about using cats in Scala you might want to know</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-Goodbye-Object-Oriented-Programming"><span class="nav-number">2.</span> <span class="nav-text">0x02_Goodbye, Object Oriented Programming</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-How-to-think-like-a-programmer-—-lessons-in-problem-solving"><span class="nav-number">3.</span> <span class="nav-text">0x03_How to think like a programmer — lessons in problem solving</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-Strings-are-not-the-type-you-are-looking-for"><span class="nav-number">4.</span> <span class="nav-text">0x04_Strings are not the type you are looking for</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-Choosing-a-Reactive-Framework-for-the-JVM"><span class="nav-number">5.</span> <span class="nav-text">0x05_Choosing a Reactive Framework for the JVM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-Machine-Learning-is-Fun-Part-2"><span class="nav-number">6.</span> <span class="nav-text">0x06_Machine Learning is Fun! Part 2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x07-Differences-Between-AI-and-Machine-Learning-and-Why-it-Matters"><span class="nav-number">7.</span> <span class="nav-text">0x07_Differences Between AI and Machine Learning, and Why it Matters</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x08-How-a-simple-mix-of-object-oriented-programming-can-sharpen-your-deep-learning-prototype"><span class="nav-number">8.</span> <span class="nav-text">0x08_How a simple mix of object-oriented programming can sharpen your deep learning prototype</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x09-Why-Kubernetes-Is-Awesome-A-Beginner’s-Guide"><span class="nav-number">9.</span> <span class="nav-text">0x09_Why Kubernetes Is Awesome: A Beginner’s Guide.</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#开发一个应用"><span class="nav-number">9.0.1.</span> <span class="nav-text">开发一个应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#容器化应用"><span class="nav-number">9.0.2.</span> <span class="nav-text">容器化应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建一个k8s集群"><span class="nav-number">9.0.3.</span> <span class="nav-text">创建一个k8s集群</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#将container部署到群"><span class="nav-number">9.0.4.</span> <span class="nav-text">将container部署到群</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#暴露并扩展集群"><span class="nav-number">9.0.5.</span> <span class="nav-text">暴露并扩展集群</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最后"><span class="nav-number">9.0.6.</span> <span class="nav-text">最后</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0A-Machine-learning-amp-Kafka-KSQL-stream-processing-—-bug-me-when-I’ve-left-the-heater-on"><span class="nav-number">10.</span> <span class="nav-text">0x0A_Machine learning &amp; Kafka KSQL stream processing — bug me when I’ve left the heater on</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0B-Here’s-why-so-many-data-scientists-are-leaving-their-job"><span class="nav-number">11.</span> <span class="nav-text">0x0B_Here’s why so many data scientists are leaving their job</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0C-Issues"><span class="nav-number">12.</span> <span class="nav-text">0x0C_Issues</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#About-Kafka"><span class="nav-number">12.1.</span> <span class="nav-text">About Kafka</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Automated-leader-rebalance-causes-replication-downtime-for-clusters-with-too-many-partitions"><span class="nav-number">12.1.1.</span> <span class="nav-text">1. Automated leader rebalance causes replication downtime for clusters with too many partitions</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-batch-LeaderAndIsr-requests-during-auto-preferred-leader-election"><span class="nav-number">12.1.2.</span> <span class="nav-text">2. batch LeaderAndIsr requests during auto preferred leader election</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#About-Spark"><span class="nav-number">12.2.</span> <span class="nav-text">About Spark</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Spark-performance-tuning-from-the-trenches"><span class="nav-number">12.2.1.</span> <span class="nav-text">1. Spark performance tuning from the trenches</span></a></li></ol></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zxk</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname, 
+            owner: '32795735',
+            repo: 'Rianico.github.io',
+            
+            lang: "zh-Hans" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'b21ff92a3fada1b09143d7c5f9d75d8412c8b030',
+            
+                client_id: 'ca79bd9bd909da7bc307'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("b0eHvPvUnPEkUzmOUqBllp6S-gzGzoHsz", "eb2on5hpWEIbGANv7SgPs9pu");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

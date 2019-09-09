@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon2.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon2.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Algorithm,Python,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="0x01- 两数之和 两数之和 给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。 你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。 示例:  给定 nums = [2, 7, 11, 15], target = 9 因为 nums[0] + nums[1] = 2 + 7 = 9所以返回 [0">
+<meta name="keywords" content="Algorithm,Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ARTS_Algorithm">
+<meta property="og:url" content="http://Rianico.github.io/2019/09/06/ARTS-Algorithm/index.html">
+<meta property="og:site_name" content="zxk | Blog">
+<meta property="og:description" content="0x01- 两数之和 两数之和 给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。 你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。 示例:  给定 nums = [2, 7, 11, 15], target = 9 因为 nums[0] + nums[1] = 2 + 7 = 9所以返回 [0">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://rianico.github.io/2019/09/06/ARTS-Algorithm/1561297446622.png">
+<meta property="og:image" content="http://rianico.github.io/2019/09/06/ARTS-Algorithm/1561297457891.png">
+<meta property="og:image" content="http://rianico.github.io/2019/09/06/ARTS-Algorithm/1561297468496.png">
+<meta property="og:updated_time" content="2019-09-09T08:21:04.173Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ARTS_Algorithm">
+<meta name="twitter:description" content="0x01- 两数之和 两数之和 给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。 你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。 示例:  给定 nums = [2, 7, 11, 15], target = 9 因为 nums[0] + nums[1] = 2 + 7 = 9所以返回 [0">
+<meta name="twitter:image" content="http://rianico.github.io/2019/09/06/ARTS-Algorithm/1561297446622.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://Rianico.github.io/2019/09/06/ARTS-Algorithm/">
+
+
+
+
+
+  <title>ARTS_Algorithm | zxk | Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fbc2552fde7f0ffe147bf4fd6f88acdc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zxk | Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rianico</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://Rianico.github.io/2019/09/06/ARTS-Algorithm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zxk">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zxk | Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ARTS_Algorithm</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-06T21:24:20+00:00">
+                2019-09-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ARTS/" itemprop="url" rel="index">
+                    <span itemprop="name">ARTS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/06/ARTS-Algorithm/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/09/06/ARTS-Algorithm/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/09/06/ARTS-Algorithm/" class="leancloud_visitors" data-flag-title="ARTS_Algorithm">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h2><h3 id="两数之和"><a href="#两数之和" class="headerlink" title="- 两数之和"></a>- 两数之和</h3><p><a href="https://leetcode-cn.com/problems/two-sum/submissions/" target="_blank" rel="noopener"> 两数之和</a></p>
+<p>给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。</p>
+<p>你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。</p>
+<p>示例:</p>
+<blockquote>
+<p>给定 nums = [2, 7, 11, 15], target = 9</p>
+<p>因为 nums[0] + nums[1] = 2 + 7 = 9<br>所以返回 [0, 1]</p>
+</blockquote>
+<hr>
+<ul>
+<li>解法一</li>
+</ul>
+<p>暴力循环法，直接写两层循环即可，此处不作示例。</p>
+<hr>
+<ul>
+<li>解法二</li>
+</ul>
+<p>为了减少时间复杂度，采用空间换时间，即使用Hash对每个对象做一个类似索引的功能，同时加上<strong>不能重复利用数组中同一个元素</strong>限制，因此在对nums进行循环的时候立即对map进行查找，即可很自然的绕过该限制,时间复杂度为O(1)。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">twoSum</span></span>(nums: <span class="type">Array</span>[<span class="type">Int</span>], target: <span class="type">Int</span>): <span class="type">Array</span>[<span class="type">Int</span>] = &#123;</span><br><span class="line">  <span class="keyword">import</span> scala.collection.mutable.<span class="type">Map</span></span><br><span class="line">  <span class="keyword">val</span> map:<span class="type">Map</span>[<span class="type">Int</span>,<span class="type">Int</span>] = <span class="type">Map</span>()</span><br><span class="line">  <span class="keyword">for</span> (x &lt;- nums.indices) &#123;</span><br><span class="line">    <span class="keyword">val</span> comp = target - nums(x)</span><br><span class="line">    <span class="keyword">if</span> (map.contains(comp)) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="type">Array</span>(map.get(comp).get, x)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      map += (nums(x)-&gt; x)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="type">Array</span>(<span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>时间上以及空间上均可取得较为不错的性能</strong>。</p>
+<hr>
+<ul>
+<li>解法三</li>
+</ul>
+<p>$$其实就是常规的两层循环，只不过内循环开始的下标为外层循环+1，减少了循环的次数，时间复杂度仍为O(n^2)$$</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scala.collection.mutable</span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">twoSum</span></span>(nums: <span class="type">Array</span>[<span class="type">Int</span>], target: <span class="type">Int</span>): <span class="type">Array</span>[<span class="type">Int</span>] =&#123;</span><br><span class="line">    <span class="keyword">val</span> size = nums.size</span><br><span class="line">    nums.indices.foreach &#123; idx1 =&gt;</span><br><span class="line">      <span class="keyword">val</span> comp = target - nums(idx1)</span><br><span class="line">      <span class="keyword">for</span> (idx2 &lt;- idx1 + <span class="number">1</span> until size) &#123;</span><br><span class="line">        <span class="keyword">if</span>(comp == nums(idx2)) <span class="keyword">return</span> <span class="type">Array</span>(idx1,idx2)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">Array</span>()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>内存消耗较少，但在数组长度较长的时候性能不如做Hash索引好。</p>
+<hr>
+<h2 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h2><h3 id="Linked-List-Cycle-II"><a href="#Linked-List-Cycle-II" class="headerlink" title="- Linked List Cycle II"></a>- Linked List Cycle II</h3><p><a href="https://leetcode.com/problems/linked-list-cycle-ii/submissions/" target="_blank" rel="noopener">142. Linked List Cycle II</a></p>
+<p>Given a linked list, return the node where the cycle begins. If there is no cycle, return null.</p>
+<p>To represent a cycle in the given linked list, we use an integer pos which represents the position (0-indexed) in the linked list where tail connects to. If pos is -1, then there is no cycle in the linked list.</p>
+<p>Note: Do not modify the linked list.</p>
+<p>Example 1:</p>
+<blockquote>
+<p>Input: head = [3,2,0,-4], pos = 1<br>Output: tail connects to node index 1<br>Explanation: There is a cycle in the linked list, where tail connects to the second node.</p>
+</blockquote>
+<p><img src="1561297446622.png" alt></p>
+<p>Example 2:</p>
+<blockquote>
+<p>Input: head = [1,2], pos = 0<br>Output: tail connects to node index 0<br>Explanation: There is a cycle in the linked list, where tail connects to the first node.</p>
+</blockquote>
+<p><img src="1561297457891.png" alt></p>
+<p>Example 3:</p>
+<blockquote>
+<p>Input: head = [1], pos = -1<br>Output: no cycle<br>Explanation: There is no cycle in the linked list.</p>
+</blockquote>
+<p><img src="1561297468496.png" alt></p>
+<p>Follow-up:<br>Can you solve it without using extra space?</p>
+<p>根据结尾最后的提示，不要使用额外的空间，也就是可以直接在数组内进行循环求得，此处可以假设有两个不同速度的A和B，采用步长的方法，错开，然后直到相遇后就可以求得。</p>
+<p>假设A速度为1，B速度为2，x个循环后相遇，那么两者走过的长度分比为x，2x。<br>假设循环开始的点称为cycle_node，从起点start_node-&gt;cycle_node的距离为start_cycle。<br>假设A,B相遇的点为meeting_node。<br>在两者相遇的那个点，可以得到两个信息：</p>
+<ul>
+<li>A走过的路程为x，cycle_node-&gt;meeting_node的距离为<code>x - start_cycle</code>。</li>
+<li>B多走的路程为<code>2x - x</code>，即meeting_node走一圈回到自身的距离为x，其中有段距离为<code>cycle_node-&gt;meeting_node</code>的距离，用x减去这段距离：<code>（x - （x - start_cycle））= start_cycle</code>，即可得知<code>meeting_node-&gt;cycle_node = start_cycle</code></li>
+</ul>
+<p>综上可得出，只要求出meeting_node的位置，然后开始循环，同时从start_node也开始循环，两者相遇时即为cycle_node。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * class ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) &#123;</span></span><br><span class="line"><span class="comment"> *         val = x;</span></span><br><span class="line"><span class="comment"> *         next = null;</span></span><br><span class="line"><span class="comment"> *     &#125;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListNode <span class="title">detectCycle</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == head) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        </span><br><span class="line">        ListNode fast = head;</span><br><span class="line">        ListNode slow = head;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// get meeting_node</span></span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">null</span> != fast &amp;&amp; <span class="keyword">null</span> != fast.next)&#123;</span><br><span class="line">            fast = fast.next.next;</span><br><span class="line">            slow = slow.next;</span><br><span class="line">            <span class="keyword">if</span>( fast == slow) <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == fast || <span class="keyword">null</span> == fast.next) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span>(head != fast)&#123;</span><br><span class="line">            head = head.next;</span><br><span class="line">            fast = fast.next;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> head;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h2><h3 id="3Sum"><a href="#3Sum" class="headerlink" title="- 3Sum"></a>- 3Sum</h3><p><a href="https://leetcode.com/problems/3sum/" target="_blank" rel="noopener">15. 3Sum</a></p>
+<p>从Example中输出的结果是有序来看：</p>
+<ol>
+<li>先将数组进行排序</li>
+<li>外部循环数组，将外部循环当前的元素作为target值并取负值</li>
+<li>内部对当前下标后面的数组再进行首尾循环，两者都向中间靠拢，若两者相加小于target，则head向后位移，反之同理。</li>
+<li>为避免输出重复结果，每次添加结果后都需要对head，tail与变化前的值作对比，相同则跳过。</li>
+<li>外部循环数组的元素也同理，需要做对比并跳过相同元素。</li>
+</ol>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">threeSum</span></span>(nums: <span class="type">Array</span>[<span class="type">Int</span>]): <span class="type">List</span>[<span class="type">List</span>[<span class="type">Int</span>]] = &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (nums.size &lt; <span class="number">3</span>) <span class="type">List</span>.empty[<span class="type">List</span>[<span class="type">Int</span>]]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">import</span> scala.collection.mutable.<span class="type">ArrayBuffer</span></span><br><span class="line">    <span class="comment">// prepare the return result</span></span><br><span class="line">    <span class="keyword">val</span> res = <span class="type">ArrayBuffer</span>.empty[<span class="type">List</span>[<span class="type">Int</span>]]</span><br><span class="line">    <span class="comment">// sort</span></span><br><span class="line">    <span class="keyword">val</span> _nums = nums.sorted</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> idx = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span>(idx &lt; nums.size - <span class="number">2</span>) &#123;</span><br><span class="line">      <span class="comment">// get the target per loop</span></span><br><span class="line">      <span class="keyword">val</span> target = -_nums(idx)</span><br><span class="line"></span><br><span class="line">      <span class="comment">// head and tail of the Array</span></span><br><span class="line">      <span class="keyword">var</span> head = idx + <span class="number">1</span></span><br><span class="line">      <span class="keyword">var</span> tail = nums.length - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">//</span></span><br><span class="line">      <span class="keyword">while</span> (head &lt; tail) &#123;</span><br><span class="line">        <span class="keyword">if</span> (_nums(head) + _nums(tail) == target) &#123;</span><br><span class="line">          res += <span class="type">List</span>(_nums(idx), _nums(head), _nums(tail))</span><br><span class="line">          <span class="comment">// head++ while to avoid the same args</span></span><br><span class="line">          <span class="keyword">while</span>(head &lt; tail &amp;&amp; _nums(head + <span class="number">1</span>) == _nums(head))&#123;</span><br><span class="line">            head = head + <span class="number">1</span></span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// tail-- while to avoid the same args</span></span><br><span class="line">          <span class="keyword">while</span>(tail &gt; head &amp;&amp; _nums(tail - <span class="number">1</span>) == _nums(tail))&#123;</span><br><span class="line">            tail = tail - <span class="number">1</span></span><br><span class="line">          &#125;</span><br><span class="line">          head = head + <span class="number">1</span></span><br><span class="line">          tail = tail - <span class="number">1</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (_nums(head) + _nums(tail) &lt; target) &#123;</span><br><span class="line">          head = head + <span class="number">1</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          tail = tail - <span class="number">1</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      idx = idx + <span class="number">1</span></span><br><span class="line">      <span class="comment">// idx++ to avoid the same args</span></span><br><span class="line">      <span class="keyword">while</span>(idx &lt; nums.size &amp;&amp; _nums(idx) == _nums(idx <span class="number">-1</span>))&#123;</span><br><span class="line">        idx = idx + <span class="number">1</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    res.toList</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x04"><a href="#0x04" class="headerlink" title="0x04"></a>0x04</h2><h3 id="Single-Number"><a href="#Single-Number" class="headerlink" title="- Single Number"></a>- Single Number</h3><p><a href="https://leetcode.com/problems/single-number/submissions/" target="_blank" rel="noopener">136. Single Number</a></p>
+<p>思路：从一个数组中，每个元素都会出现两次，只有其中一个会出现一次，找出只出现一次的那个元素。由异或^可知，相同值之间异或为0，且A^B^C=A^C^B，0与任何值做异或操作，不会改变其值，因此只要对数组聚合做异或操作，即可得到只出现一次的值。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">singleNumber</span></span>(nums: <span class="type">Array</span>[<span class="type">Int</span>]): <span class="type">Int</span> = &#123;</span><br><span class="line">        nums.reduce((x, y) =&gt; x ^ y)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x05"><a href="#0x05" class="headerlink" title="0x05"></a>0x05</h2><h3 id="单词搜索"><a href="#单词搜索" class="headerlink" title="- 单词搜索"></a>- 单词搜索</h3><p><a href="https://leetcode-cn.com/problems/word-search/solution/" target="_blank" rel="noopener">79.  单词搜索</a></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> rianico.my.leetcode</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">@see https://leetcode-cn.com/problems/word-search/</span></span><br><span class="line"><span class="comment">给定一个二维网格和一个单词，找出该单词是否存在于网格中。</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">示例:</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">board =</span></span><br><span class="line"><span class="comment">[</span></span><br><span class="line"><span class="comment">  ['A','B','C','E'],</span></span><br><span class="line"><span class="comment">  ['S','F','C','S'],</span></span><br><span class="line"><span class="comment">  ['A','D','E','E']</span></span><br><span class="line"><span class="comment">]</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">给定 word = "ABCCED", 返回 true.</span></span><br><span class="line"><span class="comment">给定 word = "SEE", 返回 true.</span></span><br><span class="line"><span class="comment">给定 word = "ABCB", 返回 false.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">思路：算法主要考察的是深度优先搜索（DFS），深度优先搜索算法通常结合递归来进行。</span></span><br><span class="line"><span class="comment">1. 明确为DFS后，通常考虑到递归；</span></span><br><span class="line"><span class="comment">2. 由于题目限定不可以使用重复的元素，因此每访问一个元素需要打个标记代表已访问；</span></span><br><span class="line"><span class="comment">3. 若某条路线失败，需要回溯上去，此时要把之前打过的标记清除；</span></span><br><span class="line"><span class="comment">4. 设置好各种界限条件，注意路线不能超出数组范围</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> scala.collection.mutable</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Solution79</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">exist</span></span>(board: <span class="type">Array</span>[<span class="type">Array</span>[<span class="type">Char</span>]], word: <span class="type">String</span>): <span class="type">Boolean</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> _board = board.map(_.toBuffer)</span><br><span class="line">    <span class="comment">// 使用Hash防止数组较大时访问速度慢</span></span><br><span class="line">    <span class="keyword">val</span> map = mutable.<span class="type">HashMap</span>.empty[(<span class="type">Int</span>, <span class="type">Int</span>), <span class="type">Boolean</span>]</span><br><span class="line">    <span class="keyword">for</span> (xidx &lt;- board.indices) &#123;</span><br><span class="line">      <span class="keyword">for</span> (yidx &lt;- board(xidx).indices) &#123;</span><br><span class="line">        <span class="keyword">if</span> (find(xidx, yidx, <span class="number">0</span>, _board, word)) <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="literal">false</span> </span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">find</span></span>(xidx: <span class="type">Int</span>, yidx: <span class="type">Int</span>, word_idx: <span class="type">Int</span>, board: <span class="type">Array</span>[mutable.<span class="type">Buffer</span>[<span class="type">Char</span>]], word: <span class="type">String</span>): <span class="type">Boolean</span> = &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (word_idx &gt;= word.length) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (xidx &lt; <span class="number">0</span> || xidx &gt;= board.length || yidx &lt; <span class="number">0</span> || yidx &gt;= board(xidx).length) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (board(xidx)(yidx) != word.charAt(word_idx)) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">val</span> tmp = board(xidx)(yidx)</span><br><span class="line">    board(xidx)(yidx) = '*'</span><br><span class="line">    <span class="keyword">if</span> (find(xidx + <span class="number">1</span>, yidx, word_idx + <span class="number">1</span>, board, word)</span><br><span class="line">      | find(xidx, yidx + <span class="number">1</span>, word_idx + <span class="number">1</span>, board, word)</span><br><span class="line">      | find(xidx - <span class="number">1</span>, yidx, word_idx + <span class="number">1</span>, board, word)</span><br><span class="line">      | find(xidx, yidx - <span class="number">1</span>, word_idx + <span class="number">1</span>, board, word)) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    board(xidx)(yidx) = tmp</span><br><span class="line">    <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    println(exist(<span class="type">Array</span>(<span class="type">Array</span>('a', 'a', 'a', 'a'), <span class="type">Array</span>('a', 'a', 'a', 'a'), <span class="type">Array</span>('a', 'a', 'a', 'a')), <span class="string">"aaaaaaaaaaaa"</span>)) <span class="comment">// Expect： false</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x06"><a href="#0x06" class="headerlink" title="0x06"></a>0x06</h2><h3 id="Word-Ladder"><a href="#Word-Ladder" class="headerlink" title="- Word Ladder"></a>- Word Ladder</h3><p><a href="https://leetcode-cn.com/problems/word-ladder/" target="_blank" rel="noopener">127. Word Ladder</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">每次都只替换一个字母，求beginWord到endWord的最少变换次数，由最少一般可以联想到广度优先搜索，从而将问题转化为一个广度优先的问题。</span></span><br><span class="line"><span class="string">为了优化效率，采用双头广度优先搜索的方法，及从顶层开始求下一层，同时目标点也往上走，直到两头到达同一层，即可得出最优解。</span></span><br><span class="line"><span class="string">广度优先搜索核心思想：每次都求出下一层的所有节点，并打上标记，不断深入即可。</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">ladderLength</span><span class="params">(self, beginWord: str, endWord: str, wordList: List[str])</span> -&gt; int:</span></span><br><span class="line">        word_set = set(wordList)</span><br><span class="line">        <span class="keyword">if</span> endWord <span class="keyword">not</span> <span class="keyword">in</span> word_set:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        letters = <span class="string">'qwertyuiopasdfghjklzxcvbnm'</span></span><br><span class="line">        length = len(beginWord)</span><br><span class="line">        begin_set, end_set = &#123;beginWord&#125;, &#123;endWord&#125;</span><br><span class="line">        count = <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span>(begin_set):</span><br><span class="line">            count += <span class="number">1</span></span><br><span class="line">            tmp_set = set()</span><br><span class="line">            <span class="keyword">for</span> word <span class="keyword">in</span> begin_set:</span><br><span class="line">                <span class="keyword">for</span> idx <span class="keyword">in</span> range(length):</span><br><span class="line">                    head, tail = word[:idx], word[idx+<span class="number">1</span>:]</span><br><span class="line">                    <span class="keyword">for</span> l <span class="keyword">in</span> letters:</span><br><span class="line">                        tmp_word = head + l + tail</span><br><span class="line">                        <span class="keyword">if</span> tmp_word <span class="keyword">in</span> end_set:</span><br><span class="line">                            <span class="keyword">return</span> count</span><br><span class="line">                        <span class="keyword">if</span> tmp_word <span class="keyword">in</span> word_set:</span><br><span class="line">	                        <span class="comment">## 访问过的节点打上标记，此处为去除该参数</span></span><br><span class="line">                            word_set.remove(tmp_word)</span><br><span class="line">                            tmp_set.add(tmp_word)</span><br><span class="line">            <span class="comment">## 双头靠拢</span></span><br><span class="line">            <span class="keyword">if</span> len(tmp_set) &gt; len(end_set):</span><br><span class="line">                begin_set, end_set = end_set, tmp_set</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                begin_set, end_set = tmp_set, end_set</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x07"><a href="#0x07" class="headerlink" title="0x07"></a>0x07</h2><h3 id="Flipping-an-Image"><a href="#Flipping-an-Image" class="headerlink" title="- Flipping an Image"></a>- Flipping an Image</h3><p><a href="https://leetcode.com/problems/flipping-an-image/" target="_blank" rel="noopener">Flipping an Image</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 很简单的数组循环，倒序，再取反或者用1^进行异或操作都可以</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">flipAndInvertImage</span><span class="params">(self, A: List[List[int]])</span> -&gt; List[List[int]]:</span></span><br><span class="line">        <span class="keyword">return</span> list(map(<span class="keyword">lambda</span> x: list(reversed(list(map(<span class="keyword">lambda</span> y: <span class="number">1</span>^y,x)))), A))</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x08"><a href="#0x08" class="headerlink" title="0x08"></a>0x08</h2><h3 id="Sort-Array-By-Parity"><a href="#Sort-Array-By-Parity" class="headerlink" title="- Sort Array By Parity"></a>- Sort Array By Parity</h3><p><a href="https://leetcode.com/problems/sort-array-by-parity/" target="_blank" rel="noopener">905. Sort Array By Parity</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 此处使用lambda会比自己用数组拼接快很多</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sortArrayByParity</span><span class="params">(self, A: List[int])</span> -&gt; List[int]:</span></span><br><span class="line">        A.sort(key = <span class="keyword">lambda</span> x : x % <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">return</span> A</span><br><span class="line">        <span class="comment">## return ([x for x in A if x % 2 == 0] + [x for x in A if x % 2 == 1])</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x09"><a href="#0x09" class="headerlink" title="0x09"></a>0x09</h2><h3 id="Squares-of-a-Sorted-Array"><a href="#Squares-of-a-Sorted-Array" class="headerlink" title="- Squares of a Sorted Array"></a>- Squares of a Sorted Array</h3><p><a href="https://leetcode.com/problems/squares-of-a-sorted-array/" target="_blank" rel="noopener">977. Squares of a Sorted Array</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 对其求平方后排序</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sortedSquares</span><span class="params">(self, A: List[int])</span> -&gt; List[int]:</span></span><br><span class="line">        <span class="comment">## return sorted(list(map(lambda x: pow(x, 2), A)))</span></span><br><span class="line">        <span class="keyword">return</span> sorted([pow(a,<span class="number">2</span>) <span class="keyword">for</span> a <span class="keyword">in</span> A])</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://leetcode.com/problems/array-partition-i/" target="_blank" rel="noopener">561. Array Partition I</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 升序排序后，将复数下标相加即可</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">arrayPairSum</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        nums.sort()</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, len(nums), <span class="number">2</span>):</span><br><span class="line">            res = res + nums[i]</span><br><span class="line">        <span class="keyword">return</span> res</span><br><span class="line">        <span class="comment">## list(...)[start_idx:end_idx:step]</span></span><br><span class="line">        <span class="comment">## return sum(sorted(nums)[::2])</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x0A"><a href="#0x0A" class="headerlink" title="0x0A"></a>0x0A</h2><h3 id="Height-Checker"><a href="#Height-Checker" class="headerlink" title="- Height Checker"></a>- Height Checker</h3><p><a href="https://leetcode.com/problems/height-checker/" target="_blank" rel="noopener">1051. Height Checker</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 先对数组进行排序后，对比两者不同的元素并计数。</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution1051</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">heightChecker</span><span class="params">(self, heights: List[int])</span> -&gt; int:</span></span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i, j <span class="keyword">in</span> zip(heights, sorted(heights)):</span><br><span class="line">            <span class="keyword">if</span>(i != j):</span><br><span class="line">                count += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> count</span><br><span class="line">        <span class="comment">## return len([0 for i, j in zip(heights, sorted(heights)) if i!=j ])</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Sort-Array-By-Parity-II"><a href="#Sort-Array-By-Parity-II" class="headerlink" title="- Sort Array By Parity II"></a>- Sort Array By Parity II</h3><p><a href="https://leetcode.com/problems/sort-array-by-parity-ii/" target="_blank" rel="noopener">922. Sort Array By Parity II</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 使用步长2循环，奇数位1开始判断是否错位</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sortArrayByParityII</span><span class="params">(self, A: List[int])</span> -&gt; List[int]:</span></span><br><span class="line">        j = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, len(A), <span class="number">2</span>):</span><br><span class="line">            <span class="keyword">if</span> A[i] % <span class="number">2</span>:</span><br><span class="line">                <span class="keyword">while</span> A[j] % <span class="number">2</span>:</span><br><span class="line">                    j = j + <span class="number">2</span></span><br><span class="line">                A[i], A[j] = A[j], A[i]</span><br><span class="line">        <span class="keyword">return</span> A</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x0B"><a href="#0x0B" class="headerlink" title="0x0B"></a>0x0B</h2><h3 id="Find-Words-That-Can-Be-Formed-by-Characters"><a href="#Find-Words-That-Can-Be-Formed-by-Characters" class="headerlink" title="- Find Words That Can Be Formed by Characters"></a>- Find Words That Can Be Formed by Characters</h3><p><a href="https://leetcode.com/problems/find-words-that-can-be-formed-by-characters/" target="_blank" rel="noopener">1160. Find Words That Can Be Formed by Characters</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 对所有字母做一个索引放到list里，元素为chars各个字母出现的次数，接着做双重循环，遇到一次则-1</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution1160</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countCharacters</span><span class="params">(self, words: List[str], chars: str)</span> -&gt; int:</span></span><br><span class="line">        arr = [<span class="number">0</span>] * <span class="number">26</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> chars:</span><br><span class="line">            arr[ord(i)<span class="number">-97</span>] = arr[ord(i)<span class="number">-97</span>] + <span class="number">1</span></span><br><span class="line">        length = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> words:</span><br><span class="line">            flag = <span class="literal">True</span></span><br><span class="line">            _arr = arr.copy()</span><br><span class="line">            <span class="keyword">for</span> character <span class="keyword">in</span> word:</span><br><span class="line">                idx = ord(character) - <span class="number">97</span></span><br><span class="line">                _arr[idx] = _arr[idx] - <span class="number">1</span></span><br><span class="line">                flag = flag &amp; (_arr[idx] &gt;= <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> flag:</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">if</span> flag:</span><br><span class="line">                length += len(word)</span><br><span class="line">        <span class="keyword">return</span> length</span><br><span class="line"></span><br><span class="line"><span class="comment">## leetcode最佳解法，使用str.count()计字符串中出现的次数,若word小于chars出现的次数，则逮代表通过</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countCharacters</span><span class="params">(self, words: List[str], chars: str)</span> -&gt; int:</span></span><br><span class="line">        ret = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> words:</span><br><span class="line">            boolean = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> word:</span><br><span class="line">                <span class="keyword">if</span> word.count(i) &gt; chars.count(i):</span><br><span class="line">                    boolean = <span class="literal">False</span></span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">if</span> boolean:</span><br><span class="line">                ret += len(word)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ret</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x0C"><a href="#0x0C" class="headerlink" title="0x0C"></a>0x0C</h2><h3 id="Fibonacci-Number"><a href="#Fibonacci-Number" class="headerlink" title="- Fibonacci Number"></a>- Fibonacci Number</h3><p><a href="https://leetcode.com/problems/fibonacci-number/" target="_blank" rel="noopener">509. Fibonacci Number</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 经典的求裴波那契数列的问题，此处需要注意若使用常规的递归，而不做缓存，会导致每个裴波那契数都会对前面的子裴波那契数进行重复计算，可以使用缓存，避免重复计算，从而降低时间复杂度</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(self, N: int)</span> -&gt; int:</span></span><br><span class="line">        list = [<span class="number">0</span>, <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, N + <span class="number">1</span>):</span><br><span class="line">            list.append(list[i - <span class="number">1</span>] + list[i - <span class="number">2</span>])</span><br><span class="line">        <span class="keyword">return</span> list[N]</span><br><span class="line">        <span class="comment">## 使用黄金比例与斐波那契数列的关系</span></span><br><span class="line">        <span class="comment">## return int((((1 + 5 ** 0.5) / 2) ** N + 1) / 5 ** 0.5)</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/18/机器学习基石--Lecture4_Learning-is-Impossible/" rel="next" title="机器学习基石-- Lecture4_Learning is Impossible?">
+                <i class="fa fa-chevron-left"></i> 机器学习基石-- Lecture4_Learning is Impossible?
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/06/ARTS-Review/" rel="prev" title="ARTS_Review">
+                ARTS_Review <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="zxk">
+            
+              <p class="site-author-name" itemprop="name">zxk</p>
+              <p class="site-description motion-element" itemprop="description">In order to be willful!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Rianico" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhxuankun@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01"><span class="nav-number">1.</span> <span class="nav-text">0x01</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#两数之和"><span class="nav-number">1.1.</span> <span class="nav-text">- 两数之和</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02"><span class="nav-number">2.</span> <span class="nav-text">0x02</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linked-List-Cycle-II"><span class="nav-number">2.1.</span> <span class="nav-text">- Linked List Cycle II</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03"><span class="nav-number">3.</span> <span class="nav-text">0x03</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3Sum"><span class="nav-number">3.1.</span> <span class="nav-text">- 3Sum</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04"><span class="nav-number">4.</span> <span class="nav-text">0x04</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Single-Number"><span class="nav-number">4.1.</span> <span class="nav-text">- Single Number</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05"><span class="nav-number">5.</span> <span class="nav-text">0x05</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单词搜索"><span class="nav-number">5.1.</span> <span class="nav-text">- 单词搜索</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06"><span class="nav-number">6.</span> <span class="nav-text">0x06</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Word-Ladder"><span class="nav-number">6.1.</span> <span class="nav-text">- Word Ladder</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x07"><span class="nav-number">7.</span> <span class="nav-text">0x07</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Flipping-an-Image"><span class="nav-number">7.1.</span> <span class="nav-text">- Flipping an Image</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x08"><span class="nav-number">8.</span> <span class="nav-text">0x08</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Sort-Array-By-Parity"><span class="nav-number">8.1.</span> <span class="nav-text">- Sort Array By Parity</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x09"><span class="nav-number">9.</span> <span class="nav-text">0x09</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Squares-of-a-Sorted-Array"><span class="nav-number">9.1.</span> <span class="nav-text">- Squares of a Sorted Array</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0A"><span class="nav-number">10.</span> <span class="nav-text">0x0A</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Height-Checker"><span class="nav-number">10.1.</span> <span class="nav-text">- Height Checker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sort-Array-By-Parity-II"><span class="nav-number">10.2.</span> <span class="nav-text">- Sort Array By Parity II</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0B"><span class="nav-number">11.</span> <span class="nav-text">0x0B</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Find-Words-That-Can-Be-Formed-by-Characters"><span class="nav-number">11.1.</span> <span class="nav-text">- Find Words That Can Be Formed by Characters</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0C"><span class="nav-number">12.</span> <span class="nav-text">0x0C</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Fibonacci-Number"><span class="nav-number">12.1.</span> <span class="nav-text">- Fibonacci Number</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zxk</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname, 
+            owner: '32795735',
+            repo: 'Rianico.github.io',
+            
+            lang: "zh-Hans" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'b21ff92a3fada1b09143d7c5f9d75d8412c8b030',
+            
+                client_id: 'ca79bd9bd909da7bc307'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("b0eHvPvUnPEkUzmOUqBllp6S-gzGzoHsz", "eb2on5hpWEIbGANv7SgPs9pu");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
