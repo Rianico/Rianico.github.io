@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Chrome, Firefox OS and Opera Status Bar Color -->
+  <meta name="theme-color" content="#FFFFFF">
+  <meta property="og:title" content="记一次SparkStreaming作业由于Kerberos过期导致卡死">
+  
+  <meta name="description" content="记一次 cdh 版本的 Spark + Kerberos 的坑。">
+  <meta property="og:description" content="记一次 cdh 版本的 Spark + Kerberos 的坑。">
+  
+  <meta property="og:type" content="blog">
+  <title>记一次SparkStreaming作业由于Kerberos过期导致卡死</title>
+  <!-- Favicon -->
+  
+  <link rel="shortcut icon" href="https://avatars1.githubusercontent.com/u/32795735?s=400&u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&v=4">
+  
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+  <link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+  <link rel="stylesheet" type="text/css" href="css/notablog.css">
+  <link rel="stylesheet" type="text/css" href="css/theme.css">
+  <style>
+    :root {
+      font-size: 18px;
+    }
+
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+    <a href="index.html">
+      <div class="Navbar__Btn"><span><img class="inline-img-icon" src="https://avatars1.githubusercontent.com/u/32795735?s=400&u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&v=4"></span> <span>Home</span></div>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <span class="Navbar__Delim">&centerdot;</span>
+    <a href="about.html">
+      <div class="Navbar__Btn"><span>😀</span> <span>About</span></div>
+    </a>
+    
+    
+    
+    
+  </nav>
+  <header class="Header">
+      
+    <div class="Header__Cover">
+        <img src="https://raw.githubusercontent.com/Rianico/Image/master/blog/photo-1509910110001-4e756f86fbd3.jfif">
+      </div>
+      
+    <div class="Header__Spacer ">
+    </div>
+    
+    <div class="Header__Icon"><span><img class="inline-img-icon" src="https://raw.githubusercontent.com/Rianico/Image/master/Avator/sparkles%20(1).png"></span></div>
+    
+    <h1 class="Header__Title">记一次SparkStreaming作业由于Kerberos过期导致卡死</h1>
+        
+    <div class="DateTagBar">
+          
+      <span class="DateTagBar__Item DateTagBar__Date">Posted on Tue, Jun 1, 2021</span>
+          
+          
+      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--default">
+            <a href="tag/Spark.html">Spark</a>
+          </span>
+          
+      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--default">
+            <a href="tag/Kerberos.html">Kerberos</a>
+          </span>
+          
+        </div>
+        
+  </header>
+      <article id="https://www.notion.so/f6452caf807b419da25bc5db425ac470" class="PageRoot PageRoot--FullWidth"><ul id="https://www.notion.so/bf8964a5220d4d4e94caa4c6ed86c256" class="ColorfulBlock ColorfulBlock--ColorGray TableOfContents"><li class="TableOfContents__Item"><a href="#https://www.notion.so/72414079e6cf4e219512d437e8401953"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString">1. </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">前言</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/1686ae3933654be69e1a5968eb107d9a"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString">2. </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">排查过程</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/2c6ad4254cc54a07a9c2c2fd88f5dabc"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString">3. </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">出现问题的原因</strong></span></span></div></a></li></ul><h2 id="https://www.notion.so/72414079e6cf4e219512d437e8401953" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/72414079e6cf4e219512d437e8401953"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">1. </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">前言</strong></span></span></h2><div id="https://www.notion.so/1770be6e900848ec99c2eb181dabc58c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">先说下结论，这个问题是由于 Spark </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2.1.0.cloudera1</strong></span><span class="SemanticString"> 版本的 bug（其他 cdh 相关版本未验证，原生 2.1 并没有这个问题），再加上 Kerberos 凭据过期时间点正好与 checkpoint 的时间点重合导致的。</span></span></p></div><h2 id="https://www.notion.so/1686ae3933654be69e1a5968eb107d9a" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/1686ae3933654be69e1a5968eb107d9a"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">2. </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">排查过程</strong></span></span></h2><div id="https://www.notion.so/7f1ec5fc8f564a97bc443ac02bca6cf7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">查看 5 月 29 号当天 HDFS 数据，发现在 15:35 分后就没有数据了：</span></span></p></div><div id="https://www.notion.so/4af75263dbfe48989512f5a95d351ed9" class="Image Image--Normal"><figure><a href="https://gitee.com/zhxuankun/Image/raw/master/Avator/image-20210601160601675.png?width=480"><img src="https://gitee.com/zhxuankun/Image/raw/master/Avator/image-20210601160601675.png?width=480" style="width:480px"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/908eb31757c147908fa8724eb24571eb" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">查看作业 Driver 端，日志如下：</span></span></p></div><pre id="https://www.notion.so/1e0fb06341d54fec8bf3ef7a611234c4" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> 21/05/31 11:33:20 INFO JobScheduler: Added jobs for time 1622432000000 ms
+ 21/05/31 11:33:20 INFO JobGenerator: Checkpointing graph for time 1622432000000 ms
+ 21/05/31 11:33:20 INFO DStreamGraph: Updating checkpoint data for time 1622432000000 ms
+ 21/05/31 11:33:20 INFO DStreamGraph: Updated checkpoint data for time 1622432000000 ms
+ 21/05/31 11:33:20 INFO CheckpointWriter: Submitted checkpoint of time 1622432000000 ms to writer queue
+ 21/05/31 11:33:20 INFO CheckpointWriter: Saving checkpoint for time 1622432000000 ms to file &#x27;hdfs://nzj-cluster-gdyd/zkx_deploy/xdrhub_jiake/checkpoint/cyw/https/CY_HTTPS_JIAKE_GZ_XDR/all/checkpoint-1622432000000&#x27;
+ 21/05/31 11:33:20 WARN UserGroupInformation: PriviledgedActionException as:zkx (auth:SIMPLE) cause:org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.token.SecretManager$InvalidToken): token (token for zkx: HDFS_DELEGATION_TOKEN owner=zkx, renewer=yarn, realUser=oozie/service2.nzj.gdyd@NZJ.GDYD, issueDate=1619681808569, maxDate=1622273808569, sequenceNumber=370742481, masterKeyId=803) can&#x27;t be found in cache
+ 21/05/31 11:33:20 WARN Client: Exception encountered while connecting to the server : org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.token.SecretManager$InvalidToken): token (token for zkx: HDFS_DELEGATION_TOKEN owner=zkx, renewer=yarn, realUser=oozie/service2.nzj.gdyd@NZJ.GDYD, issueDate=1619681808569, maxDate=1622273808569, sequenceNumber=370742481, masterKeyId=803) can&#x27;t be found in cache
+ 21/05/31 11:33:20 WARN UserGroupInformation: PriviledgedActionException as:zkx (auth:SIMPLE) cause:org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.token.SecretManager$InvalidToken): token (token for zkx: HDFS_DELEGATION_TOKEN owner=zkx, renewer=yarn, realUser=oozie/service2.nzj.gdyd@NZJ.GDYD, issueDate=1619681808569, maxDate=1622273808569, sequenceNumber=370742481, masterKeyId=803) can&#x27;t be found in cache
+ 21/05/31 11:33:20 WARN CheckpointWriter: Error in attempt 1 of writing checkpoint to &#x27;hdfs://nzj-cluster-gdyd/zkx_deploy/xdrhub_jiake/checkpoint/cyw/https/CY_HTTPS_JIAKE_GZ_XDR/all/checkpoint-1622432000000&#x27;
+ org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.token.SecretManager$InvalidToken): token (token for zkx: HDFS_DELEGATION_TOKEN owner=zkx, renewer=yarn, realUser=oozie/service2.nzj.gdyd@NZJ.GDYD, issueDate=1619681808569, maxDate=1622273808569, sequenceNumber=370742481, masterKeyId=803) can&#x27;t be found in cache
+     at org.apache.hadoop.ipc.Client.call(Client.java:1504)
+     at org.apache.hadoop.ipc.Client.call(Client.java:1441)
+     at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:230)
+     at com.sun.proxy.$Proxy10.delete(Unknown Source)
+     at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.delete(ClientNamenodeProtocolTranslatorPB.java:535)
+     at sun.reflect.GeneratedMethodAccessor81.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+     at java.lang.reflect.Method.invoke(Method.java:498)
+     at org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:260)
+     at org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:104)
+     at com.sun.proxy.$Proxy11.delete(Unknown Source)
+     at org.apache.hadoop.hdfs.DFSClient.delete(DFSClient.java:2062)
+     at org.apache.hadoop.hdfs.DistributedFileSystem$13.doCall(DistributedFileSystem.java:684)
+     at org.apache.hadoop.hdfs.DistributedFileSystem$13.doCall(DistributedFileSystem.java:680)
+     at org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)
+     at org.apache.hadoop.hdfs.DistributedFileSystem.delete(DistributedFileSystem.java:680)
+     at org.apache.spark.streaming.CheckpointWriter$CheckpointWriteHandler.run(Checkpoint.scala:233)
+     at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+     at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+     at java.lang.Thread.run(Thread.java:748)
+ 21/05/31 11:33:20 INFO CheckpointWriter: Saving checkpoint for time 1622432000000 ms to file &#x27;hdfs://nzj-cluster-gdyd/zkx_deploy/xdrhub_jiake/checkpoint/cyw/https/CY_HTTPS_JIAKE_GZ_XDR/all/checkpoint-1622432000000&#x27;
+ Exception in thread &quot;pool-20-thread-1582&quot; java.lang.NullPointerException
+     at org.apache.spark.streaming.CheckpointWriter$CheckpointWriteHandler.run(Checkpoint.scala:233)
+     at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+     at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+     at java.lang.Thread.run(Thread.java:748)</span></span></span></code></pre><div id="https://www.notion.so/f3c3143d88294df7a2d5440444de6d54" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，Driver 并未挂掉，而是持续抛出异常，重点关注 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.token.SecretManager$InvalidToken): token (token for zkx: HDFS_DELEGATION_TOKEN owner=zkx, renewer=yarn, realUser=oozie/service2.nzj.gdyd@NZJ.GDYD, issueDate=1619681808569, maxDate=1622273808569, sequenceNumber=370742481, masterKeyId=803) can&#x27;t be found</code></span><span class="SemanticString"> 这句，其中  </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">maxDate=1622273808569</code></span><span class="SemanticString"> 对应时间点为 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">2021-05-29 15:36:48</code></span><span class="SemanticString">，正好在数据中断后的第一个 batch 里，接着后面又抛出了一个空异常：</span></span></p></div><pre id="https://www.notion.so/83034b9325a94d1986137f9052929d73" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> Exception in thread &quot;pool-20-thread-1582&quot; java.lang.NullPointerException
+     at org.apache.spark.streaming.CheckpointWriter$CheckpointWriteHandler.run(Checkpoint.scala:233)
+ ...</span></span></span></code></pre><div id="https://www.notion.so/79bf14d2d20c459e9c807befb81d0cfa" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">从空异常的相关日志也可以看到，该空异常是从在一个线程池里执行的，再结合 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">pool-20-thread-1582</code></span><span class="SemanticString"> 的线程 ID 可以推导出，在每次抛出空异常后，Spark 并没有对该异常做任何处理，而是简单的让线程挂掉并新建一个线程，所以才能看到这么大的线程 ID。</span></span></p></div><div id="https://www.notion.so/4907b8eb312148c1963ad5267215c00a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">根据空异常的提示，查看 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">Checkpoint.scala:233</code></span><span class="SemanticString"> 处的 Spark 源码（版本 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2.1.0.cloudera1</strong></span><span class="SemanticString">）：</span></span></p></div><pre id="https://www.notion.so/b6d152e1c3a04e0688926230ac90cbd8" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>     def run() {
+       if (latestCheckpointTime == null || latestCheckpointTime &lt; checkpointTime) {
+         latestCheckpointTime = checkpointTime
+       }
+       if (fs == null) {
+         fs = new Path(checkpointDir).getFileSystem(hadoopConf)
+       }
+       var attempts = 0
+       val startTime = System.currentTimeMillis()
+       val tempFile = new Path(checkpointDir, &quot;temp&quot;)
+       // We will do checkpoint when generating a batch and completing a batch. When the processing
+       // time of a batch is greater than the batch interval, checkpointing for completing an old
+       // batch may run after checkpointing of a new batch. If this happens, checkpoint of an old
+       // batch actually has the latest information, so we want to recovery from it. Therefore, we
+       // also use the latest checkpoint time as the file name, so that we can recover from the
+       // latest checkpoint file.
+       //
+       // Note: there is only one thread writing the checkpoint files, so we don&#x27;t need to worry
+       // about thread-safety.
+       val checkpointFile = Checkpoint.checkpointFile(checkpointDir, latestCheckpointTime)
+       val backupFile = Checkpoint.checkpointBackupFile(checkpointDir, latestCheckpointTime)
+ 
+       while (attempts &lt; MAX_ATTEMPTS &amp;&amp; !stopped) {
+         attempts += 1
+         try {
+           logInfo(s&quot;Saving checkpoint for time $checkpointTime to file &#x27;$checkpointFile&#x27;&quot;)
+ 
+           // Write checkpoint to temp file
+           fs.delete(tempFile, true) // just in case it exists
+           val fos = fs.create(tempFile)
+           Utils.tryWithSafeFinally {
+             fos.write(bytes)
+           } {
+             fos.close()
+           }
+ 
+           // If the checkpoint file exists, back it up
+           // If the backup exists as well, just delete it, otherwise rename will fail
+           if (fs.exists(checkpointFile)) {
+             fs.delete(backupFile, true) // just in case it exists
+             if (!fs.rename(checkpointFile, backupFile)) {
+               logWarning(s&quot;Could not rename $checkpointFile to $backupFile&quot;)
+             }
+           }
+ 
+           // Rename temp file to the final checkpoint file
+           if (!fs.rename(tempFile, checkpointFile)) {
+             logWarning(s&quot;Could not rename $tempFile to $checkpointFile&quot;)
+           }
+ 
+           // Delete old checkpoint files
+           val allCheckpointFiles = Checkpoint.getCheckpointFiles(checkpointDir, Some(fs))
+           if (allCheckpointFiles.size &gt; 10) {
+             allCheckpointFiles.take(allCheckpointFiles.size - 10).foreach { file =&gt;
+               logInfo(s&quot;Deleting $file&quot;)
+               fs.delete(file, true)
+             }
+           }
+ 
+           // All done, print success
+           val finishTime = System.currentTimeMillis()
+           logInfo(s&quot;Checkpoint for time $checkpointTime saved to file &#x27;$checkpointFile&#x27;&quot; +
+             s&quot;, took ${bytes.length} bytes and ${finishTime - startTime} ms&quot;)
+           jobGenerator.onCheckpointCompletion(checkpointTime, clearCheckpointDataLater)
+           return
+         } catch {
+           case ioe: IOException =&gt;
+             val msg = s&quot;Error in attempt $attempts of writing checkpoint to &#x27;$checkpointFile&#x27;&quot;
+             logWarning(msg, ioe)
+             fs = null
+         }
+       }
+       logWarning(s&quot;Could not write checkpoint for time $checkpointTime to file &#x27;$checkpointFile&#x27;&quot;)
+     }
+   }</span></span></span></code></pre><div id="https://www.notion.so/203c0b73579442adb422a82f649ea603" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，run 方法中主要是一个有限次数的循环，结合日志 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">Error in attempt 1 of writing checkpoint to...</code></span><span class="SemanticString"> 可以看到第一次循环捕获异常后会把 fs 设置为 null，进入第二轮循环，而空异常正好是在 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">fs.delete(tempFile, true) // just in case it exists</code></span><span class="SemanticString"> 处抛出的，而 run 方法中没有对空异常进行捕获，导致线程直接挂掉。同时 Spark 也无法感知到任何异常的发生。</span></span></p></div><div id="https://www.notion.so/2b421472657e42709b5703840f02208e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">查看原生 Spark 2.1 相同处的源码，发现 fs 有对 null 进行了处理：</span></span></p></div><pre id="https://www.notion.so/9b57d8b82ec6403a96aae15acdbde2e3" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>           logInfo(s&quot;Saving checkpoint for time $checkpointTime to file &#x27;$checkpointFile&#x27;&quot;)
+           if (fs == null) {
+             fs = new Path(checkpointDir).getFileSystem(hadoopConf)
+           }</span></span></span></code></pre><div id="https://www.notion.so/5845f6f4f3af458da2e6a5f34ecbd6d3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">也就是说，起码从 Spark 2.1 开始，不存在该问题。</span></span></p></div><h2 id="https://www.notion.so/2c6ad4254cc54a07a9c2c2fd88f5dabc" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/2c6ad4254cc54a07a9c2c2fd88f5dabc"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">3. </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">出现问题的原因</strong></span></span></h2><div id="https://www.notion.so/bd098c081b3b4372a91714ec113f691c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">从日志来看，当 Kerberos 过期，而 Spark Driver 端又正好在写 checkpoint 的时候，就会出现以上异常。</span></span></p></div><div id="https://www.notion.so/c619350f2edb4ffda7f31bc1b144e93f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Kerberos 的有效间隔为 30 天整，一旦我们启动 Spark 作业的时间点正好撞上 checkpoint 时间点，就会重复出现这个问题，但概率较小，具有随机性。</span></span></p></div><div id="https://www.notion.so/49f87944e4e14bf1a9959b7fab00fd7c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">由于近期为了提高资源利用率缩短了 batch 间隔，所以以上问题发生的概率增加了，虽然概率仍然很小，但随着处理间隔越短，发生该问题的概率越高。</span></span></p></div><div id="https://www.notion.so/45512200ade54f4581bc2d0b8a4860e5" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以考虑通过升级 Spark 版本的方式来彻底解决该问题。</span></span></p></div></article>
+  <footer class="Footer">
+        <div>&copy; Rianico‘s Blog 2019</div>
+        <div>&centerdot;</div>
+        <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+            rel="noopener noreferrer">Notablog</a>.
+        </div>
+    </footer>
+</body>
+
+</html>
