@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Chrome, Firefox OS and Opera Status Bar Color -->
+  <meta name="theme-color" content="#FFFFFF">
+  <meta property="og:title" content="DirectMemory 的回收,b,">
+  
+  <meta name="description" content="堆外内存的回收及利用 PhantonReference 实现回收的方式">
+  <meta property="og:description" content="堆外内存的回收及利用 PhantonReference 实现回收的方式">
+  
+  <meta property="og:type" content="blog">
+  <title>DirectMemory 的回收,b,</title>
+  <!-- Favicon -->
+  
+  <link rel="shortcut icon" href="https://avatars1.githubusercontent.com/u/32795735?s=400&u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&v=4">
+  
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+  <link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+  <link rel="stylesheet" type="text/css" href="css/notablog.css">
+  <link rel="stylesheet" type="text/css" href="css/theme.css">
+  <style>
+    :root {
+      font-size: 18px;
+    }
+
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+    <a href="index.html">
+      <div class="Navbar__Btn"><span><img class="inline-img-icon" src="https://avatars1.githubusercontent.com/u/32795735?s=400&u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&v=4"></span> <span>Home</span></div>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <span class="Navbar__Delim">&centerdot;</span>
+    <a href="about.html">
+      <div class="Navbar__Btn"><span>😀</span> <span>About</span></div>
+    </a>
+    
+    
+  </nav>
+  <header class="Header">
+      
+    <div class="Header__Cover">
+        <img src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F4463e097-75a1-45d2-a554-79b330fd8b0e%2F%E8%83%8C%E6%99%AF1_2.jpg?table=block&id=b032989f-8e5b-4473-a043-397c48c1bb51">
+      </div>
+      
+    <div class="Header__Spacer ">
+    </div>
+    
+    <div class="Header__Icon"><span><img class="inline-img-icon" src="https://www.oracle.com/a/ocom/img/obic-java-cup.svg"></span></div>
+    
+    <h1 class="Header__Title">DirectMemory 的回收,b,</h1>
+        
+    <div class="DateTagBar">
+          
+      <span class="DateTagBar__Item DateTagBar__Date">Posted on Sun, Aug 15, 2021</span>
+          
+          
+      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--red">
+            <a href="tag/Java.html">Java</a>
+          </span>
+          
+        </div>
+        
+  </header>
+      <article id="https://www.notion.so/b032989f8e5b4473a043397c48c1bb51" class="PageRoot PageRoot--FullWidth"><div id="https://www.notion.so/cd2864859ad442d280b0d738114c16f1" class="Image Image--Normal"><figure><a href="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F007585b5-ff85-4c9d-8937-aef2358ff116%2Fjava.png?width=200&amp;table=block&amp;id=cd286485-9ad4-42d2-80b0-d738114c16f1"><img src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F007585b5-ff85-4c9d-8937-aef2358ff116%2Fjava.png?width=200&amp;table=block&amp;id=cd286485-9ad4-42d2-80b0-d738114c16f1" style="width:200px"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><ul id="https://www.notion.so/499a422365d44eb1836ba97237bc1e85" class="ColorfulBlock ColorfulBlock--ColorGray TableOfContents"><li class="TableOfContents__Item"><a href="#https://www.notion.so/37fa62f5eaae4ffcbcb03b6297da8fed"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">关于 JDK8 里的 Cleaner</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/263a5d5160884cf48a96f7f408fac2fc"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">关于 JDK9 及之后的 Cleaner</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/6ce244c420324750bb348414ea8abb30"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">注意事项</strong></span></span></div></a></li></ul><div id="https://www.notion.so/322f3d6a93d54828bce2637705e3662a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">DirectMemory 并不属于 Java 虚拟机规范的一部分，而是由于 JDK1.4 中引入了 nio，一种基于 channel 与 buffer 的 I/O 方式，可以通过操作 JVM 中的 DirectByteBuffer 对象，从而调用 Native 函数库在堆外分配</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">堆外内存（DirectMemory）</strong></span><span class="SemanticString">并进行操作，可以避免堆外到堆内对象来回拷贝的开销。</span></span></p></div><div id="https://www.notion.so/dbd4da7cfd4e491d8dc9d9ed8c45a904" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">这部分内存往往也是造成 OOM 的原因，最明显的一个特征就是当 JVM OOM 时，dump 出来的文件却很小。</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/2aaeafc59eec4903a5b119bd0c0b287d" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">XX:MaxDirectMemorySize</code></span><span class="SemanticString"> 用于限定堆外内存的使用，在 JDK8 版本，如果不指定 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">XX:MaxDirectMemorySize</code></span><span class="SemanticString">，则最大不超过堆内存大小。</span></span></li></ul><div id="https://www.notion.so/fdf534f669284b5a9d8b64a05566c782" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">如果不手动释放，DirectMemory 往往到了 Full GC 才会回收。其实在调用 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">ByteBuffer.allocateDirect(int capacity)</code></span><span class="SemanticString"> 分配堆外内存时会添加堆外内存的释放逻辑，如下：</span></span></p></div><pre id="https://www.notion.so/f54b707ebbb74cdcb43bfed031116da1" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>     public static ByteBuffer allocateDirect(int capacity) {
+         return new DirectByteBuffer(capacity);
+     }
+ 
+     DirectByteBuffer(int cap) {                   // package-private
+         // ...
+         // 方法里会调用 System.gc() 尝试回收堆外内存
+         Bits.reserveMemory(size, cap);
+         // ...
+         // 将自身的释放逻辑放入 Cleaner 中，利用 PhantomReference 特性释放堆外内存
+         cleaner = Cleaner.create(this, new Deallocator(base, size, cap));
+         att = null;
+     }</span></span></span></code></pre><div id="https://www.notion.so/0ef91496e6ce4ce58544f19d565b3e59" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其中 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">Deallocator</code></span><span class="SemanticString"> 是一个 Runnable，释放堆外内存的逻辑就在其中：</span></span></p></div><pre id="https://www.notion.so/33e57b52ec624276bcc67080d174cbd0" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> public void run() {
+     if (address == 0) {
+         // Paranoia
+         return;
+     }
+     unsafe.freeMemory(address);
+     address = 0;
+     Bits.unreserveMemory(size, capacity);
+ }</span></span></span></code></pre><div id="https://www.notion.so/ed66bf3a9e1047b889e1bb652d47f816" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">综上，可以看到 JDK 对于 DirectMemory 的回收煞费苦心，光是分配堆外内存时就做了两个保险措施：</span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/ccdd5700a3cc4b3e8202a7350714ce53" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">显示调用 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">System.gc()</code></span><span class="SemanticString"> ，但一旦设置了 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">XX:+DisableExplicitGC</code></span><span class="SemanticString"> 则会失效；</span></span></li><li id="https://www.notion.so/b98070b6d2924dac894adf09b896ffe3" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">借助 PhantomReference 机指定回收逻辑，，一旦该 buffer 没有强引用时会被 JVM 回收。</span></span></li></ol><blockquote id="https://www.notion.so/c6398c67d83c41278975be1b5626e2b1" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">NOTE：从这里也可以看出，为什么 JDK 很多地方有着将变量置为 null 的操作，可以协助更好的 GC。</span></span></blockquote><div id="https://www.notion.so/cca062b324de4d86bbcb4e558af8ce5e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">DirectBuffer</code></span><span class="SemanticString"> 也提供了一个 cleaner 接口，可以让我们获取 Cleaner 对象主动执行清理动作：</span></span></p></div><pre id="https://www.notion.so/156deb06eb364fec922cb482af1f491f" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> ((DirectBuffer)byteBuffer).cleaner().clean();</span></span></span></code></pre><h3 id="https://www.notion.so/37fa62f5eaae4ffcbcb03b6297da8fed" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/37fa62f5eaae4ffcbcb03b6297da8fed"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">关于 JDK8 里的 Cleaner</strong></span></span></h3><div id="https://www.notion.so/c24bdd8541174a6bbf234ded5c3bcf49" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Cleaner 继承了 PhantomReference，这是 《深入理解Java虚拟机》对 PhantomReference 的一个描述：</span></span></p></div><blockquote id="https://www.notion.so/a08d516f857e4d319fc62c17367159ac" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">虚引用也称为“幽灵引用”或者“幻影引用”，它是最弱的一种引用关系。一个对象是否有虚引用的 存在，完全不会对其生存时间构成影响，也无法通过虚引用来取得一个对象实例。为一个对象设置虚 引用关联的唯一目的只是为了能在这个对象被收集器回收时收到一个系统通知。在JDK 1.2版之后提供 了PhantomReference类来实现虚引用。</span></span></blockquote><div id="https://www.notion.so/70cdd7f864fd4d8d8457ff7cc6122972" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">从定义可以看出，PhantomReference 并不影响对象的生命周期，并且无法通过 PhantomReference 获得任何对象引用。JVM </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">在回收对象时</strong></span><span class="SemanticString">，如果发现该对象是一个虚引用，则会将其加入一个 Reference 队列（创建 PhantomReference  时会传入），父类 Reference 则会起一个 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">ReferenceHandler</code></span><span class="SemanticString"> 线程去处理队列里的对象。</span></span></p></div><div id="https://www.notion.so/5e9748440c6e42f29d7a0c3503dcb18c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">编码方式：自定义对象 + Reference 队列 = PhantomReference 包装：</span></span></p></div><pre id="https://www.notion.so/426712eca6e144acb8361375c1756fb5" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> ReferenceQueue&lt;Object&gt; referenceQueue = new ReferenceQueue&lt;&gt;();
+ Object obj = new Object();
+ PhantomReference&lt;Object&gt; phantomobj = new PhantomReference(obj, referenceQueue)</span></span></span></code></pre><div id="https://www.notion.so/64b133ffc48e4b0bad9b0f7a3f137a5c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">结合 DirectByteBuffer 对 Cleaner 的使用可以看出 PhantomReference 的一个经典应用场景：</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">一个对象确定不再使用后，能够在回收时产生一个通知并执行指定操作</strong></span><span class="SemanticString">。</span></span></p></div><blockquote id="https://www.notion.so/cabc6e4c1c8a4ec99391208f3556624a" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">NOTE： JVM 虽然提供了 finalized 的机制，但执行该逻辑的是一个低优先级线程，并不保证一定会执行该操作，并且在其中放入开销较大的逻辑还会影响 GC，因此借助 PhantomReference 来实现对象回收时执行期望操作是一个更优的选择。</span></span></blockquote><div id="https://www.notion.so/b6c88416c3244bf79733632128bf5fd2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">JDK 提供了 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">sun.misc.Cleaner</code></span><span class="SemanticString"> ，该类继承了 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">PhantomReference</code></span><span class="SemanticString"> 接口，支持传入一个对象以及一个 Runnable 对象：</span></span></p></div><pre id="https://www.notion.so/20338615916a4947ae50d7ddddcd0b2b" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> List&lt;Object&gt; objs = new ArrayList&lt;&gt;();
+ for (int i = 0; i &lt; 10; ++i) {
+     Object obj = new Object();
+     objs.add(obj);
+     // 传入需要跟踪的对象以及不再引用时执行的动作
+     Cleaner.create(obj, () -&gt; System.out.println(&quot;clearing...&quot;));
+ }
+ objs.clear();
+ System.gc();</span></span></span></code></pre><div id="https://www.notion.so/88753b203e5a4f00b85200f9b5c5548c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在发生 GC 时，如果 Cleaner 跟踪的对象被回收，那么 Cleaner 会被挪到 Reference 队列中，执行 Runnable 的逻辑：</span></span></p></div><pre id="https://www.notion.so/5936531d3c954c99ad74510493fe02df" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> // sun.misc.Cleaner#clean
+ public void clean() {
+     if (remove(this)) {
+         try {
+             // 执行 Runnable 逻辑
+             this.thunk.run();
+         // ...
+ }
+
+ // java.lang.ref.Reference#tryHandlePending
+ // Reference 会启动一个 ReferenceHandler 线程不断循环调用 Cleaner 逻辑
+ static boolean tryHandlePending(boolean waitForNotify) {
+     Reference&lt;Object&gt; r;
+     Cleaner c;
+     // ...
+     // Fast path for cleaners
+     if (c != null) {
+         c.clean();
+         return true;
+     }
+     // ...
+ }</span></span></span></code></pre><h3 id="https://www.notion.so/263a5d5160884cf48a96f7f408fac2fc" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/263a5d5160884cf48a96f7f408fac2fc"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">关于 JDK9 及之后的 Cleaner</strong></span></span></h3><div id="https://www.notion.so/5d174aa9f34d4435994b83c505555183" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">从 JDK9 开始，不再是一个对象对应一个 Cleaner，一个 Cleaner 可以重复注册对象及 action：</span></span></p></div><pre id="https://www.notion.so/356a3890bec1453ba8f6d31cb7c93836" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> public class CleanerTest implements AutoCloseable {
+ 
+ 
+     // A cleaner, preferably one shared within a library
+     private static final Cleaner CLEANER = Cleaner.create();
+ 
+     static class State implements Runnable {
+ 
+         State() {
+             // initialize State needed for cleaning action
+         }
+ 
+         @Override
+         public void run() {
+             // cleanup action accessing State, executed at most once
+             System.out.println(&quot;clearing...&quot;);
+         }
+     }
+ 
+     private final Cleaner.Cleanable cleanable;
+ 
+     public CleanerTest() {
+         State state = new State();
+         this.cleanable = CLEANER.register(this, state);
+     }
+ 
+     @Override
+     public void close() {
+         cleanable.clean();
+     }
+ 
+ }</span></span></span></code></pre><div id="https://www.notion.so/1a7c1b58cc5a465881ec04ee1f04237d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">一个 Cleaner 对应一个线程，如果创建过多的 cleaner，可能会有不必要的线程开销。</span></span></p></div><div id="https://www.notion.so/9181b4037cb14752b97cc6a0018a83a8" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">上述官方例子中还用到了 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">AutoCloseable</code></span><span class="SemanticString"> 接口，这样一来就可以在 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">try-with-resource</code></span><span class="SemanticString"> 语法中使用。官方的说法是回收资源最高效的方式时主动去调用清理操作，并且该操作直到变为 phantom reachable  时最多只会被执行一次（即使显示调用）。</span></span></p></div><h3 id="https://www.notion.so/6ce244c420324750bb348414ea8abb30" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/6ce244c420324750bb348414ea8abb30"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">注意事项</strong></span></span></h3><div id="https://www.notion.so/49a8868709054df889af01fb68300686" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">需要注意的是，</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">Cleaner 的 action 不可以指向注册/包装的对象</strong></span><span class="SemanticString">，会导致对象无法变为 phantom reachable，从而无法自动调用 action。</span></span></p></div><div id="https://www.notion.so/952005ce60b04ff7a481e549f5625a3b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">虽然注册时也可以传递一个 lambda 表达式，但这样往往很容易引用到注册对象，导致上面提到的问题，使用一个静态内部类可以比较好的防止这类事情发生，即使有外部引用，也只能访问到与类相关的静态外部变量。</span></span></p></div><div id="https://www.notion.so/54efa68971cb4b05ae40e5a968dc7c25" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在执行 action 的过程中，出现的异常都会被忽略，执行 action 的线程及其他 action 都不受影响。</span></span></p></div><div id="https://www.notion.so/3030e2038d3445ae9dd08d0b57b735d0" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://docs.oracle.com/javase/9/docs/api/java/lang/System.html#exit-int-"><code class="SemanticString__Fragment SemanticString__Fragment--Code">System.exit</code></a></span><span class="SemanticString">  时无法保证所有的 action 一定会被执行。</span></span></p></div></article>
+  <footer class="Footer">
+        <div>&copy; Rianico‘s Blog 2019</div>
+        <div>&centerdot;</div>
+        <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+            rel="noopener noreferrer">Notablog</a>.
+        </div>
+    </footer>
+</body>
+
+</html>
