@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Chrome, Firefox OS and Opera Status Bar Color -->
+  <meta name="theme-color" content="#FFFFFF">
+  <meta property="og:title" content="RDD 源码解读">
+  
+  <meta name="description" content="解读 Spark 3.0.0 的消息总线源码">
+  <meta property="og:description" content="解读 Spark 3.0.0 的消息总线源码">
+  
+  <meta property="og:type" content="blog">
+  <title>RDD 源码解读</title>
+  <!-- Favicon -->
+  
+  <link rel="shortcut icon" href="https://avatars1.githubusercontent.com/u/32795735?s=400&u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&v=4">
+  
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+  <link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+  <link rel="stylesheet" type="text/css" href="css/notablog.css">
+  <link rel="stylesheet" type="text/css" href="css/theme.css">
+  <style>
+    :root {
+      font-size: 18px;
+    }
+
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+    <a href="index.html">
+      <div class="Navbar__Btn"><span><img class="inline-img-icon" src="https://avatars1.githubusercontent.com/u/32795735?s=400&u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&v=4"></span> <span>Home</span></div>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <span class="Navbar__Delim">&centerdot;</span>
+    <a href="about.html">
+      <div class="Navbar__Btn"><span>😀</span> <span>About</span></div>
+    </a>
+    
+    
+  </nav>
+  <header class="Header">
+      
+    <div class="Header__Cover">
+        <img src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fc5f33405-3269-47ac-96a2-fbcb8271d259%2Fphoto-1509910110001-4e756f86fbd3.jfif?table=block&id=cfb76b2b-e6f9-4b7d-86f5-a1288683c8bc">
+      </div>
+      
+    <div class="Header__Spacer ">
+    </div>
+    
+    <div class="Header__Icon"><span><img class="inline-img-icon" src="https://raw.githubusercontent.com/Rianico/Image/master/Avator/sparkles%20(1).png"></span></div>
+    
+    <h1 class="Header__Title">RDD 源码解读</h1>
+        
+    <div class="DateTagBar">
+          
+      <span class="DateTagBar__Item DateTagBar__Date">Posted on Sat, Aug 21, 2021</span>
+          
+          
+      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--default">
+            <a href="tag/Spark.html">Spark</a>
+          </span>
+          
+      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--purple">
+            <a href="tag/Scala.html">Scala</a>
+          </span>
+          
+      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--green">
+            <a href="tag/源码.html">源码</a>
+          </span>
+          
+        </div>
+        
+  </header>
+      <article id="https://www.notion.so/cfb76b2be6f94b7d86f5a1288683c8bc" class="PageRoot PageRoot--FullWidth"><ul id="https://www.notion.so/d453e87d17464e80aba4a6d4c4fe5aee" class="ColorfulBlock ColorfulBlock--ColorGray TableOfContents"><li class="TableOfContents__Item"><a href="#https://www.notion.so/aa35dec4de6f407c810d5ce7801ba7fc"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1. RDD 的定义</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/cf80f84196d14051a054a3b5335e9062"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2. 源码解读</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/e3e8021cf92941cc924d50e3bb685fbe"><div style="margin-left:24px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2.1 RDD 的构造</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/d12714cb8ecf458da9a9bdeb15d65e4a"><div style="margin-left:24px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2.2 Transformation</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/3e35e32f762c45bc9f6149184f3b964d"><div style="margin-left:24px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2.3 Action</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/3b958f94934646a88e47d0a74cfe0d39"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">3. 扩展</strong></span></span></div></a></li></ul><h2 id="https://www.notion.so/aa35dec4de6f407c810d5ce7801ba7fc" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/aa35dec4de6f407c810d5ce7801ba7fc"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1. RDD 的定义</strong></span></span></h2><div id="https://www.notion.so/5e41db92eef4492da06c04fda66c2ce6" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">RDD ，是 Spark 对一组数据集合的抽象描述，用于表示一个弹性的、可容错的分布式数据集合。RDD 可以从纵向与横向划分出四个属性：</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/7dee9b72edcf4d8f85e4e7bded8e40cd" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">纵向：Dependency、Compute</span></span></li><li id="https://www.notion.so/197eb302a4f544f5a44682f4a0f823b7" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">横向：Partitioner、Partitions</span></span></li></ul><div id="https://www.notion.so/6834a4497d5b4de1b999e99ee324da10" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Spark 基于 Dependency 构建血缘关系，并生成一张有向无环图，有向无环图可以根据 Shuffle 划分为多个 Stage，每个 Stage 都可以转化多个 Compute 任务，并分发到各个 Partition 上，Partitioner 则决定了数据应该去往哪个 Partition。</span></span></p></div><h2 id="https://www.notion.so/cf80f84196d14051a054a3b5335e9062" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/cf80f84196d14051a054a3b5335e9062"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2. 源码解读</strong></span></span></h2><h3 id="https://www.notion.so/e3e8021cf92941cc924d50e3bb685fbe" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/e3e8021cf92941cc924d50e3bb685fbe"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2.1 RDD 的构造</strong></span></span></h3><div id="https://www.notion.so/e1ba99c895c94e52a82a2e0191ee4a05" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">RDD 的构造函数如下：</span></span></p></div><pre id="https://www.notion.so/341242d126ba46ca90f228a19d33d0c1" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> abstract class RDD[T: ClassTag](
+     @transient private var _sc: SparkContext,
+     @transient private var deps: Seq[Dependency[_]]
+   ) extends Serializable with Logging {
+   // ......
+   /** Construct an RDD with just a one-to-one dependency on one parent */
+   def this(@transient oneParent: RDD[_]) =
+     this(oneParent.context, List(new OneToOneDependency(oneParent)))
+   // ......
+   /**
+    * :: DeveloperApi ::
+    * Implemented by subclasses to compute a given partition.
+    */
+   @DeveloperApi
+   def compute(split: Partition, context: TaskContext): Iterator[T]
+ 
+   /**
+    * Implemented by subclasses to return the set of partitions in this RDD. This method will only
+    * be called once, so it is safe to implement a time-consuming computation in it.
+    *
+    * The partitions in this array must satisfy the following property:
+    *   `rdd.partitions.zipWithIndex.forall { case (partition, index) =&gt; partition.index == index }`
+    */
+   protected def getPartitions: Array[Partition]
+ 
+   /**
+    * Implemented by subclasses to return how this RDD depends on parent RDDs. This method will only
+    * be called once, so it is safe to implement a time-consuming computation in it.
+    */
+   protected def getDependencies: Seq[Dependency[_]] = deps
+ 
+   /**
+    * Optionally overridden by subclasses to specify placement preferences.
+    */
+   protected def getPreferredLocations(split: Partition): Seq[String] = Nil
+ 
+   /** Optionally overridden by subclasses to specify how they are partitioned. */
+   @transient val partitioner: Option[Partitioner] = None
+   // ......
+ }</span></span></span></code></pre><div id="https://www.notion.so/3399e5f0f9e64bf88179b110c2db39c4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">各构造参数的含义如下：</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/f98a47c1ad5f4fad99b6609de29c5d96" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">_sc</code></span><span class="SemanticString">： SparkContext，存储了 Spark 的上下文信息</span></span></li><li id="https://www.notion.so/9cbca5a212ae4da988bf3366fe3e7c13" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">deps</code></span><span class="SemanticString">： 表示 RDD 依赖链，RDD 正是依赖 Dependency 序列构建血缘，并进行回溯的；数组类型意味着一个 RDD 可能有多条依赖链，如 ZippedPartitionsRDD2</span></span></li></ul><div id="https://www.notion.so/47bfe164636a42cb994ce8b7420e9f30" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">同时还有一些重要的内部变量及方法：</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/ad92e1a78e6547b8937510c20e1813d3" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">compute： 计算逻辑，由子类具体实现</span></span></li><li id="https://www.notion.so/a01be82bf9c242698d39580c2d84501b" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">getPartitions：获取分区数组，仅会被调用一次（如触发 action 时，此处暂不详细展开）</span></span></li><li id="https://www.notion.so/2f99cc16a4804649851f4071923700c9" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">getDependencies： 获取依赖的父 RDD，同样进会被调用一次</span></span></li><li id="https://www.notion.so/06432b493aed40bd866880cc65be968c" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">partitioner，定义了数据 Shuffle 时的规则，需要由子类具体去实现</span></span></li></ul><div id="https://www.notion.so/e20b08376a844876905e39ecee1d961e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，RDD 里的变量以及方法也对应了 Dependency、Compute、Partitions、Partitioner 。</span></span></p></div><div id="https://www.notion.so/2d91eb56e4d14bdf8fe356939a74510d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">RDD 使用泛型来表示任意数据类型，这使得 RDD 十分灵活，允许在内部存储任意结构的数据。</span></span></p></div><div id="https://www.notion.so/5379d9e3e72247ed86c138e0310e42f6" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">RDD 有许多子类实现，这里暂且以构造初始数据的 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.rdd.ParallelCollectionRDD</code></span><span class="SemanticString">（复杂点的还有 HadoopRDD 等） 为例，有如下代码：</span></span></p></div><pre id="https://www.notion.so/2f2ef0ad85b24dcb8559cefc643ee5cc" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> val rdd1 = spark.sparkContext.makeRDD(Seq(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;))</span></span></span></code></pre><div id="https://www.notion.so/f99782cabb804b1988a33e8341dd160d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其中 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">makeRDD(...)</code></span><span class="SemanticString"> 方法会创建一个 ParallelCollectionRDD：</span></span></p></div><pre id="https://www.notion.so/51dbe102a5414fe1a822af372a2f9f7e" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   def makeRDD[T: ClassTag](
+       seq: Seq[T],
+       numSlices: Int = defaultParallelism): RDD[T] = withScope {
+     // 传入数据序列以及指定分片
+     parallelize(seq, numSlices)
+   }
+ 
+   def parallelize[T: ClassTag](
+       seq: Seq[T],
+       numSlices: Int = defaultParallelism): RDD[T] = withScope {
+     assertNotStopped()
+     // 创建并返回一个 ParallelCollectionRDD
+     new ParallelCollectionRDD[T](this, seq, numSlices, Map[Int, Seq[String]]())
+   }</span></span></span></code></pre><div id="https://www.notion.so/f73ce771a364406193e306e20d6175d4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其中 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">withScope</code></span><span class="SemanticString"> 主要适用于记录一些 RDD 构造过程中的上下文信息（如调用的方法名，状态变化等），这里并非重点，不做详细赘述。</span></span></p></div><div id="https://www.notion.so/4bb7a618f64649aab070b8ced95fa491" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">查看 ParallelCollectionRDD 的构造函数如下：</span></span></p></div><pre id="https://www.notion.so/a883af64157e49a29eac47bdc4bb0b50" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> private[spark] class ParallelCollectionRDD[T: ClassTag](
+     sc: SparkContext,
+     @transient private val data: Seq[T],
+     numSlices: Int,
+     locationPrefs: Map[Int, Seq[String]])
+     extends RDD[T](sc, Nil) {
+
+   // 存储了 partition 信息，每个 partition 代表一个分片的数据
+   override def getPartitions: Array[Partition] = {
+     val slices = ParallelCollectionRDD.slice(data, numSlices).toArray
+     slices.indices.map(i =&gt; new ParallelCollectionPartition(id, i, slices(i))).toArray
+   }
+ 
+   // 具体计算逻辑，可以接收一个具体的 parition 并封装为一个 Iterator
+   override def compute(s: Partition, context: TaskContext): Iterator[T] = {
+     new InterruptibleIterator(context, s.asInstanceOf[ParallelCollectionPartition[T]].iterator)
+   }
+ 
+   // 存储了数据本地性的相关信息，不同 RDD 有不同的实现，HadoopRDD 则是存储在 split 中
+   override def getPreferredLocations(s: Partition): Seq[String] = {
+     locationPrefs.getOrElse(s.index, Nil)
+   }
+ }</span></span></span></code></pre><div id="https://www.notion.so/86ff0b4720c34b9aa2cde5a3943730a4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，ParallelCollectionRDD 会将接收到的 SparkContext 传递给 RDD 接口，同时将一个 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">Nil</code></span><span class="SemanticString"> 对象传递给 RDD 接口记录到 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">deps</code></span><span class="SemanticString"> 中，这是由于当前 RDD 属于最起始的 RDD，并没有依赖的父 RDD。至此，一个 ParallelCollectionRDD 的构造便结束了。</span></span></p></div><h3 id="https://www.notion.so/d12714cb8ecf458da9a9bdeb15d65e4a" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/d12714cb8ecf458da9a9bdeb15d65e4a"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2.2 Transformation</strong></span></span></h3><div id="https://www.notion.so/094c290b4ab74b53a2d5d0ea82a9ee33" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Transformation 算子，可以从一个 RDD 生成另一个 RDD，构造计算逻辑，但不触发真正的计算。</span></span></p></div><div id="https://www.notion.so/ff3fe780873c4c5ea5995bc1633b3769" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">对前面定义的 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">rdd1</code></span><span class="SemanticString"> 执行 Transformation 操作，代码如下：</span></span></p></div><pre id="https://www.notion.so/e79cf5c2c55040f09869e3c274743123" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> val rdd2 = rdd1.flatMap(line =&gt; line.split(&quot;\n&quot;))
+     .map((_, 1))</span></span></span></code></pre><div id="https://www.notion.so/4124a1951f624fceb04b080c12bd05d5" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">以下分别为 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">flatMap</code></span><span class="SemanticString"> 以及 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">map</code></span><span class="SemanticString"> 方法的源码：</span></span></p></div><pre id="https://www.notion.so/f0a1bfe393c64652acf98f92c352696a" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   def flatMap[U: ClassTag](f: T =&gt; TraversableOnce[U]): RDD[U] = withScope {
+     val cleanF = sc.clean(f)
+     new MapPartitionsRDD[U, T](this, (_, _, iter) =&gt; iter.flatMap(cleanF))
+   }
+
+   def map[U: ClassTag](f: T =&gt; U): RDD[U] = withScope {
+     val cleanF = sc.clean(f)
+     new MapPartitionsRDD[U, T](this, (_, _, iter) =&gt; iter.map(cleanF))
+   }</span></span></span></code></pre><div id="https://www.notion.so/6c209381738c465cbfbf77cf3ba7f640" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到两个方法都是构造一个 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.rdd.MapPartitionsRDD</code></span><span class="SemanticString">，RDD 调用这些高阶函数，并将自身 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">this</code></span><span class="SemanticString"> 以及接收到的方法 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">f</code></span><span class="SemanticString"> 作为 MapPartitionsRDD 构造参数。</span></span></p></div><div id="https://www.notion.so/4119097514774216b31fa972d9437c5b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">MapPartitionsRDD 的构造函数如下：</span></span></p></div><pre id="https://www.notion.so/6bd63d19db6b438dac41b066c56ca9ec" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> private[spark] class MapPartitionsRDD[U: ClassTag, T: ClassTag](
+     var prev: RDD[T],
+     f: (TaskContext, Int, Iterator[T]) =&gt; Iterator[U],  // (TaskContext, partition index, iterator)
+     preservesPartitioning: Boolean = false,
+     isFromBarrier: Boolean = false,
+     isOrderSensitive: Boolean = false)
+   extends RDD[U](prev) {
+ 
+   override val partitioner = if (preservesPartitioning) firstParent[T].partitioner else None
+ 
+   override def getPartitions: Array[Partition] = firstParent[T].partitions
+ 
+   override def compute(split: Partition, context: TaskContext): Iterator[U] =
+     f(context, split.index, firstParent[T].iterator(split, context))
+   // ......
+ }</span></span></span></code></pre><div id="https://www.notion.so/3e4cab64e7d84e44941f4a0457495d5c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，RDD 将自身传入 MapPartitionsRDD 后，MapPartitionsRDD 又通过 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">RDD[U](prev)</code></span><span class="SemanticString"> 将其传递给 RDD 接口，由前面对 RDD 源码的解析可知，这个 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">poev</code></span><span class="SemanticString"> 会被构造为一个 Dependency 记录起来：</span></span></p></div><pre id="https://www.notion.so/0d71769d2aa04499a72c2d69965f177d" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   def this(@transient oneParent: RDD[_]) =
+     this(oneParent.context, List(new OneToOneDependency(oneParent)))</span></span></span></code></pre><div id="https://www.notion.so/03073ac131e34c9c86d14e0bf3c69c2f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">至此，RDD 之间的 Dependency 构造大致是理清了：一个 RDD 生成新的 RDD，新的 RDD 会将把父 RDD 构造为 Dependency 保存起来。</span></span></p></div><h3 id="https://www.notion.so/3e35e32f762c45bc9f6149184f3b964d" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/3e35e32f762c45bc9f6149184f3b964d"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2.3 Action</strong></span></span></h3><div id="https://www.notion.so/56211d8f7011464dac134d68b7a9204f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Action 会真正触发 RDD 的计算逻辑，执行前面指定的 Transformation   算子。</span></span></p></div><div id="https://www.notion.so/ccb641ead5f041bc9517b165dbd4bc3d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">对 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">rdd2</code></span><span class="SemanticString"> 执行 Action 算子，代码如下：</span></span></p></div><pre id="https://www.notion.so/f469c8a016a646f78098dcebbe92a0f9" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> rdd2.foreach(println)</span></span></span></code></pre><div id="https://www.notion.so/bad157b7eb0849358c6f27ce20189fb4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">查看 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">foreach</code></span><span class="SemanticString"> 代码：</span></span></p></div><pre id="https://www.notion.so/af7c55e691df430a96286b77e3d8b6c9" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   def foreach(f: T =&gt; Unit): Unit = withScope {
+     val cleanF = sc.clean(f)
+     sc.runJob(this, (iter: Iterator[T]) =&gt; iter.foreach(cleanF))
+   }
+ 
+   def runJob[T, U: ClassTag](rdd: RDD[T], func: Iterator[T] =&gt; U): Array[U] = {
+     runJob(rdd, func, 0 until rdd.partitions.length)
+   }</span></span></span></code></pre><div id="https://www.notion.so/afb47ba76e5f453ca50e2d6d7737bf45" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，RDD 通过 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">foreach</code></span><span class="SemanticString"> 调用 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">sc.runJob()</code></span><span class="SemanticString"> 方法，将自身传以及一个函数传递进去，并且还会通过 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">rdd.partitions</code></span><span class="SemanticString"> 访问 RDD 的 partition 信息。</span></span></p></div><div id="https://www.notion.so/ba54167bcd4942f688ec5b676a717af6" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">从这里，会开始借助前面构造的 Dependency 信息，一层一层的追溯父 RDD 的 partition 信息，其实现如下</strong></span><span class="SemanticString">：</span></span></p></div><pre id="https://www.notion.so/8dc9c02f881d4939b1e538e1213fc277" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   // rdd.partitions
+   final def partitions: Array[Partition] = {
+     checkpointRDD.map(_.partitions).getOrElse {
+       if (partitions_ == null) {
+         stateLock.synchronized {
+           if (partitions_ == null) {
+             // 调用 RDD 的 getPartitions
+             partitions_ = getPartitions
+             partitions_.zipWithIndex.foreach { case (partition, index) =&gt;
+               require(partition.index == index,
+                 s&quot;partitions($index).partition == ${partition.index}, but it should equal $index&quot;)
+             }
+           }
+         }
+       }
+       partitions_
+     }
+   }</span></span></span></code></pre><div id="https://www.notion.so/f26fb3ac0e7642fcbc4b85abfb927f00" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">此处的 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">rdd.partitions</code></span><span class="SemanticString"> 内部会调用其 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">getPartitions</code></span><span class="SemanticString"> 方法，根据之前的源码解析，可以知道这是 RDD 的一个抽象方法，在 MapPartitionsRDD 中的实现及调用如下：</span></span></p></div><pre id="https://www.notion.so/46e270c310204ac58e786832eaaba4a9" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   // org.apache.spark.rdd.MapPartitionsRDD#getPartitions
+   override def getPartitions: Array[Partition] = firstParent[T].partitions
+ 
+   // org.apache.spark.rdd.RDD#firstParent
+   protected[spark] def firstParent[U: ClassTag]: RDD[U] = {
+     dependencies.head.rdd.asInstanceOf[RDD[U]]
+   }
+
+   // org.apache.spark.rdd.RDD#dependencies
+   final def dependencies: Seq[Dependency[_]] = {
+     checkpointRDD.map(r =&gt; List(new OneToOneDependency(r))).getOrElse {
+       if (dependencies_ == null) {
+         stateLock.synchronized {
+           if (dependencies_ == null) {
+             // 获取 denpendency 序列
+             dependencies_ = getDependencies
+           }
+         }
+       }
+       dependencies_
+     }
+   }
+ 
+   // org.apache.spark.rdd.RDD#getDependencies
+   protected def getDependencies: Seq[Dependency[_]] = deps</span></span></span></code></pre><div id="https://www.notion.so/0a12257523b44cfeaba4c633551b8112" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，MapPartitionsRDD 通过调用链  </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.rdd.RDD#firstParent</code></span><span class="SemanticString">  -&gt; </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.rdd.RDD#dependencies</code></span><span class="SemanticString"> -&gt; </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.rdd.RDD#getDependencies</code></span><span class="SemanticString">，从 Dependency 获取到父 RDD，接着父 RDD 也会调用 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">partitions</code></span><span class="SemanticString"> 方法，再次重复上述步骤直到（当前 Stage）最顶级的 RDD。</span></span></p></div><div id="https://www.notion.so/876a10e18fd14e3e823f1573b8ba6f13" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">按照例子中 RDD 的构建顺序，最终会追溯到 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">ParallelCollectionRDD</code></span><span class="SemanticString">，其 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">getPartitions</code></span><span class="SemanticString"> 实现如下：</span></span></p></div><pre id="https://www.notion.so/6e62c2a99443438a88d804f3090ae3db" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   override def getPartitions: Array[Partition] = {
+     val slices = ParallelCollectionRDD.slice(data, numSlices).toArray
+     slices.indices.map(i =&gt; new ParallelCollectionPartition(id, i, slices(i))).toArray
+   }</span></span></span></code></pre><div id="https://www.notion.so/7d5031d237734aaa86cfc3cd501e4b55" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，这里构造了 ParallelCollectionRDD 的 Parititon 数组，partition 在最初构造的时候就已经决定了，之后逐级回到之前的 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.SparkContext#runJob</code></span><span class="SemanticString"> 方法中，继续往下走：</span></span></p></div><pre id="https://www.notion.so/6b8ed7cbd4bc4dc1a79c0731abd28319" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   def runJob[T, U: ClassTag](rdd: RDD[T], func: Iterator[T] =&gt; U): Array[U] = {
+     runJob(rdd, func, 0 until rdd.partitions.length)
+   }
+
+   def runJob[T, U: ClassTag](
+       rdd: RDD[T],
+       func: Iterator[T] =&gt; U,
+       partitions: Seq[Int]): Array[U] = {
+     val cleanedFunc = clean(func)
+     runJob(rdd, (ctx: TaskContext, it: Iterator[T]) =&gt; cleanedFunc(it), partitions)
+   }
+
+   def runJob[T, U: ClassTag](
+       rdd: RDD[T],
+       func: (TaskContext, Iterator[T]) =&gt; U,
+       partitions: Seq[Int]): Array[U] = {
+     val results = new Array[U](partitions.size)
+     runJob[T, U](rdd, func, partitions, (index, res) =&gt; results(index) = res)
+     results
+   }
+ 
+   def runJob[T, U: ClassTag](
+       rdd: RDD[T],
+       func: (TaskContext, Iterator[T]) =&gt; U,
+       partitions: Seq[Int],
+       resultHandler: (Int, U) =&gt; Unit): Unit = {
+     if (stopped.get()) {
+       throw new IllegalStateException(&quot;SparkContext has been shutdown&quot;)
+     }
+     val callSite = getCallSite
+     val cleanedFunc = clean(func)
+     logInfo(&quot;Starting job: &quot; + callSite.shortForm)
+     if (conf.getBoolean(&quot;spark.logLineage&quot;, false)) {
+       logInfo(&quot;RDD&#x27;s recursive dependencies:\n&quot; + rdd.toDebugString)
+     }
+     // DAGScheduler 负责构造 taskset 并结合 taskScheduler、SchedulerBackend 分发任务
+     dagScheduler.runJob(rdd, cleanedFunc, partitions, callSite, resultHandler, localProperties.get)
+     progressBar.foreach(_.finishAll())
+     rdd.doCheckpoint()
+   }</span></span></span></code></pre><div id="https://www.notion.so/a6fd62c1e23949fabbb5c4f90cdae9ba" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">经过多个函数调用后，会走到 DAGScheduler 那里真正的提交任务。调度模块的源码不属于此次解读范围，暂不详细展开，这部分主要工作是构造 task 的相关信息，最终将 task 以 RPC 的方式推送到各个 Executor 端。</span></span></p></div><div id="https://www.notion.so/9992ae750c934c1f837579402d175910" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">与 RDD 获取 partitions 信息一样，RDD 的 Compute 同样是借助 Dependency 嵌套执行（Volcano 模型） 的。Executor  在接收到调度器发来的 task 时，会对其进行处理并封装为 Runnable 放入线程池执行：</span></span></p></div><pre id="https://www.notion.so/a16739ea9155424fa1d5ec057c1ce8f6" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> // org.apache.spark.scheduler.cluster.CoarseGrainedClusterMessages.LaunchTask$#unapply
+ case LaunchTask(data) =&gt;
+     if (executor == null) {
+         exitExecutor(1, &quot;Received LaunchTask command but executor was null&quot;)
+     } else {
+         // 反序列化 task
+         val taskDesc = TaskDescription.decode(data.value)
+         logInfo(&quot;Got assigned task &quot; + taskDesc.taskId)
+         taskResources(taskDesc.taskId) = taskDesc.resources
+         // 启动一个 task
+         executor.launchTask(this, taskDesc)
+     }
+ 
+ 
+ def launchTask(context: ExecutorBackend, taskDescription: TaskDescription): Unit = {
+     // 将 task 封装为实现了 Runnable 接口的 TaskRunner
+     val tr = new TaskRunner(context, taskDescription)
+     runningTasks.put(taskDescription.taskId, tr)
+     // 放入线程池执行
+     threadPool.execute(tr)
+ }</span></span></span></code></pre><div id="https://www.notion.so/57c9bd6de2d24382b548fa6e1c0a4b6c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.executor.Executor.TaskRunner</code></span><span class="SemanticString"> 的 run 方法定义如下：</span></span></p></div><pre id="https://www.notion.so/d915b3eab10944f3bed3140bd61f990a" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>     override def run(): Unit = {
+     // ......
+         val res = task.run(
+             taskAttemptId = taskId,
+             attemptNumber = taskDescription.attemptNumber,
+             metricsSystem = env.metricsSystem,
+             resources = taskDescription.resources)
+     // ......
+     }</span></span></span></code></pre><div id="https://www.notion.so/20cec08d70244d65b5316cca771249f6" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">最终调用会走到 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.scheduler.ResultTask#runTask</code></span><span class="SemanticString"> 里：</span></span></p></div><pre id="https://www.notion.so/f0726ead2e5d4f4eba7eb81b092d9ef1" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   override def runTask(context: TaskContext): U = {
+     // Deserialize the RDD and the func using the broadcast variables.
+     val threadMXBean = ManagementFactory.getThreadMXBean
+     val deserializeStartTimeNs = System.nanoTime()
+     val deserializeStartCpuTime = if (threadMXBean.isCurrentThreadCpuTimeSupported) {
+       threadMXBean.getCurrentThreadCpuTime
+     } else 0L
+     val ser = SparkEnv.get.closureSerializer.newInstance()
+     val (rdd, func) = ser.deserialize[(RDD[T], (TaskContext, Iterator[T]) =&gt; U)](
+       ByteBuffer.wrap(taskBinary.value), Thread.currentThread.getContextClassLoader)
+     _executorDeserializeTimeNs = System.nanoTime() - deserializeStartTimeNs
+     _executorDeserializeCpuTime = if (threadMXBean.isCurrentThreadCpuTimeSupported) {
+       threadMXBean.getCurrentThreadCpuTime - deserializeStartCpuTime
+     } else 0L
+ 
+     func(context, rdd.iterator(partition, context))
+   }</span></span></span></code></pre><div id="https://www.notion.so/e089bbeedfaf4c0bbd457d77adc9f469" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">方法最后一行 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">rdd.iterator</code></span><span class="SemanticString"> 又会触发父 RDD 的溯源：</span></span></p></div><pre id="https://www.notion.so/e8a987eae6c340aca6ba8c448856f007" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   // org.apache.spark.rdd.RDD#iterator
+   final def iterator(split: Partition, context: TaskContext): Iterator[T] = {
+     if (storageLevel != StorageLevel.NONE) {
+       getOrCompute(split, context)
+     } else {
+       // 并未进行持久化，走下面的逻辑
+       computeOrReadCheckpoint(split, context)
+     }
+   }
+ 
+   // org.apache.spark.rdd.RDD#computeOrReadCheckpoint
+   private[spark] def computeOrReadCheckpoint(split: Partition, context: TaskContext): Iterator[T] =
+   {
+     if (isCheckpointedAndMaterialized) {
+       firstParent[T].iterator(split, context)
+     } else {
+       // 调用 RDD 的 compute 方法
+       compute(split, context)
+     }
+   }
+ 
+ private[spark] class MapPartitionsRDD[U: ClassTag, T: ClassTag](
+     var prev: RDD[T],
+     f: (TaskContext, Int, Iterator[T]) =&gt; Iterator[U],  // (TaskContext, partition index, iterator)
+     preservesPartitioning: Boolean = false,
+     isFromBarrier: Boolean = false,
+     isOrderSensitive: Boolean = false)
+   extends RDD[U](prev) {
+   // ......
+   override def compute(split: Partition, context: TaskContext): Iterator[U] =
+     f(context, split.index, firstParent[T].iterator(split, context))
+   // ......
+ }</span></span></span></code></pre><div id="https://www.notion.so/3ae2702458824cd68c4a34a13bcb2919" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到最终又回到各个 RDD 自行实现的 copmute 函数并通过 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">firstParent</code></span><span class="SemanticString"> 追溯父 RDD 直到（当前 Stage）最顶级的 RDD。</span></span></p></div><div id="https://www.notion.so/1cbc6e53899e442c994d434b225bc0c2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，</span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">compute</code></span><span class="SemanticString"> 方法是将一个方法作用在一个 Iterator 上，并返回一个新的 Iterator，层层嵌套调用执行计算的。</span></span></p></div><div id="https://www.notion.so/440670fc86944c3d944f663acf7faf97" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在 Iterator 上嵌套计算完成后，Executor 返回结果信息给 Driver。至此，RDD 的整个计算流程结束。</span></span></p></div><h2 id="https://www.notion.so/3b958f94934646a88e47d0a74cfe0d39" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/3b958f94934646a88e47d0a74cfe0d39"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">3. 扩展</strong></span></span></h2><div id="https://www.notion.so/1f95b2d5840a4776b31ae0c2e9ae92ca" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.SparkContext#hadoopFile</code></span><span class="SemanticString"> 看到这样一行注释：</span></span></p></div><pre id="https://www.notion.so/9cf03b34281842ddbd9aff4fd2ba2566" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> // This is a hack to enforce loading hdfs-site.xml.
+ // See SPARK-11227 for details.
+ FileSystem.getLocal(hadoopConfiguration)</span></span></span></code></pre><div id="https://www.notion.so/22cace0b1b18440a85c6feb4e1e8b2a2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">大意是会强制加载 hdfs-site.xml 配置文件的一个操作。但为什么需要这样做？</span></span></p></div><div id="https://www.notion.so/a508f33cf12540209ffb9c166eb0a892" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Congiguration 在新建时，默认会从加载本地配置文件。在 Spark 中，Congiguration 实例化完成后需要经过序列化-反序列传输到各个 Executor 上，这样一来，每个 Executor 反序列化新建 Configuration 时又需要从磁盘加载一次配置文件。</span></span></p></div><div id="https://www.notion.so/72ad3b9df28942468f9e5961340438f7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">为了节省这个开销（详见 </span><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://issues.apache.org/jira/browse/SPARK-8135">SPARK-8135</a></span><span class="SemanticString">)，Spark 1.5 修改了 SerializableWritable （实际使用的是 SerializableConfiguration，但逻辑基本一样）的反序列化代码，在反序列化生成 Configuration 时不会再重新加载本地配置文件：</span></span></p></div><pre id="https://www.notion.so/da857ca2bc644113b1c6226fdf81e368" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> class SerializableWritable[T &lt;: Writable](@transient var t: T) extends Serializable {
+ 
+   def value: T = t
+ 
+   override def toString: String = t.toString
+ 
+   private def writeObject(out: ObjectOutputStream): Unit = Utils.tryOrIOException {
+     out.defaultWriteObject()
+     new ObjectWritable(t).write(out)
+   }
+ 
+   private def readObject(in: ObjectInputStream): Unit = Utils.tryOrIOException {
+     in.defaultReadObject()
+     val ow = new ObjectWritable()
+     // 设置 false 不再从磁盘上读取配置文件
+     ow.setConf(new Configuration(false))
+     ow.readFields(in)
+     t = ow.get().asInstanceOf[T]
+   }
+ }</span></span></span></code></pre><div id="https://www.notion.so/b68b00db024b49babddcdd412677e72b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">但这样存在一个问题，如果在传输到 Executor 之前，Configuration 没有先添加好完整信息的话，会导致 Executor 端的 Configuration 并不完整导致异常的发生。</span></span></p></div><div id="https://www.notion.so/20508a767d2e4d96ab95caa37d57fdf3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">因此此处执行了 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">FileSystem.getLocal(hadoopConfiguration)</code></span><span class="SemanticString"> ，先在 Driver 端强制读取本地配置文件构造完整的 Configuration，再通过广播变量发送到 Executor 端。执行前后 Configuration 内容变化如下：</span></span></p></div><div id="https://www.notion.so/909b9044cede4f21b19b55f5c3a947fe" class="Image Image--PageWidth"><figure><a href="#"><img src="#" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/71317042135e42f3bf80a28133acd7e4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">详细的官方 issue 详见：</span><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://github.com/apache/spark/pull/13738">[SPARK-11227][CORE] UnknownHostException can be thrown when NameNode HA is enabled. </a></span><span class="SemanticString">。</span></span></p></div></article>
+  <footer class="Footer">
+        <div>&copy; Rianico‘s Blog 2019</div>
+        <div>&centerdot;</div>
+        <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+            rel="noopener noreferrer">Notablog</a>.
+        </div>
+    </footer>
+</body>
+
+</html>
