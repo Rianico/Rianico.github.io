@@ -9,17 +9,17 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <!-- Chrome, Firefox OS and Opera Status Bar Color -->
   <meta name="theme-color" content="#FFFFFF">
-  <meta property="og:title" content="Spark3 - ListenerBus 消息总线源码解读">
-  
-  <meta name="description" content="解读 Spark 3.0.3 版本的消息总线源码">
-  <meta property="og:description" content="解读 Spark 3.0.3 版本的消息总线源码">
-  
+  <meta property="og:title" content="{{post.title}}">
+  {{if(options.post.description.length > 0)}}
+  <meta name="description" content="{{post.descriptionPlain}}">
+  <meta property="og:description" content="{{post.descriptionPlain}}">
+  {{/if}}
   <meta property="og:type" content="blog">
-  <title>Spark3 - ListenerBus 消息总线源码解读</title>
+  <title>{{post.title}}</title>
   <!-- Favicon -->
-  
-  <link rel="shortcut icon" href="https://avatars1.githubusercontent.com/u/32795735?s=400&u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&v=4">
-  
+  {{if(options.siteMeta.icon)}}
+  <link rel="shortcut icon" href="{{siteMeta.icon}}">
+  {{/if}}
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
   <link rel="stylesheet" type="text/css"
     href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
@@ -40,309 +40,45 @@
 <body>
   <nav class="Navbar">
     <a href="index.html">
-      <div class="Navbar__Btn"><span><img class="inline-img-icon" src="https://avatars1.githubusercontent.com/u/32795735?s=400&u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&v=4"></span> <span>Home</span></div>
+      <div class="Navbar__Btn">{{siteMeta.iconHTML}} <span>Home</span></div>
     </a>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    {{each(options.siteMeta.pages)}}
+    {{if(@this.publish && @this.inMenu)}}
     <span class="Navbar__Delim">&centerdot;</span>
-    <a href="about.html">
-      <div class="Navbar__Btn"><span><img class="inline-img-icon" src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F88bfa795-fb50-42ad-b5f9-821f35ee821d%2Fgithub_(2).png?table=block&id=457ca390-7a74-4a2f-9c26-1613b0d49d9c"></span> <span>About</span></div>
+    <a href="{{@this.url}}">
+      <div class="Navbar__Btn">{{@this.iconHTML}} <span>{{@this.title}}</span></div>
     </a>
-    
-    
+    {{/if}}
+    {{/each}}
   </nav>
   <header class="Header">
-      
+      {{if(options.post.cover)}}
     <div class="Header__Cover">
-        <img src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fc5f33405-3269-47ac-96a2-fbcb8271d259%2Fphoto-1509910110001-4e756f86fbd3.jfif?table=block&id=334613e3-375e-4665-86da-bef89b70ed1a">
+        <img src="{{post.cover}}">
       </div>
-      
-    <div class="Header__Spacer ">
+      {{/if}}
+    <div class="Header__Spacer {{if(!options.post.cover)}}Header__Spacer--NoCover{{/if}}">
     </div>
-    
-    <div class="Header__Icon"><span><img class="inline-img-icon" src="https://raw.githubusercontent.com/Rianico/Image/master/Avator/sparkles%20(1).png"></span></div>
-    
-    <h1 class="Header__Title">Spark3 - ListenerBus 消息总线源码解读</h1>
-        
+    {{if(options.post.icon)}}
+    <div class="Header__Icon">{{post.iconHTML}}</div>
+    {{/if}}
+    <h1 class="Header__Title">{{post.title}}</h1>
+        {{if(options.post.date || options.post.tags.length)}}
     <div class="DateTagBar">
-          
-      <span class="DateTagBar__Item DateTagBar__Date">Posted on Sat, Jun 12, 2021</span>
-          
-          
-      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--gray">
-            <a href="tag/Spark3.0.3.html">Spark3.0.3</a>
+          {{if(options.post.date)}}
+      <span class="DateTagBar__Item DateTagBar__Date">Posted on {{post.dateString}}</span>
+          {{/if}}
+          {{each(options.post.tags)}}
+      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--{{@this.color}}">
+            <a href="tag/{{@this.value}}.html">{{@this.value}}</a>
           </span>
-          
-      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--purple">
-            <a href="tag/Scala.html">Scala</a>
-          </span>
-          
-      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--green">
-            <a href="tag/源码.html">源码</a>
-          </span>
-          
+          {{/each}}
         </div>
-        
+        {{/if}}
   </header>
-      <article id="https://www.notion.so/334613e3375e466586dabef89b70ed1a" class="PageRoot PageRoot--FullWidth"><ul id="https://www.notion.so/28f743556e46487e8e454c4919630b8b" class="ColorfulBlock ColorfulBlock--ColorGray TableOfContents"><li class="TableOfContents__Item"><a href="#https://www.notion.so/ce4497d8cb7044e583725d8ab7effa25"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1. ListenerBus 概述</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/ddd352b694cc46b6bb143738ce2a23cd"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2. Listener 概述</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/adf590f3748a480e92613d63497a51b3"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">3. 事件投递</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/8e535ba343284197be09ed47ae1cbbd7"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">4. 如何使用消息总线</strong></span></span></div></a></li></ul><h2 id="https://www.notion.so/ce4497d8cb7044e583725d8ab7effa25" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/ce4497d8cb7044e583725d8ab7effa25"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1. ListenerBus 概述</strong></span></span></h2><div id="https://www.notion.so/6e0dcee6bd3143f998f0b19cf2f4c41c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">ListenerBus 是 Spark 的消息总线接口，会维护一个 Listener 队列，并提供一个全局 Event 分发功能，将事件分发给注册了的 Listener，事件的具体处理逻辑则交由 Listener 自行实现，其继承结构如下：</span></span></p></div><div id="https://www.notion.so/aaa67097798a4bc8b4877c9dc007c5ab" class="Image Image--PageWidth"><figure><a href="https://gitee.com/zhxuankun/Image/raw/master/ARTS_Tips/image-20210611194451769.png"><img src="https://gitee.com/zhxuankun/Image/raw/master/ARTS_Tips/image-20210611194451769.png" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/9e85286f8cec48dbb1d18584dda98aa2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Spark 2.3 开始为 Listener 添加了 Event 处理时间的统计功能，可以很方便的查看各个 Event 的处理时间，能够帮助开发员人快速定位瓶颈。</span></span></p></div><div id="https://www.notion.so/69705c63168e42808e92f6f0e4579061" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Listener 的时间统计功能通过 </span><span class="SemanticString"><em class="SemanticString__Fragment SemanticString__Fragment--Italic">spark.scheduler.listenerbus.logSlowEvent</em></span><span class="SemanticString">、</span><span class="SemanticString"><em class="SemanticString__Fragment SemanticString__Fragment--Italic">spark.scheduler.listenerbus.logSlowEvent.threshold</em></span><span class="SemanticString"> 参数控制，需要 ListenerBus 子类自行实现 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.util.ListenerBus#getTimer</code></span><span class="SemanticString">  方法，此处不是重点，暂且不关注。</span></span></p></div><div id="https://www.notion.so/e9327a4743f4412eb4cc7ffed5c6b11f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">ListenerBus 需要关注的代码如下：</span></span></p></div><pre id="https://www.notion.so/5b4cd1028cf146aa9dc0bcd6ba41a1ba" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   private[this] val listenersPlusTimers = new CopyOnWriteArrayList[(L, Option[Timer])]
- 
-   // Marked `private[spark]` for access in tests.
-   private[spark] def listeners = listenersPlusTimers.asScala.map(_._1).asJava
- 
-   ......
-   /**
-    * Add a listener to listen events. This method is thread-safe and can be called in any thread.
-    */
-   final def addListener(listener: L): Unit = {
-     listenersPlusTimers.add((listener, getTimer(listener)))
-   }
- 
-   /**
-    * Remove a listener and it won&#x27;t receive any events. This method is thread-safe and can be called
-    * in any thread.
-    */
-   final def removeListener(listener: L): Unit = {
-     listenersPlusTimers.asScala.find(_._1 eq listener).foreach { listenerAndTimer =&gt;
-       listenersPlusTimers.remove(listenerAndTimer)
-     }
-   }
- 
-   /**
-    * Remove all listeners and they won&#x27;t receive any events. This method is thread-safe and can be
-    * called in any thread.
-    */
-   final def removeAllListeners(): Unit = {
-     listenersPlusTimers.clear()
-   }
- 
-   /**
-    * This can be overridden by subclasses if there is any extra cleanup to do when removing a
-    * listener.  In particular AsyncEventQueues can clean up queues in the LiveListenerBus.
-    */
-   def removeListenerOnError(listener: L): Unit = {
-     removeListener(listener)
-   }
- 
- 
-   /**
-    * Post the event to all registered listeners. The `postToAll` caller should guarantee calling
-    * `postToAll` in the same thread for all events.
-    */
-   def postToAll(event: E): Unit = {
-     // JavaConverters can create a JIterableWrapper if we use asScala.
-     // However, this method will be called frequently. To avoid the wrapper cost, here we use
-     // Java Iterator directly.
-     val iter = listenersPlusTimers.iterator
-     while (iter.hasNext) {
-       val listenerAndMaybeTimer = iter.next()
-       val listener = listenerAndMaybeTimer._1
-       val maybeTimer = listenerAndMaybeTimer._2
-       val maybeTimerContext = if (maybeTimer.isDefined) {
-         maybeTimer.get.time()
-       } else {
-         null
-       }
-       lazy val listenerName = Utils.getFormattedClassName(listener)
-       try {
-         doPostEvent(listener, event)
-         if (Thread.interrupted()) {
-           // We want to throw the InterruptedException right away so we can associate the interrupt
-           // with this listener, as opposed to waiting for a queue.take() etc. to detect it.
-           throw new InterruptedException()
-         }
-       } catch {
-         case ie: InterruptedException =&gt;
-           logError(s&quot;Interrupted while posting to ${listenerName}. Removing that listener.&quot;, ie)
-           removeListenerOnError(listener)
-         case NonFatal(e) if !isIgnorableException(e) =&gt;
-           logError(s&quot;Listener ${listenerName} threw an exception&quot;, e)
-       } finally {
-         if (maybeTimerContext != null) {
-           val elapsed = maybeTimerContext.stop()
-           if (logSlowEventEnabled &amp;&amp; elapsed &gt; logSlowEventThreshold) {
-             logInfo(s&quot;Process of event ${redactEvent(event)} by listener ${listenerName} took &quot; +
-               s&quot;${elapsed / 1000000000d}s.&quot;)
-           }
-         }
-       }
-     }
-   }
- 
-   /**
-    * Post an event to the specified listener. `onPostEvent` is guaranteed to be called in the same
-    * thread for all listeners.
-    */
-   protected def doPostEvent(listener: L, event: E): Unit</span></span></span></code></pre><div id="https://www.notion.so/71dc89622aa34c5d91712b07366d87e1" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到 ListenerBus 维护了一个带执行时间统计功能的队列 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">listenersPlusTimers</code></span><span class="SemanticString"> 以及不带时间统计功能的队列 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">listeners</code></span><span class="SemanticString"> ，本质上都是同一条队列，后者用于测试使用。</span></span></p></div><div id="https://www.notion.so/1f78d92a16574688b89822d3dbf28e70" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">ListenerBus 提供了添加、移除 listener 的常用功能，代码比较简单，此处不做赘述，重点关注 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">postToAll</code></span><span class="SemanticString"> 方法。这个方法会将遍历注册的 Listener，并将 Event 投递给各个 Listener。</span></span></p></div><div id="https://www.notion.so/26185c7d5c324de388d63795b4212b65" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">这里需要说明下，每个 ListenerBus 子类都会持有各自的 Listener 类型，并且都会实现各自的 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.util.ListenerBus#doPostEvent</code></span><span class="SemanticString"> 方法，通常就是将 Event 直接投递给 Listener，以 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">SparkListenerBus</code></span><span class="SemanticString"> 为例，其实实现如下：</span></span></p></div><pre id="https://www.notion.so/1b0375d5231d4f61b822ab7385538f80" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> private[spark] trait SparkListenerBus
-   extends ListenerBus[SparkListenerInterface, SparkListenerEvent] {
- 
-   protected override def doPostEvent(
-       listener: SparkListenerInterface,
-       event: SparkListenerEvent): Unit = {
-     event match {
-       case stageSubmitted: SparkListenerStageSubmitted =&gt;
-         listener.onStageSubmitted(stageSubmitted)
-       case stageCompleted: SparkListenerStageCompleted =&gt;
-         listener.onStageCompleted(stageCompleted)
-       case jobStart: SparkListenerJobStart =&gt;
-         listener.onJobStart(jobStart)
-       // 后续代码省略...</span></span></span></code></pre><div id="https://www.notion.so/efbf8bd69aa343d186444fdc26c96eb2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">这种结构本质上是一种监听者模式，各个 ListenerBus 子类只需要在 doPostEvent 方法中专注于自己关心的 Event 投递即可，后续也可以很方便地扩展关心的事件。</span></span></p></div><h2 id="https://www.notion.so/ddd352b694cc46b6bb143738ce2a23cd" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/ddd352b694cc46b6bb143738ce2a23cd"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2. Listener 概述</strong></span></span></h2><div id="https://www.notion.so/b5199c4e7d564471a08a1d0651f63216" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">虽然 ListenerBus 维护了一组注册的 Listener，但并没有为其定义一个公共的 Listener 接口，从其定义也可以看出来：</span></span></p></div><pre id="https://www.notion.so/167fb6a8cc4d4270bee729608f4721ff" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> private[spark] trait ListenerBus[L &lt;: AnyRef, E] extends Logging {
-   ...
- }</span></span></span></code></pre><div id="https://www.notion.so/8ce657931c494b86aa772af6d6ea24ec" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其实各个 ListenerBus 都有各自不同的 Listener 类型，这里以最常用的事件总线 SparkListenerBus、事件监听器 SparkListener 以及事件类型 SparkListenerEvent 举例说明。</span></span></p></div><div id="https://www.notion.so/a576d158f5c84fbd9e94f6f5e022b729" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">查看 SparkListenerBus 定义如下：</span></span></p></div><pre id="https://www.notion.so/698f02d259684350bf4d169ee5af617d" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> private[spark] trait SparkListenerBus
-   extends ListenerBus[SparkListenerInterface, SparkListenerEvent] {
-   ...
- }</span></span></span></code></pre><div id="https://www.notion.so/4a5dedc76a454b8e9d304b54913464c5" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到 SparkListenerBus 持有的是一个 SparkListenerInterface 类型的 Listener，这个接口的实现类有很多，其中最常见的就是 SparkListener，其定义如下：</span></span></p></div><pre id="https://www.notion.so/5b3338e8796b4076998b3771721d1617" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> @DeveloperApi
- abstract class SparkListener extends SparkListenerInterface {
-   override def onStageCompleted(stageCompleted: SparkListenerStageCompleted): Unit = { }
- 
-   override def onStageSubmitted(stageSubmitted: SparkListenerStageSubmitted): Unit = { }
-   ...
- }</span></span></span></code></pre><div id="https://www.notion.so/9598e035e1e4419d8da414eea99ece03" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其中每个 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">onXXX</code></span><span class="SemanticString"> 方法都对应了 Spark 在运行时各个阶段的生命周期，每个生命周期关心的事件也不同，其定义如下：</span></span></p></div><pre id="https://www.notion.so/a4b89c15a5b7418f98dd3fcad1cb2efe" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> @DeveloperApi
- case class SparkListenerStageCompleted(stageInfo: StageInfo) extends SparkListenerEvent</span></span></span></code></pre><div id="https://www.notion.so/ee87f24a51f74acbb176cbfe4f623745" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，其实这些事件都是 SparkListenerEvent 的实现。</span></span></p></div><h2 id="https://www.notion.so/adf590f3748a480e92613d63497a51b3" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/adf590f3748a480e92613d63497a51b3"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">3. 事件投递</strong></span></span></h2><div id="https://www.notion.so/1316d5f5a91d4a4383fbfe1006f2983a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">外部系统也是通过 ListenerBus 来投递 Event 的，以 SparkContext 为例，其维护了一个 _listenerBus 变量：</span></span></p></div><pre id="https://www.notion.so/e8c972bcd4774688bf20f3f613487fd8" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> private var _listenerBus: LiveListenerBus = _
- _listenerBus = new LiveListenerBus(_conf)</span></span></span></code></pre><div id="https://www.notion.so/483b0521b9cc43288a8d1645f61a1f99" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Spark 2.3 版本之前，LiveListenerBus 也是 ListenerBus 的子类，从 2.3 开始剥离了出来，改为存储多个 </span><span class="SemanticString"><em class="SemanticString__Fragment SemanticString__Fragment--Italic">org.apache.spark.scheduler.AsyncEventQueue</em></span><span class="SemanticString">（其父类正是 </span><span class="SemanticString"><em class="SemanticString__Fragment SemanticString__Fragment--Italic">SparkListenerBus</em></span><span class="SemanticString">）对象，由 SparkContext 按需添加。</span></span></p></div><div id="https://www.notion.so/5ba829588a404ea5aa61c76c3b9fba1b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">查看 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.SparkContext#postApplicationEnd</code></span><span class="SemanticString"> 方法，可以看到，SparkContext 调用了 LiveListenerBus 的 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">post()</code></span><span class="SemanticString"> 方法：</span></span></p></div><pre id="https://www.notion.so/106c6bd8c9a8463b9f10acc301eb588d" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   /** Post the application start event */
-   private def postApplicationStart(): Unit = {
-     // Note: this code assumes that the task scheduler has been initialized and has contacted
-     // the cluster manager to get an application ID (in case the cluster manager provides one).
-     listenerBus.post(SparkListenerApplicationStart(appName, Some(applicationId),
-       startTime, sparkUser, applicationAttemptId, schedulerBackend.getDriverLogUrls,
-       schedulerBackend.getDriverAttributes))
-     _driverLogger.foreach(_.startSync(_hadoopConfiguration))
-   }</span></span></span></code></pre><div id="https://www.notion.so/1e67cb70a7f7422cb6c1434c1a4ac1d4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">post()</code></span><span class="SemanticString"> 方法实现如下：</span></span></p></div><pre id="https://www.notion.so/3a921894e6a146488e3f8edf186c99f0" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   /** Post an event to all queues. */
-   def post(event: SparkListenerEvent): Unit = {
-     if (stopped.get()) {
-       return
-     }
- 
-     metrics.numEventsPosted.inc()
- 
-     // If the event buffer is null, it means the bus has been started and we can avoid
-     // synchronization and post events directly to the queues. This should be the most
-     // common case during the life of the bus.
-     if (queuedEvents == null) {
-       postToQueues(event)
-       return
-     }
- 
-     // Otherwise, need to synchronize to check whether the bus is started, to make sure the thread
-     // calling start() picks up the new event.
-     synchronized {
-       if (!started.get()) {
-         queuedEvents += event
-         return
-       }
-     }
- 
-     // If the bus was already started when the check above was made, just post directly to the
-     // queues.
-     postToQueues(event)
-   }</span></span></span></code></pre><div id="https://www.notion.so/11c999f265d34e1e9735ad713ff253bc" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其中 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">postToQueues</code></span><span class="SemanticString"> 实际上就是将事件投递到 </span><span class="SemanticString"><em class="SemanticString__Fragment SemanticString__Fragment--Italic">AsyncEventQueue</em></span><span class="SemanticString">：</span></span></p></div><pre id="https://www.notion.so/a2cc640448d8462cb7cd11af43e989c1" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   private def postToQueues(event: SparkListenerEvent): Unit = {
-     val it = queues.iterator()
-     while (it.hasNext()) {
-       it.next().post(event)
-     }
-   }</span></span></span></code></pre><div id="https://www.notion.so/fbfd0f7dd19943eab9ec361c92d302aa" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">再来看下 </span><span class="SemanticString"><em class="SemanticString__Fragment SemanticString__Fragment--Italic">AsyncEventQueue</em></span><span class="SemanticString"> 的 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">post()</code></span><span class="SemanticString"> 方法：</span></span></p></div><pre id="https://www.notion.so/39bf3709468941c691bc941eb297954b" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   def post(event: SparkListenerEvent): Unit = {
-     if (stopped.get()) {
-       return
-     }
- 
-     eventCount.incrementAndGet()
-     if (eventQueue.offer(event)) {
-       return
-     }
- 
-     eventCount.decrementAndGet()
-     droppedEvents.inc()
-     droppedEventsCounter.incrementAndGet()
-     if (logDroppedEvent.compareAndSet(false, true)) {
-       // Only log the following message once to avoid duplicated annoying logs.
-       logError(s&quot;Dropping event from queue $name. &quot; +
-         &quot;This likely means one of the listeners is too slow and cannot keep up with &quot; +
-         &quot;the rate at which tasks are being started by the scheduler.&quot;)
-     }
-     logTrace(s&quot;Dropping event $event&quot;)
- 
-     val droppedEventsCount = droppedEventsCounter.get
-     val droppedCountIncreased = droppedEventsCount - lastDroppedEventsCounter
-     val lastReportTime = lastReportTimestamp.get
-     val curTime = System.currentTimeMillis()
-     // Don&#x27;t log too frequently
-     if (droppedCountIncreased &gt; 0 &amp;&amp; curTime - lastReportTime &gt;= LOGGING_INTERVAL) {
-       // There may be multiple threads trying to logging dropped events,
-       // Use &#x27;compareAndSet&#x27; to make sure only one thread can win.
-       if (lastReportTimestamp.compareAndSet(lastReportTime, curTime)) {
-         val previous = new java.util.Date(lastReportTime)
-         lastDroppedEventsCounter = droppedEventsCount
-         logWarning(s&quot;Dropped $droppedCountIncreased events from $name since &quot; +
-           s&quot;${if (lastReportTime == 0) &quot;the application started&quot; else s&quot;$previous&quot;}.&quot;)
-       }
-     }
-   }</span></span></span></code></pre><div id="https://www.notion.so/84134707ec334810a370d4086d48fbfc" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，</span><span class="SemanticString"><em class="SemanticString__Fragment SemanticString__Fragment--Italic">AsyncEventQueue</em></span><span class="SemanticString"> 会将接收到的事件放到一个阻塞队列里，并启动一个线程去持续消费这个队列里的事件：</span></span></p></div><pre id="https://www.notion.so/6910883a618a49d5bb0322e18e995970" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   private val dispatchThread = new Thread(s&quot;spark-listener-group-$name&quot;) {
-     setDaemon(true)
-     override def run(): Unit = Utils.tryOrStopSparkContext(sc) {
-       dispatch()
-     }
-   }
- 
-   private def dispatch(): Unit = LiveListenerBus.withinListenerThread.withValue(true) {
-     var next: SparkListenerEvent = eventQueue.take()
-     while (next != POISON_PILL) {
-       val ctx = processingTime.time()
-       try {
-         super.postToAll(next)
-       } finally {
-         ctx.stop()
-       }
-       eventCount.decrementAndGet()
-       next = eventQueue.take()
-     }
-     eventCount.decrementAndGet()
-   }</span></span></span></code></pre><div id="https://www.notion.so/2f869a147ac146f0bf20473d7e40a123" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">通过 Spark UI 界面，也可以看到 &quot;spark-listener-group-$name&quot; 线程：</span></span></p></div><div id="https://www.notion.so/53341052cafd483ab945ef30015b642d" class="Image Image--PageWidth"><figure><a href="https://gitee.com/zhxuankun/Image/raw/master/ARTS_Tips/image-20210611222728321.png"><img src="https://gitee.com/zhxuankun/Image/raw/master/ARTS_Tips/image-20210611222728321.png" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/eaa413e0b9ee4718b864f9975ad8ff47" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">此处注意 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">dispatch()</code></span><span class="SemanticString"> 方法里的 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">super.postToAll(next)</code></span><span class="SemanticString">，可以看到，这里也调用了父类 ListenerBus 的事件投递方法，将 Event 分发给了其他所有 Listener。</span></span></p></div><h2 id="https://www.notion.so/8e535ba343284197be09ed47ae1cbbd7" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/8e535ba343284197be09ed47ae1cbbd7"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">4. 如何使用消息总线</strong></span></span></h2><div id="https://www.notion.so/4f14ca04ac004432b60d035752d5bb96" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Spark 对消息总线进行了高度封装，再回顾下 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">org.apache.spark.SparkContext#postApplicationEnd</code></span><span class="SemanticString"> 方法：</span></span></p></div><pre id="https://www.notion.so/ff0d969683c2436c877dd7d35c109d3f" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   /** Post the application start event */
-   private def postApplicationStart(): Unit = {
-     // Note: this code assumes that the task scheduler has been initialized and has contacted
-     // the cluster manager to get an application ID (in case the cluster manager provides one).
-     listenerBus.post(SparkListenerApplicationStart(appName, Some(applicationId),
-       startTime, sparkUser, applicationAttemptId, schedulerBackend.getDriverLogUrls,
-       schedulerBackend.getDriverAttributes))
-     _driverLogger.foreach(_.startSync(_hadoopConfiguration))
-   }</span></span></span></code></pre><div id="https://www.notion.so/cb1819c274cf40ae8b985685d61f4eb2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，Spark 内部在提交 Event 的时候，已经包含了很丰富的信息，并且我们也知道，这些事件最终会被投递给其他 Listener。</span></span></p></div><div id="https://www.notion.so/e8cdbd1f56164440ba4238075e170350" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">因此如果想要获取这些消息事件，方式十分简单，只需要实现自己的 Listener 并注册到 SparkContext 中即可。</span></span></p></div><div id="https://www.notion.so/ed449b9919864af1a46a6effd586df93" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">继续以 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">SparkListener</code></span><span class="SemanticString"> 为例，我们只需要在 SparkContext 中添加自定义 Listener，重写需要的生命周期方法，这里只重写 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">onTaskEnd</code></span><span class="SemanticString"> 方法：</span></span></p></div><pre id="https://www.notion.so/83ed9d492f2c431a9f2f33bc0542605a" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   def main(args: Array[String]): Unit = {
-     val spark = SparkSession
-       .builder()
-       .appName(&quot;zkx-test1&quot;)
-       .master(&quot;local[2]&quot;)
-       .getOrCreate()
-     spark.sparkContext.addSparkListener(new SparkListener {
-       override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit = println(&quot;Task End...&quot;)
-     })
-     spark.sql(&quot;SELECT 1&quot;).show()
-   }</span></span></span></code></pre><div id="https://www.notion.so/d60560a752f844c68c53f56af2824df2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">执行后输出如下：</span></span></p></div><pre id="https://www.notion.so/9ebfb0656b1248a69a69df0ea997e213" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> ...
- 21/06/12 15:57:26 INFO DAGScheduler: Job 0 finished: show at TransportRPCTest.scala:19, took 0.823017 s
- Task End...
- 21/06/12 15:57:26 INFO CodeGenerator: Code generated in 21.0197 ms
- +---+
- |  1|
- +---+
- |  1|
- +---+
- ...</span></span></span></code></pre></article>
+      {{post.contentHTML}}
   <footer class="Footer">
-        <div>&copy; Rianico‘s Blog 2019</div>
+        <div>&copy; {{siteMeta.title}} 2019</div>
         <div>&centerdot;</div>
         <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
             rel="noopener noreferrer">Notablog</a>.

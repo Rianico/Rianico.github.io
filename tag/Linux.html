@@ -9,15 +9,15 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <!-- Chrome, Firefox OS and Opera Status Bar Color -->
   <meta name="theme-color" content="#FFFFFF">
-  <meta property="og:title" content="#Linux — Rianico‘s Blog">
-  <meta name="description" content="All posts tagged with Linux">
-  <meta property="og:description" content="All posts tagged with Linux">
+  <meta property="og:title" content="#{{tagName}} — {{siteMeta.title}}">
+  <meta name="description" content="All posts tagged with {{tagName}}">
+  <meta property="og:description" content="All posts tagged with {{tagName}}">
   <meta property="og:type" content="blog">
-  <title>#Linux — Rianico‘s Blog</title>
+  <title>#{{tagName}} — {{siteMeta.title}}</title>
   <!-- Favicon -->
-  
-  <link rel="shortcut icon" href="https://avatars1.githubusercontent.com/u/32795735?s=400&u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&v=4">
-  
+  {{if(options.siteMeta.icon)}}
+  <link rel="shortcut icon" href="{{siteMeta.icon}}">
+  {{/if}}
   <base href="../">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
   <link rel="stylesheet" type="text/css"
@@ -35,100 +35,52 @@
 <body>
   <nav class="Navbar">
     <a href="index.html">
-      <div class="Navbar__Btn"><span><img class="inline-img-icon" src="https://avatars1.githubusercontent.com/u/32795735?s=400&u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&v=4"></span> <span>Home</span></div>
+      <div class="Navbar__Btn">{{siteMeta.iconHTML}} <span>Home</span></div>
     </a>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    {{each(options.siteMeta.pages)}}
+    {{if(@this.publish && @this.inMenu)}}
     <span class="Navbar__Delim">&centerdot;</span>
-    <a href="about.html">
-      <div class="Navbar__Btn"><span><img class="inline-img-icon" src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F88bfa795-fb50-42ad-b5f9-821f35ee821d%2Fgithub_(2).png?table=block&id=457ca390-7a74-4a2f-9c26-1613b0d49d9c"></span> <span>About</span></div>
+    <a href="{{@this.url}}">
+      <div class="Navbar__Btn">{{@this.iconHTML}} <span>{{@this.title}}</span></div>
     </a>
-    
-    
+    {{/if}}
+    {{/each}}
   </nav>
   <header class="Header">
     <div class="Header__Spacer--NoCover"></div>
-    <h1 class="Header__Title"># Linux</h1>
+    <h1 class="Header__Title"># {{tagName}}</h1>
   </header>
   <article class="ArticleList">
-    
-      
+    {{each(options.pages)}}
+      {{if(@this.publish && @this.inList)}}
     <article class="Article">
       <h3 class="Article__Title">
-            <span><img class="inline-img-icon" src="https://clickhouse.tech/images/logo.svg"></span>
-        <a href="clickhouse-complie.html">
-              ClickHouse 编译
+            {{@this.iconHTML}}
+        <a href="{{@this.url}}">
+              {{@this.title}}
             </a>
           </h3>
-      
+      {{if(@this.descriptionHTML)}}
       <p class="Article__Desc">
-          <span class="SemanticStringArray"><span class="SemanticString">ClickHouse的相关编译步骤。</span></span>
+          {{@this.descriptionHTML}}
       </p>
-      
+      {{/if}}
       <div class="DateTagBar">
-          
-        <span class="DateTagBar__Item DateTagBar__Date">Posted on Thu, May 13, 2021</span>
-          
-          
-        <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--orange">
-            <a href="tag/Linux.html">Linux</a>
+          {{if(@this.date)}}
+        <span class="DateTagBar__Item DateTagBar__Date">Posted on {{@this.dateString}}</span>
+          {{/if}}
+          {{each(@this.tags)}}
+        <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--{{@this.color}}">
+            <a href="tag/{{@this.value}}.html">{{@this.value}}</a>
           </span>
-          
-        <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--purple">
-            <a href="tag/ClickHouse.html">ClickHouse</a>
-          </span>
-          
+          {{/each}}
         </div>
     </article>
-      
-      
-      
-    <article class="Article">
-      <h3 class="Article__Title">
-            <span><img class="inline-img-icon" src="https://gitee.com/zhxuankun/Image/raw/master/Avator/linux.png"></span>
-        <a href="numa-architecture.html">
-              NUMA 架构
-            </a>
-          </h3>
-      
-      <p class="Article__Desc">
-          <span class="SemanticStringArray"><span class="SemanticString">个人对 NUMA 架构的一些理解。</span></span>
-      </p>
-      
-      <div class="DateTagBar">
-          
-        <span class="DateTagBar__Item DateTagBar__Date">Posted on Sun, Feb 21, 2021</span>
-          
-          
-        <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--orange">
-            <a href="tag/Linux.html">Linux</a>
-          </span>
-          
-        </div>
-    </article>
-      
-      
+      {{/if}}
+      {{/each}}
   </article>
   <footer class="Footer">
-        <div>&copy; Rianico‘s Blog 2019</div>
+        <div>&copy; {{siteMeta.title}} 2019</div>
         <div>&centerdot;</div>
         <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
             rel="noopener noreferrer">Notablog</a>.

@@ -9,17 +9,17 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <!-- Chrome, Firefox OS and Opera Status Bar Color -->
   <meta name="theme-color" content="#FFFFFF">
-  <meta property="og:title" content="ClickHouse 编译">
-  
-  <meta name="description" content="ClickHouse的相关编译步骤。">
-  <meta property="og:description" content="ClickHouse的相关编译步骤。">
-  
+  <meta property="og:title" content="{{post.title}}">
+  {{if(options.post.description.length > 0)}}
+  <meta name="description" content="{{post.descriptionPlain}}">
+  <meta property="og:description" content="{{post.descriptionPlain}}">
+  {{/if}}
   <meta property="og:type" content="blog">
-  <title>ClickHouse 编译</title>
+  <title>{{post.title}}</title>
   <!-- Favicon -->
-  
-  <link rel="shortcut icon" href="https://avatars1.githubusercontent.com/u/32795735?s=400&u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&v=4">
-  
+  {{if(options.siteMeta.icon)}}
+  <link rel="shortcut icon" href="{{siteMeta.icon}}">
+  {{/if}}
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
   <link rel="stylesheet" type="text/css"
     href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
@@ -40,100 +40,45 @@
 <body>
   <nav class="Navbar">
     <a href="index.html">
-      <div class="Navbar__Btn"><span><img class="inline-img-icon" src="https://avatars1.githubusercontent.com/u/32795735?s=400&u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&v=4"></span> <span>Home</span></div>
+      <div class="Navbar__Btn">{{siteMeta.iconHTML}} <span>Home</span></div>
     </a>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    {{each(options.siteMeta.pages)}}
+    {{if(@this.publish && @this.inMenu)}}
     <span class="Navbar__Delim">&centerdot;</span>
-    <a href="about.html">
-      <div class="Navbar__Btn"><span><img class="inline-img-icon" src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F88bfa795-fb50-42ad-b5f9-821f35ee821d%2Fgithub_(2).png?table=block&id=457ca390-7a74-4a2f-9c26-1613b0d49d9c"></span> <span>About</span></div>
+    <a href="{{@this.url}}">
+      <div class="Navbar__Btn">{{@this.iconHTML}} <span>{{@this.title}}</span></div>
     </a>
-    
-    
+    {{/if}}
+    {{/each}}
   </nav>
   <header class="Header">
-      
+      {{if(options.post.cover)}}
     <div class="Header__Cover">
-        <img src="https://clickhouse.tech/images/index/intro.svg">
+        <img src="{{post.cover}}">
       </div>
-      
-    <div class="Header__Spacer ">
+      {{/if}}
+    <div class="Header__Spacer {{if(!options.post.cover)}}Header__Spacer--NoCover{{/if}}">
     </div>
-    
-    <div class="Header__Icon"><span><img class="inline-img-icon" src="https://clickhouse.tech/images/logo.svg"></span></div>
-    
-    <h1 class="Header__Title">ClickHouse 编译</h1>
-        
+    {{if(options.post.icon)}}
+    <div class="Header__Icon">{{post.iconHTML}}</div>
+    {{/if}}
+    <h1 class="Header__Title">{{post.title}}</h1>
+        {{if(options.post.date || options.post.tags.length)}}
     <div class="DateTagBar">
-          
-      <span class="DateTagBar__Item DateTagBar__Date">Posted on Thu, May 13, 2021</span>
-          
-          
-      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--orange">
-            <a href="tag/Linux.html">Linux</a>
+          {{if(options.post.date)}}
+      <span class="DateTagBar__Item DateTagBar__Date">Posted on {{post.dateString}}</span>
+          {{/if}}
+          {{each(options.post.tags)}}
+      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--{{@this.color}}">
+            <a href="tag/{{@this.value}}.html">{{@this.value}}</a>
           </span>
-          
-      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--purple">
-            <a href="tag/ClickHouse.html">ClickHouse</a>
-          </span>
-          
+          {{/each}}
         </div>
-        
+        {{/if}}
   </header>
-      <article id="https://www.notion.so/d600871e210c4b1eaafc544ae43ebc34" class="PageRoot PageRoot--FullWidth"><ul id="https://www.notion.so/bb3b8d1114a84d27bbac8cc5b4a4e824" class="ColorfulBlock ColorfulBlock--ColorGray TableOfContents"><li class="TableOfContents__Item"><a href="#https://www.notion.so/743fcc24a1e94ffc8b0f91514ad9f123"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString">前言</span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/5d2f1440321b4eaa832ef4c362c58abe"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1. 版本</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/2fc025f7373d433c8f253e6c822146d2"><div style="margin-left:24px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1.1 ClickHouse</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/486352068b6b478eb3caa837ff373245"><div style="margin-left:24px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1.2 安装 ninja</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/ab63162cb57446cba9c270fbfa9dfc92"><div style="margin-left:24px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1.3 安装 gcc</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/34a35d8ceebc4de8840d23346633f1c5"><div style="margin-left:24px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1.4 安装 cmake</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/404f1472dd6148fa9def90a4869a5ff2"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2. 编译</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/d3548286fdb44e0f99ebd5493f8621ba"><div style="margin-left:24px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2.1 x86 平台</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/aea7435c7aa84d99aa463da9d160a0ca"><div style="margin-left:24px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2.2 鲲鹏服务器 + ARM 平台</strong></span></span></div></a></li></ul><h2 id="https://www.notion.so/743fcc24a1e94ffc8b0f91514ad9f123" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/743fcc24a1e94ffc8b0f91514ad9f123"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">前言</span></span></h2><div id="https://www.notion.so/bb31ec40314246d1ad3bc769a0cccc44" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">应同事请求协助帮忙编译 ClickHouse，虽然个人对 ClickHouse 及 C++ 语言不熟悉，但编译其实万变不离其宗，把控好网络、组件版本、环境变量，再严格遵循官网编译步骤，其实可以解决绝大部分的软件编译问题。</span></span></p></div><div id="https://www.notion.so/7819b274f83e47c2b99227d978c5b32f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">PS：Docker 可以很好的解决编译环境的问题，这或许也是近年来越来越多项目提供 docker 编译方式的原因吧。</span></span></p></div><h2 id="https://www.notion.so/5d2f1440321b4eaa832ef4c362c58abe" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/5d2f1440321b4eaa832ef4c362c58abe"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1. 版本</strong></span></span></h2><h3 id="https://www.notion.so/2fc025f7373d433c8f253e6c822146d2" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/2fc025f7373d433c8f253e6c822146d2"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1.1 ClickHouse</strong></span></span></h3><div id="https://www.notion.so/a2fc3de312f14b8da375f8cfc08146a9" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">拉取 ClickHouse 镜像，这里使用码云上的镜像进行加速：</span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">git clone https://gitee.com/mirrors/clickhouse.git</code></span><span class="SemanticString">，并切换为 20.6.6.7 分支。</span></span></p></div><h3 id="https://www.notion.so/486352068b6b478eb3caa837ff373245" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/486352068b6b478eb3caa837ff373245"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1.2 安装 ninja</strong></span></span></h3><div id="https://www.notion.so/3cddfbcceb2d4740a2e70a095f738eaa" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">这里安装 ninja 1.9，参考ninja 官网：</span><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="http://blog.fpliu.com/it/software/ninja">http://blog.fpliu.com/it/software/ninja</a></span><span class="SemanticString"> 。
-ClickHouse 20.6.6.7 要求至少 1.8，这里直接按照 ninja 官网首页来：</span></span></p></div><pre id="https://www.notion.so/ebac34306edc48dbb3bd35a5b624ed09" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> <span class="token function">curl</span> -LO https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip
- <span class="token function">unzip</span> ninja-linux.zip -d ~/bin
- <span class="token builtin class-name">export</span> <span class="token assign-left variable"><span class="token environment constant">PATH</span></span><span class="token operator">=</span><span class="token environment constant">$PATH</span>:~/bin
- <span class="token comment"># 此处建立软连接，否则编译时会提示找不到 ninja</span>
- <span class="token function">ln</span> -s ~/bin/ninja /usr/bin/ninja-build</span></span></span></code></pre><h3 id="https://www.notion.so/ab63162cb57446cba9c270fbfa9dfc92" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/ab63162cb57446cba9c270fbfa9dfc92"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1.3 安装 gcc</strong></span></span></h3><div id="https://www.notion.so/9febd93bf20d40f2ad4aadb688e148e7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">根据官网教程，ck 20.6.6.7 版本应使用 gcc-9，这里使用 devtoolset 来进行 gcc 版本的切换。</span></span></p></div><div id="https://www.notion.so/75635353412f40528a41c788240afce3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">如果 gcc 版本不为 9，且安装了其他版本的 devtoolset，记得先卸载掉 devtoolset。</span></span></p></div><div id="https://www.notion.so/b6aba44ba53146d599b5bb387eea087b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">安装 devtoolset-9，并切换为 gcc-9，参照 </span><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://www.cnblogs.com/52fhy/p/12547521.html">https://www.cnblogs.com/52fhy/p/12547521.html</a></span><span class="SemanticString"> ：</span></span></p></div><pre id="https://www.notion.so/168d206890fa4d3198e0520fcf2eab66" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> yum -y <span class="token function">install</span> centos-release-scl
- yum -y <span class="token function">install</span> devtoolset-9-gcc devtoolset-9-gcc-c++ devtoolset-9-binutils
- scl <span class="token builtin class-name">enable</span> devtoolset-9 <span class="token function">bash</span></span></span></span></code></pre><h3 id="https://www.notion.so/34a35d8ceebc4de8840d23346633f1c5" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/34a35d8ceebc4de8840d23346633f1c5"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1.4 安装 cmake</strong></span></span></h3><div id="https://www.notion.so/b4160ff89d0d478e88e7ecf32d935079" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">cmake 版本至少 3 以上：</span></span></p></div><pre id="https://www.notion.so/e3974334ae1d4d1e839b474e37bf73a5" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> $ cmake --version
- cmake version <span class="token number">3.14</span>.5</span></span></span></code></pre><h2 id="https://www.notion.so/404f1472dd6148fa9def90a4869a5ff2" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/404f1472dd6148fa9def90a4869a5ff2"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2. 编译</strong></span></span></h2><h3 id="https://www.notion.so/d3548286fdb44e0f99ebd5493f8621ba" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/d3548286fdb44e0f99ebd5493f8621ba"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2.1 x86 平台</strong></span></span></h3><div id="https://www.notion.so/efaf7f7169b54973a9888f2a60b188f9" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">重点</strong></span><span class="SemanticString">：在前面规整了各编译组件的版本后，本质上还出现编译错误的原因都是 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">ClickHouse 的依赖包下载不全或者下载错误</strong></span><span class="SemanticString">，这里通过修改 ClickHouse 依赖的子模块为码云 gitee 仓库解决。</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/26af475bca5c4120896ac36b130eabcb" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">码云为编译 ClickHouse 所建的镜像仓库（优先使用）：</span><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://gitee.com/organizations/ClickHouse-Build/projects">https://gitee.com/organizations/ClickHouse-Build/projects</a></span></span></li><li id="https://www.notion.so/50af273a6a374dfd95b1346d42b89966" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">码云为绝大部分 github 项目建立的镜像仓库：</span><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://gitee.com/organizations/mirrors/projects">https://gitee.com/organizations/mirrors/projects</a></span></span></li><li id="https://www.notion.so/87ae9167f0a5486b9d35923c194a0e8f" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">码云为 apache 项目建立的镜像仓库：</span><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://gitee.com/organizations/mirrors_apache/projects">https://gitee.com/organizations/mirrors_apache/projects</a></span></span></li></ul><div id="https://www.notion.so/d8546e6b619345cea523ce8da68c7e69" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">上述几个仓库，都是码云官方拉取了 github 上的仓库，为国内提供加速的。</span></span></p></div><div id="https://www.notion.so/15c6a5e398be4737a13f5d12094d60c4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">知道这上面三个仓库后，我们需要做的就是将 ClickHouse 依赖的子项目配置及其子项目依赖的子项目（部分子项目也有自身依赖的子项目）替换为码云上的仓库：</span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">sed -i -r  &quot;s/github.com\/.+\//gitee.com\/ClickHouse-Build\//g&quot; .gitmodules</code></span><span class="SemanticString">。</span></span></p></div><blockquote id="https://www.notion.so/39ef4deb008741ae8d8083b6523a3404" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">NOTE：上述命令只是举个例子，实际上需要根据具体场景，将各个 git 项目下的 github 路径替换为 gitee 路径。之所以列出三个镜像仓库，是因为部分子项目在 ClickHouse-Build 中也没有，此时需要到剩余两个仓库中寻找并手动替换。当然更好的方法是能够搭建一个 vpn，这样就无需自己手动替换了。</span></span></blockquote><blockquote id="https://www.notion.so/0ae8f4633a51415cb20becbd19aa76bf" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">NOTE：子项目的含义请自行了解 git 的 submodule 概念。</span></span></blockquote><div id="https://www.notion.so/51f5f518b2bb4148b78405eba46c3363" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">替换完成后，在 ClickHouse 顶级目录执行 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">git submodule sync --recursive</code></span><span class="SemanticString"> 同步修改的子项目配置，之后再执行 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">git submodule update --init --recursive</code></span><span class="SemanticString"> 拉取子项目，根据报错提示，逐个修改子模块的仓库路径。</span></span></p></div><div id="https://www.notion.so/2fc7661776c642d290aa43715da26638" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">需要注意的是，有部分子项目的项目命名在 gitee 跟 github 上有一点区别，这里逐个列出：</span></span></p></div><pre id="https://www.notion.so/b10282855cf249079331c5551bdee99d" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> <span class="token comment"># vim $ClickHouse_HOME/.gitmodules</span>
- 
- <span class="token punctuation">[</span>submodule <span class="token string">"contrib/aws"</span><span class="token punctuation">]</span>
-     path <span class="token operator">=</span> contrib/aws
-     url <span class="token operator">=</span> https://github.com/ClickHouse-Extras/aws-sdk-cpp.git
- <span class="token comment"># 替换为</span>
- <span class="token punctuation">[</span>submodule <span class="token string">"contrib/aws"</span><span class="token punctuation">]</span>
-         path <span class="token operator">=</span> contrib/aws
-         url <span class="token operator">=</span> https://gitee.com/ClickHouse-Build/aws.git</span></span></span></code></pre><div id="https://www.notion.so/430dca6b168b4705bfb69edda78d8ef2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">最后在 ClickHouse 顶级目录执行下列命令进行编译：</span></span></p></div><pre id="https://www.notion.so/5b4b3b07767641a1ae891d3ffa0fa3da" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> <span class="token comment"># 参考：https://clickhouse.tech/docs/v20.3/en/development/build/</span>
- $ <span class="token builtin class-name">export</span> <span class="token assign-left variable">CC</span><span class="token operator">=</span>gcc-9
- $ <span class="token builtin class-name">export</span> <span class="token assign-left variable">CXX</span><span class="token operator">=</span>g++-9
- $ <span class="token builtin class-name">cd</span> ClickHouse
- $ <span class="token function">mkdir</span> build
- $ <span class="token builtin class-name">cd</span> build
- <span class="token comment"># 执行 cmake 的时候，一定要仔细观察输出信息，详见下述文字详细说明</span>
- $ cmake <span class="token punctuation">..</span>
- $ ninja clickhouse
- $ <span class="token builtin class-name">cd</span> <span class="token punctuation">..</span></span></span></span></code></pre><div id="https://www.notion.so/b4ae81a78ed84a0fad6e3b9646d829e0" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">执行 cmake 的时候，一定要仔细观察输出信息，若出现下述信息：</span></span></p></div><pre id="https://www.notion.so/b803c1187ddd455bb56eb9ab11d8e783" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> ......
- -- The following OPTIONAL packages have not been found:
- 
-  * Arrow
-  * Parquet
- ......</span></span></span></code></pre><div id="https://www.notion.so/43348f2df48e4ac882db9991aac1e762" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">那么需要仔细检查 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">$ClickHouse_HOME/contrib</code></span><span class="SemanticString"> 下对应的模块是否存在，以及 .gitmodules 对应模块的配置是否正确，否则会导致编译失败。
-如果发现模块拉取失败，则可以删除 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">$ClickHouse_HOME/contrib/模块</code></span><span class="SemanticString"> 的文件夹，然后重新执行 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">git submodule sync --recursive</code></span><span class="SemanticString"> 以及 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">git submodule update --init --recursive</code></span><span class="SemanticString"> 重新拉取模块。</span></span></p></div><div id="https://www.notion.so/fc0f81e7a5fa47e3996f018975bef2ba" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">最后会生成  </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">$ClickHouse_HOME/build/programs/clickhouse</code></span><span class="SemanticString"> 可执行文件，用于启动 client、server 等。</span></span></p></div><div id="https://www.notion.so/430661de008d45febb14e2488f133c37" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">官网教程： </span><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://gitee.com/ClickHouse-Build/aws.git">https://gitee.com/ClickHouse-Build/aws.git</a></span></span></p></div><h3 id="https://www.notion.so/aea7435c7aa84d99aa463da9d160a0ca" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/aea7435c7aa84d99aa463da9d160a0ca"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2.2 鲲鹏服务器 + ARM 平台</strong></span></span></h3><div id="https://www.notion.so/dae83affcc10418084f91b54c3d60c5f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">对于 鲲鹏服务器 + ARM 平台，通过华为的技术人员得知，在编译时需要执行一些额外步骤：</span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/48ff3161b79d452387808ee8a8c07169" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">修改contrib/CMakeLists.txt，WITH 1修改为WITH 0：</span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">sed -i &#x27;s!WITH_ACLE 1!WITH_ACLE 0!g&#x27; contrib/CMakeLists.txt</code></span></span></li><li id="https://www.notion.so/1c8376b72b5547689551aff3f0646f87" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">关闭 WERROE：</span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">sed -i &#x27;s!WERROR &quot;Enable -Werror compiler option&quot; ON!WERROR &quot;Enable -Werror compiler option&quot; OFF!g&#x27; CMakeLists.txt</code></span></span></li><li id="https://www.notion.so/fe2bac08527743e29316bded22a23edf" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">对于 GCC 9.1 以上，可以添加 ARM 独有优化，</span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">vim cmake/cpu_features.cmake</code></span><span class="SemanticString"> 添加如下内容：</span></span><pre id="https://www.notion.so/a6e24a424bcd405182d14f73963056ac" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> <span class="token keyword">if</span> <span class="token punctuation">(</span>ARCH_AARCH64<span class="token punctuation">)</span>
-     <span class="token function">set</span> <span class="token punctuation">(</span>COMPILER_FLAGS <span class="token string">"${COMPILER_FLAGS}   -march=armv8.2-a+fp+simd+crc+lse  -mtune=tsv110 -fPIC "</span><span class="token punctuation">)</span>
- <span class="token function">endif</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span></span></span></code></pre></li><li id="https://www.notion.so/8101f51c67584a7ebfa56e48cb209dcd" class="NumberedList" value="4"><span class="SemanticStringArray"><span class="SemanticString">执行 cmake 时需要关闭 unwind（ARM 不支持，且仅在异常测试的时候使用）：</span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">cmake3 .. -DENABLE_TCMALLOC=OFF -DUSE_UNWIND=OFF -DENABLE_JEMALLOC=OFF -DCMAKE_INSTALL_PREFIX</code></span></span></li></ol></article>
+      {{post.contentHTML}}
   <footer class="Footer">
-        <div>&copy; Rianico‘s Blog 2019</div>
+        <div>&copy; {{siteMeta.title}} 2019</div>
         <div>&centerdot;</div>
         <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
             rel="noopener noreferrer">Notablog</a>.
