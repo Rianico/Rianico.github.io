@@ -3,34 +3,38 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Chrome, Firefox OS and Opera Status Bar Color -->
-  <meta name="theme-color" content="#FFFFFF">
-  <meta property="og:title" content="{{post.title}}">
-  {{if(options.post.description.length > 0)}}
-  <meta name="description" content="{{post.descriptionPlain}}">
-  <meta property="og:description" content="{{post.descriptionPlain}}">
-  {{/if}}
-  <meta property="og:type" content="blog">
-  <title>{{post.title}}</title>
-  <!-- Favicon -->
-  {{if(options.siteMeta.icon)}}
-  <link rel="shortcut icon" href="{{siteMeta.icon}}">
-  {{/if}}
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
-  <link rel="stylesheet" type="text/css"
-    href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
-  <link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
-  <link rel="stylesheet" type="text/css" href="css/notablog.css">
-  <link rel="stylesheet" type="text/css" href="css/theme.css">
-  <style>
-    :root {
-      font-size: 18px;
-    }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
 
+  <link rel="shortcut icon" href="https://avatars1.githubusercontent.com/u/32795735?s=400&amp;u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&amp;v=4">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>DirectMemory 的回收与 PhantomReference&nbsp;|&nbsp;Rianico‘s Blog</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="DirectMemory 的回收与 PhantomReference">
+  
+    <meta name="description" content="DirectMemory 的回收及利用 PhantonReference 实现回收的方式">
+    <meta property="og:description" content="DirectMemory 的回收及利用 PhantonReference 实现回收的方式">
+  
+  
+    <meta property="og:image" content="https://www.oracle.com/a/ocom/img/obic-java-cup.svg">
+  
+  <style>
     .DateTagBar {
       margin-top: 1.0rem;
     }
@@ -39,51 +43,165 @@
 
 <body>
   <nav class="Navbar">
-    <a href="index.html">
-      <div class="Navbar__Btn">{{siteMeta.iconHTML}} <span>Home</span></div>
-    </a>
-    {{each(options.siteMeta.pages)}}
-    {{if(@this.publish && @this.inMenu)}}
-    <span class="Navbar__Delim">&centerdot;</span>
-    <a href="{{@this.url}}">
-      <div class="Navbar__Btn">{{@this.iconHTML}} <span>{{@this.title}}</span></div>
-    </a>
-    {{/if}}
-    {{/each}}
-  </nav>
-  <header class="Header">
-      {{if(options.post.cover)}}
-    <div class="Header__Cover">
-        <img src="{{post.cover}}">
-      </div>
-      {{/if}}
-    <div class="Header__Spacer {{if(!options.post.cover)}}Header__Spacer--NoCover{{/if}}">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="https://avatars1.githubusercontent.com/u/32795735?s=400&amp;u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&amp;v=4"></span>&nbsp;
+      
+      <span>Home</span>
     </div>
-    {{if(options.post.icon)}}
-    <div class="Header__Icon">{{post.iconHTML}}</div>
-    {{/if}}
-    <h1 class="Header__Title">{{post.title}}</h1>
-        {{if(options.post.date || options.post.tags.length)}}
-    <div class="DateTagBar">
-          {{if(options.post.date)}}
-      <span class="DateTagBar__Item DateTagBar__Date">Posted on {{post.dateString}}</span>
-          {{/if}}
-          {{each(options.post.tags)}}
-      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--{{@this.color}}">
-            <a href="tag/{{@this.value}}.html">{{@this.value}}</a>
+  </a>
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F88bfa795-fb50-42ad-b5f9-821f35ee821d%2Fgithub_(2).png?table=block&amp;id=457ca390-7a74-4a2f-9c26-1613b0d49d9c"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+</nav>
+  <header class="Header">
+    
+      <div class="Header__Cover">
+        <img src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F4463e097-75a1-45d2-a554-79b330fd8b0e%2F%E8%83%8C%E6%99%AF1_2.jpg?table=block&amp;id=b032989f-8e5b-4473-a043-397c48c1bb51">
+      </div>
+    
+    <div class="Header__Spacer ">
+    </div>
+    
+      <div class="Header__Icon">
+        <span><img class="inline-img-icon" src="https://www.oracle.com/a/ocom/img/obic-java-cup.svg"></span>
+      </div>
+    
+    <h1 class="Header__Title">DirectMemory 的回收与 PhantomReference</h1>
+    
+      <div class="DateTagBar">
+        
+          <span class="DateTagBar__Item DateTagBar__Date">Posted on Sun, Aug 15, 2021</span>
+        
+        
+          <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--red">
+            <a href="tag/Java.html">Java</a>
           </span>
-          {{/each}}
-        </div>
-        {{/if}}
+        
+      </div>
+    
   </header>
-      {{post.contentHTML}}
+  <article id="https://www.notion.so/b032989f8e5b4473a043397c48c1bb51" class="PageRoot PageRoot--FullWidth"><ul id="https://www.notion.so/3e3b2b707c38456db260aacd494d6f6e" class="ColorfulBlock ColorfulBlock--ColorGray TableOfContents"><li class="TableOfContents__Item"><a href="#https://www.notion.so/eb067d70fe7744239c25b9f61966e2eb"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">关于 JDK8 里的 Cleaner</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/55890b592e9b4805bf0251c888bc744c"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">关于 JDK9 及之后的 Cleaner</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/4f7ac0ae0cfd4d6b943829aa6cf60ce3"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">注意事项</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/17b3dcac76bb4e4ea335fa1efcf9eefc"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">总结</strong></span></span></div></a></li></ul><div id="https://www.notion.so/21ab0d449ff64064879e8b8a7494bbec" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">DirectMemory 并不属于 Java 虚拟机规范的一部分，而是由于 JDK1.4 中引入了 nio，一种基于 channel 与 buffer 的 I/O 方式，可以通过操作 JVM 中的 DirectByteBuffer 对象，调用 Native 函数库在堆外分配</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">堆外内存（DirectMemory）</strong></span><span class="SemanticString">并进行操作，可以避免堆外到堆内对象来回拷贝的开销，以及堆内 GC 的负载。</span></span></p></div><div id="https://www.notion.so/b44564666fa84df0b4acbbdd76e09449" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">这部分内存也是常见的导致 OOM 的原因之一，最明显的一个特征就是</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">当 JVM OOM 时，dump 出来的文件却很小</strong></span><span class="SemanticString">。</span></span></p></div><div id="https://www.notion.so/0cf881ed66e44732ba623caf82752230" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">JVM 可以通过以下以下参数 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">MaxDirectMemorySize</code></span><span class="SemanticString"> 限定堆外内存的最大用量。在 JDK8 版本，如果不指定 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">MaxDirectMemorySize</code></span><span class="SemanticString">，则最大不超过堆内存大小。</span></span></p></div><div id="https://www.notion.so/7453eab7d144494084f74ea51e6b7c60" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在不主动释放的前提下，DirectMemory 往往到了 Full GC 才会回收。其实在调用 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">ByteBuffer.allocateDirect(int capacity)</code></span><span class="SemanticString"> 分配堆外内存时会添加堆外内存的释放逻辑，如下：</span></span></p></div><pre id="https://www.notion.so/d36308d88d184ca884327429f9fe37fb" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>     <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">ByteBuffer</span> <span class="token function">allocateDirect</span><span class="token punctuation">(</span><span class="token keyword">int</span> capacity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">DirectByteBuffer</span><span class="token punctuation">(</span>capacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+ 
+     <span class="token class-name">DirectByteBuffer</span><span class="token punctuation">(</span><span class="token keyword">int</span> cap<span class="token punctuation">)</span> <span class="token punctuation">{</span>                   <span class="token comment">// package-private</span>
+         <span class="token comment">// ...</span>
+         <span class="token comment">// 方法里会调用 System.gc() 尝试回收堆外内存</span>
+         <span class="token class-name">Bits</span><span class="token punctuation">.</span><span class="token function">reserveMemory</span><span class="token punctuation">(</span>size<span class="token punctuation">,</span> cap<span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token comment">// ...</span>
+         <span class="token comment">// 将自身的释放逻辑放入 Cleaner 中，利用 PhantomReference 特性释放堆外内存</span>
+         cleaner <span class="token operator">=</span> <span class="token class-name">Cleaner</span><span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Deallocator</span><span class="token punctuation">(</span>base<span class="token punctuation">,</span> size<span class="token punctuation">,</span> cap<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         att <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span></span></span></span></code></pre><div id="https://www.notion.so/d722fc6b0fea46ad8822acc79c897f41" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其中 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">Deallocator</code></span><span class="SemanticString"> 是一个 Runnable，释放堆外内存的逻辑就在其中：</span></span></p></div><pre id="https://www.notion.so/5072e697109a430cb658b82893c9f556" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token keyword">if</span> <span class="token punctuation">(</span>address <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         <span class="token comment">// Paranoia</span>
+         <span class="token keyword">return</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+     unsafe<span class="token punctuation">.</span><span class="token function">freeMemory</span><span class="token punctuation">(</span>address<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     address <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+     <span class="token class-name">Bits</span><span class="token punctuation">.</span><span class="token function">unreserveMemory</span><span class="token punctuation">(</span>size<span class="token punctuation">,</span> capacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token punctuation">}</span></span></span></span></code></pre><div id="https://www.notion.so/f6d3369c259e4bfaae27874c80dfeee4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">综上，可以看到 JDK 对于 DirectMemory 的回收煞费苦心，光是分配堆外内存时就做了两个保险措施：</span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/4bfbf79cb1de4e6a8c2374022942e009" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">显示调用 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">System.gc()</code></span><span class="SemanticString"> ，但一旦设置了 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">XX:+DisableExplicitGC</code></span><span class="SemanticString"> 则会失效；</span></span></li><li id="https://www.notion.so/dc6bce01a3924ff38b7ad5b6ee7aace3" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">借助 PhantomReference 机制执行回收逻辑，，一旦该 buffer 没有强引用时会被 JVM 回收。</span></span></li></ol><blockquote id="https://www.notion.so/4ec42bd3e39b4c068a746879abc43f96" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">NOTE：从这里也可以看出，为什么 JDK 很多地方有着将变量置为 null 的操作，可以协助更好的 GC。</span></span></blockquote><div id="https://www.notion.so/863ad5c5887d4989a36988f80aa9d661" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">DirectBuffer</code></span><span class="SemanticString"> 也提供了一个 cleaner 接口，可以让我们获取 Cleaner 对象主动执行清理动作：</span></span></p></div><pre id="https://www.notion.so/699dff8d10e64a359496845fc86d96ba" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">DirectBuffer</span><span class="token punctuation">)</span>byteBuffer<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">cleaner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">clean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span></span></span></code></pre><h3 id="https://www.notion.so/eb067d70fe7744239c25b9f61966e2eb" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/eb067d70fe7744239c25b9f61966e2eb"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">关于 JDK8 里的 Cleaner</strong></span></span></h3><div id="https://www.notion.so/c8bd49acc69c444394d445ac9c467901" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Cleaner 继承自 PhantomReference，这是 《深入理解Java虚拟机》对 PhantomReference 的一个描述：</span></span></p></div><blockquote id="https://www.notion.so/990edee6b6cd4608a39e4902cd0901ab" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">虚引用也称为“幽灵引用”或者“幻影引用”，它是最弱的一种引用关系。一个对象是否有虚引用的存在，完全不会对其生存时间构成影响，也无法通过虚引用来取得一个对象实例。为一个对象设置虚引用关联的唯一目的只是为了能在这个对象被收集器回收时收到一个系统通知。在 JDK 1.2 版之后提供 了 PhantomReference 类来实现虚引用。</span></span></blockquote><div id="https://www.notion.so/42c81a2ecb3b47258b8e4eb62cb4b4ce" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">从定义可以看出，PhantomReference 并不影响对象的生命周期，并且无法通过 PhantomReference 获得任何对象引用。</span></span></p></div><div id="https://www.notion.so/49f464f99cec4bc48ca23f5c33fa72c7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">创建一个 Reference 对象时，还需要创建一个 ReferenceQueue。GC 经过可达性分析后如果发现 Reference 是一个已注册的对象且满足回收条件，则会直接将其追加到 ReferenceQueue 中，父类 Reference 的实现中就可以看到会起一个 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">ReferenceHandler</code></span><span class="SemanticString"> 线程去处理队列里的对象。</span></span></p></div><div id="https://www.notion.so/c6ffad3fd4144a43a814b561365b0639" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">编码方式：自定义对象 + Reference 队列 = PhantomReference 包装：</span></span></p></div><pre id="https://www.notion.so/4d262b5b513f4dfd8b3bf20fc682c06d" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> <span class="token class-name">ReferenceQueue</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">></span></span> referenceQueue <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReferenceQueue</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token class-name">Object</span> obj <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token class-name">PhantomReference</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">></span></span> phantomobj <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PhantomReference</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> referenceQueue<span class="token punctuation">)</span></span></span></span></code></pre><div id="https://www.notion.so/4112d74535464c2a87ceaa2145914a85" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">结合 DirectByteBuffer 对 Cleaner 的使用可以看出 PhantomReference 的一个经典应用场景：</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">一个对象确定不再使用后，能够在回收时产生一个通知并执行指定操作</strong></span><span class="SemanticString">。</span></span></p></div><blockquote id="https://www.notion.so/6e3b3b1d92d141bd82c577c4225f3e88" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">NOTE： JVM 虽然提供了 finalized 的机制，但执行该逻辑的是一个低优先级线程，并不保证一定会执行该操作，并且在其中放入开销较大的逻辑还会影响 GC，因此借助 PhantomReference 来实现对象回收时执行期望操作是一个更优的选择。</span></span></blockquote><div id="https://www.notion.so/fefa70e97d1a4455ac24aced38fcf012" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">JDK 提供了 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">sun.misc.Cleaner</code></span><span class="SemanticString"> ，该类继承了 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">PhantomReference</code></span><span class="SemanticString"> 接口，支持传入一个对象以及一个 Runnable 对象：</span></span></p></div><pre id="https://www.notion.so/93702b9729344086b1bbc0d14d55edd1" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">></span></span> objs <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token class-name">Object</span> obj <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     objs<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token comment">// 传入需要跟踪的对象以及不再引用时执行的动作</span>
+     <span class="token class-name">Cleaner</span><span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-></span> <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"clearing..."</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token punctuation">}</span>
+ objs<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">gc</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span></span></span></code></pre><div id="https://www.notion.so/9d80ff7969fc4fdd95ccb2ed55d9d72b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在发生 GC 时，如果 Cleaner 跟踪的对象被回收，那么 Cleaner 会被挪到 Reference 队列中，执行 Runnable 的逻辑：</span></span></p></div><pre id="https://www.notion.so/084c2e9568b847a5975ad16f57d8f2c7" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> <span class="token comment">// sun.misc.Cleaner#clean</span>
+ <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">clean</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         <span class="token keyword">try</span> <span class="token punctuation">{</span>
+             <span class="token comment">// 执行 Runnable 逻辑</span>
+             <span class="token keyword">this</span><span class="token punctuation">.</span>thunk<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token comment">// ...</span>
+ <span class="token punctuation">}</span>
+
+ <span class="token comment">// java.lang.ref.Reference#tryHandlePending</span>
+ <span class="token comment">// Reference 会启动一个 ReferenceHandler 线程不断循环调用 Cleaner 逻辑</span>
+ <span class="token keyword">static</span> <span class="token keyword">boolean</span> <span class="token function">tryHandlePending</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> waitForNotify<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token class-name">Reference</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">></span></span> r<span class="token punctuation">;</span>
+     <span class="token class-name">Cleaner</span> c<span class="token punctuation">;</span>
+     <span class="token comment">// ...</span>
+     <span class="token comment">// Fast path for cleaners</span>
+     <span class="token keyword">if</span> <span class="token punctuation">(</span>c <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         c<span class="token punctuation">.</span><span class="token function">clean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+     <span class="token comment">// ...</span>
+ <span class="token punctuation">}</span></span></span></span></code></pre><h3 id="https://www.notion.so/55890b592e9b4805bf0251c888bc744c" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/55890b592e9b4805bf0251c888bc744c"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">关于 JDK9 及之后的 Cleaner</strong></span></span></h3><div id="https://www.notion.so/23093b6bd98642ab9e244119ce1c33dc" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">从 JDK9 开始，一个 Cleaner 可以注册多个对象及 action：</span></span></p></div><pre id="https://www.notion.so/0b578511c73f4612ad95a484166d6e65" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CleanerTest</span> <span class="token keyword">implements</span> <span class="token class-name">AutoCloseable</span> <span class="token punctuation">{</span>
+ 
+ 
+     <span class="token comment">// A cleaner, preferably one shared within a library</span>
+     <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Cleaner</span> CLEANER <span class="token operator">=</span> <span class="token class-name">Cleaner</span><span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+     <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">State</span> <span class="token keyword">implements</span> <span class="token class-name">Runnable</span> <span class="token punctuation">{</span>
+ 
+         <span class="token class-name">State</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+             <span class="token comment">// initialize State needed for cleaning action</span>
+         <span class="token punctuation">}</span>
+ 
+         <span class="token annotation punctuation">@Override</span>
+         <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+             <span class="token comment">// cleanup action accessing State, executed at most once</span>
+             <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"clearing..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token punctuation">}</span>
+     <span class="token punctuation">}</span>
+ 
+     <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">Cleaner<span class="token punctuation">.</span>Cleanable</span> cleanable<span class="token punctuation">;</span>
+ 
+     <span class="token keyword">public</span> <span class="token class-name">CleanerTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         <span class="token class-name">State</span> state <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">State</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token keyword">this</span><span class="token punctuation">.</span>cleanable <span class="token operator">=</span> CLEANER<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> state<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+ 
+     <span class="token annotation punctuation">@Override</span>
+     <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         cleanable<span class="token punctuation">.</span><span class="token function">clean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+ 
+ <span class="token punctuation">}</span></span></span></span></code></pre><div id="https://www.notion.so/4495797f0f7a4f9d91862ed05589a0f7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">一个 Cleaner 对应一个线程，如果创建过多的 cleaner，可能会有不必要的线程开销。</span></span></p></div><div id="https://www.notion.so/a917abdc8ae940d2ad927721c10c1646" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">上述官方例子中还用到了 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">AutoCloseable</code></span><span class="SemanticString"> 接口，这样一来就可以在 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">try-with-resource</code></span><span class="SemanticString"> 语法中使用。官方文档的说法是</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">回收资源最高效的方式时主动去调用清理操作</strong></span><span class="SemanticString">，并且该操作直到变为 phantom reachable  时最多只会被执行一次（即使显示调用）。</span></span></p></div><h3 id="https://www.notion.so/4f7ac0ae0cfd4d6b943829aa6cf60ce3" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/4f7ac0ae0cfd4d6b943829aa6cf60ce3"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">注意事项</strong></span></span></h3><div id="https://www.notion.so/8bd43b5fa6ce4662a95346571bc130f3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">需要注意的是，</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">Cleaner 的 action 不可以指向注册/包装的对象及其内部</strong></span><span class="SemanticString">，会导致对象无法变为 phantom reachable，从而无法自动调用 action。</span></span></p></div><div id="https://www.notion.so/4bf51dd3c5e0493985fde42a85d1fb06" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">虽然注册时也可以传递一个 lambda 表达式，但这样往往很容易引用到注册对象，导致上面提到的问题，使用一个静态内部类可以从编码上比较好的防止这类事情发生，即使有外部引用，也只能访问到与类相关的静态外部变量，不至于影响到实例对象。</span></span></p></div><div id="https://www.notion.so/c51c9c0ac20b42eabcde7581e26c4468" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">在执行 action 的过程中，出现的异常都会被忽略，执行 action 的线程及其他 action 都不受影响。</span></span></p></div><div id="https://www.notion.so/72687e9b1962484eb3095d4b7fd98343" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://docs.oracle.com/javase/9/docs/api/java/lang/System.html#exit-int-"><code class="SemanticString__Fragment SemanticString__Fragment--Code">System.exit</code></a></span><span class="SemanticString">  时无法保证所有的 action 一定会被执行。</span></span></p></div><h2 id="https://www.notion.so/17b3dcac76bb4e4ea335fa1efcf9eefc" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/17b3dcac76bb4e4ea335fa1efcf9eefc"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">总结</strong></span></span></h2><ol class="NumberedListWrapper"><li id="https://www.notion.so/92f22fe734584c5c9293097879d07f2c" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">如果不对不再使用 DirectMemory 主动释放，那么会在 Full GC 时才回收。</span></span></li><li id="https://www.notion.so/96b10785e9c143429833569158f210b9" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">每次调用 ByteBuffer 分配 Direct Memory 时，都会采取以下两个措施回收 DirectMemory：</span></span><ul class="BulletedListWrapper"><li id="https://www.notion.so/6190560cad934e7f9ff65c958b585b85" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">主动调用 System.gc()</span></span></li><li id="https://www.notion.so/caa5a63f766749e0a4e9643ef2906c0c" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">（JDK8）将一个 DirectMemory 的 PhantomReference 引用加入 Cleaner</span></span></li></ul></li><li id="https://www.notion.so/904077265cad4368b20a8e7a4fdcb52e" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">传入 Cleaner 的 Runnable 方法， 不能持有对清理对象及其内部非静态变量的引用，否则会导致无法变为 Phantom Reachable。</span></span></li></ol></article>
   <footer class="Footer">
-        <div>&copy; {{siteMeta.title}} 2019</div>
-        <div>&centerdot;</div>
-        <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
-            rel="noopener noreferrer">Notablog</a>.
-        </div>
-    </footer>
+  <div>&copy; Rianico‘s Blog 2019-2021</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
 </body>
 
 </html>

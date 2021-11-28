@@ -3,34 +3,38 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Chrome, Firefox OS and Opera Status Bar Color -->
-  <meta name="theme-color" content="#FFFFFF">
-  <meta property="og:title" content="{{post.title}}">
-  {{if(options.post.description.length > 0)}}
-  <meta name="description" content="{{post.descriptionPlain}}">
-  <meta property="og:description" content="{{post.descriptionPlain}}">
-  {{/if}}
-  <meta property="og:type" content="blog">
-  <title>{{post.title}}</title>
-  <!-- Favicon -->
-  {{if(options.siteMeta.icon)}}
-  <link rel="shortcut icon" href="{{siteMeta.icon}}">
-  {{/if}}
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
-  <link rel="stylesheet" type="text/css"
-    href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
-  <link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
-  <link rel="stylesheet" type="text/css" href="css/notablog.css">
-  <link rel="stylesheet" type="text/css" href="css/theme.css">
-  <style>
-    :root {
-      font-size: 18px;
-    }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
 
+  <link rel="shortcut icon" href="https://avatars1.githubusercontent.com/u/32795735?s=400&amp;u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&amp;v=4">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>Lambda 表达式引用外部变量的限制&nbsp;|&nbsp;Rianico‘s Blog</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="Lambda 表达式引用外部变量的限制">
+  
+    <meta name="description" content="Lambda 表达式引用外部变量的限制及原因">
+    <meta property="og:description" content="Lambda 表达式引用外部变量的限制及原因">
+  
+  
+    <meta property="og:image" content="https://www.oracle.com/a/ocom/img/obic-java-cup.svg">
+  
+  <style>
     .DateTagBar {
       margin-top: 1.0rem;
     }
@@ -39,51 +43,148 @@
 
 <body>
   <nav class="Navbar">
-    <a href="index.html">
-      <div class="Navbar__Btn">{{siteMeta.iconHTML}} <span>Home</span></div>
-    </a>
-    {{each(options.siteMeta.pages)}}
-    {{if(@this.publish && @this.inMenu)}}
-    <span class="Navbar__Delim">&centerdot;</span>
-    <a href="{{@this.url}}">
-      <div class="Navbar__Btn">{{@this.iconHTML}} <span>{{@this.title}}</span></div>
-    </a>
-    {{/if}}
-    {{/each}}
-  </nav>
-  <header class="Header">
-      {{if(options.post.cover)}}
-    <div class="Header__Cover">
-        <img src="{{post.cover}}">
-      </div>
-      {{/if}}
-    <div class="Header__Spacer {{if(!options.post.cover)}}Header__Spacer--NoCover{{/if}}">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="https://avatars1.githubusercontent.com/u/32795735?s=400&amp;u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&amp;v=4"></span>&nbsp;
+      
+      <span>Home</span>
     </div>
-    {{if(options.post.icon)}}
-    <div class="Header__Icon">{{post.iconHTML}}</div>
-    {{/if}}
-    <h1 class="Header__Title">{{post.title}}</h1>
-        {{if(options.post.date || options.post.tags.length)}}
-    <div class="DateTagBar">
-          {{if(options.post.date)}}
-      <span class="DateTagBar__Item DateTagBar__Date">Posted on {{post.dateString}}</span>
-          {{/if}}
-          {{each(options.post.tags)}}
-      <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--{{@this.color}}">
-            <a href="tag/{{@this.value}}.html">{{@this.value}}</a>
+  </a>
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F88bfa795-fb50-42ad-b5f9-821f35ee821d%2Fgithub_(2).png?table=block&amp;id=457ca390-7a74-4a2f-9c26-1613b0d49d9c"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+</nav>
+  <header class="Header">
+    
+      <div class="Header__Cover">
+        <img src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F4463e097-75a1-45d2-a554-79b330fd8b0e%2F%E8%83%8C%E6%99%AF1_2.jpg?table=block&amp;id=7d31ecbc-66a8-461e-a9d8-3764d81f8803">
+      </div>
+    
+    <div class="Header__Spacer ">
+    </div>
+    
+      <div class="Header__Icon">
+        <span><img class="inline-img-icon" src="https://www.oracle.com/a/ocom/img/obic-java-cup.svg"></span>
+      </div>
+    
+    <h1 class="Header__Title">Lambda 表达式引用外部变量的限制</h1>
+    
+      <div class="DateTagBar">
+        
+          <span class="DateTagBar__Item DateTagBar__Date">Posted on Sat, Nov 27, 2021</span>
+        
+        
+          <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--red">
+            <a href="tag/Java.html">Java</a>
           </span>
-          {{/each}}
-        </div>
-        {{/if}}
+        
+      </div>
+    
   </header>
-      {{post.contentHTML}}
+  <article id="https://www.notion.so/7d31ecbc66a8461ea9d83764d81f8803" class="PageRoot PageRoot--FullWidth"><ul id="https://www.notion.so/4352a287c96145e3a5b5a1feacff552f" class="ColorfulBlock ColorfulBlock--ColorGray TableOfContents"><li class="TableOfContents__Item"><a href="#https://www.notion.so/f14990533deb4705941f4f7e232f05a1"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString">前言</span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/d30bafd278914fb58a9d8fe4c07a12ca"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">effectively Final</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/b24680fbe6134b11964f15307a26c525"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">单线程场景</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/2f68d9e7651f42b489a24f927ffa4dc5"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">多线程场景</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/db44bce4f75b4ba7954806dc65d81740"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">静态变量与实例变量</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/c679504e554a496291524bfd05eaa4da"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">Java 编译器的局限</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/deeda34e11414a57b44cdcae563c343b"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">总结</strong></span></span></div></a></li></ul><h3 id="https://www.notion.so/f14990533deb4705941f4f7e232f05a1" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/f14990533deb4705941f4f7e232f05a1"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">前言</span></span></h3><div id="https://www.notion.so/0a0636bfa47d408181d0f40ed3bc2d56" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Java 语言里，当一个 Lambda 表达式引用了外部变量时，则将这个 Lambda 表达式则称为 </span><span class="SemanticString"><em class="SemanticString__Fragment SemanticString__Fragment--Italic">capturing lambdas</em></span><span class="SemanticString">。</span></span></p></div><div id="https://www.notion.so/04755d49953a489c8e28cc6a2f0203da" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Lambda 可以引用的外部变量分为三种：</span></span></p></div><ol class="NumberedListWrapper"><li id="https://www.notion.so/b590271246ee4e0f90b6ed5bc8b18e49" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">静态变量 &amp; 实例变量</span></span></li><li id="https://www.notion.so/10dfc734c2c7403dad61606f36fb6ce9" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">本地变量</strong></span><span class="SemanticString">，并且必须是 final 或者 effectively final。</span></span></li></ol><div id="https://www.notion.so/545ecd7d8a324fc9b01d4c9609db229d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其中静态变量 &amp; 实例变量在 Lambda 中可以进行修改，而本地变量则不行（final or effectively final）。接下来主要介绍一下什么是 effectively Final，以及在单线程与多线程等各个场景下的影响。</span></span></p></div><h3 id="https://www.notion.so/d30bafd278914fb58a9d8fe4c07a12ca" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/d30bafd278914fb58a9d8fe4c07a12ca"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">effectively Final</strong></span></span></h3><div id="https://www.notion.so/10909d1eebe146fd9c37eeeb3bbd8227" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">effectively final 是 Java 8 推出的一个 feature，主要目的是为了能够借助语法限制和编译器，减少一些编码时容易出错的地方。</span></span></p></div><div id="https://www.notion.so/9ee9b95a9dc441698907b6043ae6f09b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">简单来说，当一个</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">对象</strong></span><span class="SemanticString">或者</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">原始类型</strong></span><span class="SemanticString">在赋值后不再修改，则可以认为是 effectively final。</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">如果对象内部状态发生变化但其引用并未重新赋值</strong></span><span class="SemanticString">，仍然可以当作 effectively final。</span></span></p></div><div id="https://www.notion.so/853595633eff43cf8dfd58295b75d4c3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">基于 effectively final 的特性，Java 8 中不允许在匿名类、内部类和 Lambda 表达式中访问  non-final 以及 non-effectively-final 的</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">外部本地变量</strong></span><span class="SemanticString">。</span></span></p></div><div id="https://www.notion.so/2fe7c52d3f29404fba2222357dc9865f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">以下面代码为例：</span></span></p></div><pre id="https://www.notion.so/909c18696c984395ba35e0099322f8d8" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> @FunctionalInterface
+ public interface FunctionalInterface {
+     void testEffectivelyFinal();
+     default void test() {
+         int effectivelyFinalInt = 10;
+         FunctionalInterface functionalInterface
+             = () -&gt; System.out.println(&quot;Value of effectively variable is : &quot; + effectivelyFinalInt);
+     }
+ }</span></span></span></code></pre><div id="https://www.notion.so/08263173b0104d49a6a78d86538238c2" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">一旦对 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">effectivelyFinalInt</code></span><span class="SemanticString"> 进行重新赋值，那么编译器将会抛出一个错误。</span></span></p></div><div id="https://www.notion.so/9f9253a0ef6f4cba9c51b19746b7ab06" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">需要注意的是，</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">Java 编译器不会像 final 一样会对 effectively final 添加什么额外的优化</strong></span><span class="SemanticString">，比如下面是对于 final 的优化，但对 effectively final 不会生效：</span></span></p></div><pre id="https://www.notion.so/251ac5ab6db64a47a2a028f3a55a072c" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> public static void main(String[] args) {
+     final String hello = &quot;hello&quot;;
+     final String world = &quot;world&quot;;
+     String test = hello + &quot; &quot; + world;
+     System.out.println(test);
+ }
+ 
+ // final 优化为
+ public static void main(String[] var0) {
+     String var1 = &quot;hello world&quot;;
+     System.out.println(var1);
+ }</span></span></span></code></pre><h3 id="https://www.notion.so/b24680fbe6134b11964f15307a26c525" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/b24680fbe6134b11964f15307a26c525"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">单线程场景</strong></span></span></h3><div id="https://www.notion.so/aa8f62112181425d89baea1b4f4373e0" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Lambda 表达式使用一个外部变量时，本质上是对这个变量的拷贝。考虑如下代码：</span></span></p></div><pre id="https://www.notion.so/44affdf582f14adb9736f1aa0b5daaa2" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> Supplier&lt;Integer&gt; incrementer(int start) {
+   return () -&gt; start++;
+ }</span></span></span></code></pre><div id="https://www.notion.so/e17b6bd80c474c9c9335bf6774abc05a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">该函数会返回一个 Lambda 表达式，当退出这个函数时，</span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">start</code></span><span class="SemanticString"> 被回收（start 的生命周期只在这一个函数栈中），而 Lambda 表达式作为返回值，其生命周期已经超出了这个函数，因此需要拷贝一个 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">start</code></span><span class="SemanticString"> 的副本。</span></span></p></div><h3 id="https://www.notion.so/2f68d9e7651f42b489a24f927ffa4dc5" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/2f68d9e7651f42b489a24f927ffa4dc5"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">多线程场景</strong></span></span></h3><div id="https://www.notion.so/3f4fae6ad4624df097b93305c0fb7ba4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">接下来再看一个与外部变量保持“连接” 的例子：</span></span></p></div><pre id="https://www.notion.so/4da60093f0fb49908600d832830f47aa" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> // 无法通过编译
+ public void localVariableMultithreading() {
+     boolean run = true;
+     executor.execute(() -&gt; {
+         while (run) {
+             // do operation
+         }
+     });
+     // do something, then
+     run = false;
+ }</span></span></span></code></pre><div id="https://www.notion.so/dae4c3f1d38b42c297df27c5c077cfdd" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">上面的代码明显存在一个问题，就是当前 run 的作用域只存在于当前的栈中，外部无法对其进行修改，从而控制线程内的行为。由于 Java 只允许 Lambda 表达式引用 final 或者 effectively final 的外部本地变量，因此可以在编译期就避开这种错误写法。</span></span></p></div><blockquote id="https://www.notion.so/34042b2a11244651acc2216be5270778" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">NOTE：上述代码还存在可见性、JIT 优化等问题，但不是关注的重点。</span></span></blockquote><h3 id="https://www.notion.so/db44bce4f75b4ba7954806dc65d81740" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/db44bce4f75b4ba7954806dc65d81740"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">静态变量与实例变量</strong></span></span></h3><div id="https://www.notion.so/cde5853bd68549af80aa815337a172ff" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">与外部本地变量不同，静态变量与实例变量却可以在 lambda 进行修改：</span></span></p></div><pre id="https://www.notion.so/c6abdcd39e2046a69274c123a00401b0" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> private int start = 0;
+ 
+ Supplier&lt;Integer&gt; incrementer() {
+     return () -&gt; start++;
+ }
+ 
+ // and
+ private volatile boolean run = true;
+ 
+ public void instanceVariableMultithreading() {
+     executor.execute(() -&gt; {
+         while (run) {
+             // do operation
+         }
+     });
+ 
+     run = false;
+ }</span></span></span></code></pre><div id="https://www.notion.so/5d5898d8df764d6c8220833badc729e4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其实原因也很简单，本地变量的生命周期在栈中，而静态变量与实例变量都是在堆上，这时候就需要使用者自身去考虑线程安全、可见性等变量状态的问题，因此没必要加以限制。</span></span></p></div><div id="https://www.notion.so/355f3df0ffc749d79a606c7a18b40dc4" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">因此，当在 Lambda 表达式中访问一个外部引用类型的对象时，需要注意这一点，采取一些手段（如不可变对象、不可变集合等）避免出现预期外的错误。</span></span></p></div><h3 id="https://www.notion.so/c679504e554a496291524bfd05eaa4da" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/c679504e554a496291524bfd05eaa4da"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">Java 编译器的局限</strong></span></span></h3><div id="https://www.notion.so/5d685c7d47274a268905da4ed10a37f3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">虽然前面提到的 Lambda 表达式对于外部本地变量的限制，都是通过 Java 编译器来提供检查功能的，但对于引用类型，其内部变化是 Java  编译器无法触及的，因此会出现一些绕开 final 与 effectively final 的操作：</span></span></p></div><pre id="https://www.notion.so/eacd5b602602413c94e8e252f2379570" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> public void workaroundMultithreading() {
+     int[] holder = new int[] { 2 };
+     Runnable runnable = () -&gt; System.out.println(IntStream
+       .of(1, 2, 3)
+       .map(val -&gt; val + holder[0])
+       .sum());
+ 
+     new Thread(runnable).start();
+ 
+     // simulating some processing
+     try {
+         Thread.sleep(new Random().nextInt(3) * 1000L);
+     } catch (InterruptedException e) {
+         throw new RuntimeException(e);
+     }
+ 
+     holder[0] = 0;
+ }</span></span></span></code></pre><div id="https://www.notion.so/405ebbe496eb4ee7bd9c978d0057808a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">这段代码，</span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">holder</code></span><span class="SemanticString"> 是一个数组对象，内部状态发生了改变，但在该例子中，方法最终打印的值，可能是 6，也可能是 12，完全取决于 holder 的状态变化发生在子线程之前还是之后，输出值并不一定是直觉上的 12。</span></span></p></div><h3 id="https://www.notion.so/deeda34e11414a57b44cdcae563c343b" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--3"><a class="Anchor" href="#https://www.notion.so/deeda34e11414a57b44cdcae563c343b"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">总结</strong></span></span></h3><div id="https://www.notion.so/d66f31ceeb694a46bdae442999795c4a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Java 8 中，Lambda 表达式，包括匿名内部类、内部类，访问</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">外部本地变量</strong></span><span class="SemanticString">时，该变量必须是 final 或者 effectively final 类型的，而静态变量、实例变量则不存在该限制。</span></span></p></div><div id="https://www.notion.so/9da9e823797a475ca8d571a5e3e485af" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">当外部本地变量为引用类型时，需要注意其内部状态的变化，否则可能会出现与其外的结果。</span></span></p></div><div id="https://www.notion.so/4fe788db629049c1bdcbbad4607a2e95" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">参考：</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/474ef10315434fa8b2f05f221f6a0c77" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://www.baeldung.com/java-lambda-effectively-final-local-variables">Why Do Local Variables Used in Lambdas Have to Be Final or Effectively Final?</a></span></span></li><li id="https://www.notion.so/5431c2b75a1e46588e3b783d6061e9ae" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://www.baeldung.com/java-effectively-final">Final vs Effectively Final in Java</a></span></span></li></ul></article>
   <footer class="Footer">
-        <div>&copy; {{siteMeta.title}} 2019</div>
-        <div>&centerdot;</div>
-        <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
-            rel="noopener noreferrer">Notablog</a>.
-        </div>
-    </footer>
+  <div>&copy; Rianico‘s Blog 2019-2021</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
 </body>
 
 </html>
