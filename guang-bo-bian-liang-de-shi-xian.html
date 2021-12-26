@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="https://avatars1.githubusercontent.com/u/32795735?s=400&amp;u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&amp;v=4">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>广播变量的实现&nbsp;|&nbsp;Rianico‘s Blog</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="广播变量的实现">
+  
+    <meta name="description" content="本篇文章介绍了 Spark 广播变量创建的源码，包括 BroadcastManager 的创建，Driver 端广播变量的创建以及对广播变量值的访问。">
+    <meta property="og:description" content="本篇文章介绍了 Spark 广播变量创建的源码，包括 BroadcastManager 的创建，Driver 端广播变量的创建以及对广播变量值的访问。">
+  
+  
+    <meta property="og:image" content="https://raw.githubusercontent.com/Rianico/Image/master/Avator/sparkles%20(1).png">
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="https://avatars1.githubusercontent.com/u/32795735?s=400&amp;u=40ed0595fb3044b01c47849f59ad96d69b4dc8db&amp;v=4"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F88bfa795-fb50-42ad-b5f9-821f35ee821d%2Fgithub_(2).png?table=block&amp;id=457ca390-7a74-4a2f-9c26-1613b0d49d9c"></span>&nbsp;
+          
+          <span>About</span>
+        </div>
+      </a>
+    
+  
+</nav>
+  <header class="Header">
+    
+      <div class="Header__Cover">
+        <img src="https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fc5f33405-3269-47ac-96a2-fbcb8271d259%2Fphoto-1509910110001-4e756f86fbd3.jfif?table=block&amp;id=37fe08e9-84c8-4029-aec4-db298a672aeb">
+      </div>
+    
+    <div class="Header__Spacer ">
+    </div>
+    
+      <div class="Header__Icon">
+        <span><img class="inline-img-icon" src="https://raw.githubusercontent.com/Rianico/Image/master/Avator/sparkles%20(1).png"></span>
+      </div>
+    
+    <h1 class="Header__Title">广播变量的实现</h1>
+    
+      <div class="DateTagBar">
+        
+          <span class="DateTagBar__Item DateTagBar__Date">Posted on Sun, Dec 26, 2021</span>
+        
+        
+          <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--default">
+            <a href="tag/Spark.html">Spark</a>
+          </span>
+        
+          <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--green">
+            <a href="tag/源码.html">源码</a>
+          </span>
+        
+          <span class="DateTagBar__Item DateTagBar__Tag DateTagBar__Tag--purple">
+            <a href="tag/Scala.html">Scala</a>
+          </span>
+        
+      </div>
+    
+  </header>
+  <article id="https://www.notion.so/37fe08e984c84029aec4db298a672aeb" class="PageRoot PageRoot--FullWidth"><ul id="https://www.notion.so/dd53d5517f7a4239a622813915d46ac3" class="ColorfulBlock ColorfulBlock--ColorGray TableOfContents"><li class="TableOfContents__Item"><a href="#https://www.notion.so/3750b115b37049e593fd463900ad8ffb"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">总体流程</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/8d78b762ffb5491f81351448a16c5149"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">BroadcastManager 的创建</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/1b3c05c9de1b4fb3bedcb2ec50005647"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">Driver 端广播变量的创建</strong></span></span></div></a></li><li class="TableOfContents__Item"><a href="#https://www.notion.so/75307c9fadc246cdbd2022fc69e33bbe"><div style="margin-left:0px"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">广播变量的获取</strong></span></span></div></a></li></ul><h2 id="https://www.notion.so/3750b115b37049e593fd463900ad8ffb" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/3750b115b37049e593fd463900ad8ffb"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">总体流程</strong></span></span></h2><div id="https://www.notion.so/82ec4c5d7561454d9902edb0bf22bebb" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">Spark 版本</strong></span><span class="SemanticString">：3.1.0</span></span></p></div><div id="https://www.notion.so/3cbe8567d7ff447386f43d8fe9322cb7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">获取 -&gt; TorrentBroadcast -&gt; BroadcastManager -&gt; BlockManager</span></span></p></div><div id="https://www.notion.so/5072f555f2e949c2885e64fbc30528af" class="Image Image--PageWidth"><figure><a href="https://gitee.com/zhxuankun/Image/raw/master/ARTS_Tips/image-20211225235603901.png"><img src="https://gitee.com/zhxuankun/Image/raw/master/ARTS_Tips/image-20211225235603901.png" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/669b4c8515dc4f2c88d41d82f2052480" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">思维导图：</span></span></p></div><div id="https://www.notion.so/9aa53f2cb12c4b48ba161a0e855a8529" class="Image Image--PageWidth"><figure><a href="https://gitee.com/zhxuankun/Image/raw/master/ARTS_Tips/image-20211226145742848.png"><img src="https://gitee.com/zhxuankun/Image/raw/master/ARTS_Tips/image-20211226145742848.png" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><h2 id="https://www.notion.so/8d78b762ffb5491f81351448a16c5149" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/8d78b762ffb5491f81351448a16c5149"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">BroadcastManager 的创建</strong></span></span></h2><div id="https://www.notion.so/76fe0beb1a774c0fa077910290313b2a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">从下面一段代码出发：</span></span></p></div><pre id="https://www.notion.so/80a69e40a7dc46e0bce593560faea814" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>     val spark = SparkSession
+       .builder
+       .master(&quot;local[3]&quot;)
+       .appName(&quot;Spark Pi&quot;)
+       .getOrCreate()
+     // 创建广播变量
+     val name = spark.sparkContext.broadcast(&quot;zkx&quot;)
+     spark.range(10).rdd.foreach(x =&gt; println(name.value + &quot;-&quot; + x))
+     spark.stop()</span></span></span></code></pre><div id="https://www.notion.so/dff16cab41a146c09161c6ec6fe04393" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其中 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">spark.sparkContext.broadcast(&quot;zkx&quot;)</code></span><span class="SemanticString"> 方法如下：</span></span></p></div><pre id="https://www.notion.so/ab1d17d8d86041e0b83bd64e4275ab52" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   // org.apache.spark.SparkContext#broadcast
+   def broadcast[T: ClassTag](value: T): Broadcast[T] = {
+     assertNotStopped()
+     require(!classOf[RDD[_]].isAssignableFrom(classTag[T].runtimeClass),
+       &quot;Can not directly broadcast RDDs; instead, call collect() and broadcast the result.&quot;)
+     // 创建广播变量
+     val bc = env.broadcastManager.newBroadcast[T](value, isLocal)
+     val callSite = getCallSite
+     logInfo(&quot;Created broadcast &quot; + bc.id + &quot; from &quot; + callSite.shortForm)
+     cleaner.foreach(_.registerBroadcastForCleanup(bc))
+     bc
+   }</span></span></span></code></pre><div id="https://www.notion.so/9ca34228b9d24131a463d1928ff25d03" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以从 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">env.broadcastManager</code></span><span class="SemanticString"> 中看出广播变量的管理类是 BroadcastManager，并且是在 SparkEnv 中创建的，其创建方式如下：</span></span></p></div><pre id="https://www.notion.so/06231b82481545ae9cd2abda4c7715e6" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> val broadcastManager = new BroadcastManager(isDriver, conf, securityManager)</span></span></span></code></pre><div id="https://www.notion.so/ffab8530151847c3868ab19a94d62fe8" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">除了传入的三个参数外，BroadcastManager 内部还有以下成员变量：</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/3996c1d885374cedab7efb1cb9964b40" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">initialized：表示 BroadcastManager 是否初始化完成，初始状态为 false</span></span></li><li id="https://www.notion.so/216f90e86b46465abbae5d51f80e6b7d" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">broadcastFactory：广播工厂实例</span></span></li><li id="https://www.notion.so/9c479b427de9493985cdbdcd8252205f" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">nextBroadcastId：一个 AtomicLong 的自增变量，作为 Broadcast 的 ID 序号</span></span></li><li id="https://www.notion.so/dd2c45ca0f3b4e919381b83853b2ac3f" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">cachedValues：一个 key 为强引用，value 为软引用的 Map，用于存放 BroadcastId -&gt; 广播变量值</span></span></li></ul><div id="https://www.notion.so/2a48443a844d4233a86c0903e774c453" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">BroadcastManager 在创建时会调用 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">initialize()</code></span><span class="SemanticString"> 方法，创建一个 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">TorrentBroadcastFactory</strong></span><span class="SemanticString"> 类型的 broadcastFactory 实例，并将 initialized 标记为 true：</span></span></p></div><pre id="https://www.notion.so/d12a382e31324246a66fd3b3a9774ea5" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   // org.apache.spark.broadcast.BroadcastManager#initialize
+   // Called by SparkContext or Executor before using Broadcast
+   private def initialize(): Unit = {
+     synchronized {
+       if (!initialized) {
+         broadcastFactory = new TorrentBroadcastFactory
+         // 内部实际是一个空方法
+         broadcastFactory.initialize(isDriver, conf, securityManager)
+         initialized = true
+       }
+     }
+   }</span></span></span></code></pre><div id="https://www.notion.so/33072fb5fe2e42c69dab0634fc00336c" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">至此，BroadcastManager 的创建就完成了，在 Driver/Executor 创建 SparkContext 时，会初始化 SparkEnv，创建 BroadcastManager，并触发其初始化方法。</span></span></p></div><h2 id="https://www.notion.so/1b3c05c9de1b4fb3bedcb2ec50005647" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/1b3c05c9de1b4fb3bedcb2ec50005647"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">Driver 端广播变量的创建</strong></span></span></h2><div id="https://www.notion.so/5a9f58755eff4dc096bd70077aa0cf7f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">继续跟进 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">env.broadcastManager.newBroadcast[T](value, isLocal)</code></span><span class="SemanticString">，其实现如下：</span></span></p></div><pre id="https://www.notion.so/ffc46a198e6541b98daedcab26ae96f1" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   // org.apache.spark.broadcast.BroadcastManager#newBroadcast
+   def newBroadcast[T: ClassTag](value_ : T, isLocal: Boolean): Broadcast[T] = {
+     val bid = nextBroadcastId.getAndIncrement()
+     value_ match {
+       case pb: PythonBroadcast =&gt; pb.setBroadcastId(bid)
+       case _ =&gt; // do nothing
+     }
+     broadcastFactory.newBroadcast[T](value_, isLocal, bid)
+   }</span></span></span></code></pre><div id="https://www.notion.so/4fc3a96200f042a8b0176a2d7b6032c8" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到调用初始化时创建的 TorrentBroadcastFactory 实例的 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">newBroadcast(...)</code></span><span class="SemanticString">，并返回一个 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">TorrentBroadcast</strong></span><span class="SemanticString">：</span></span></p></div><pre id="https://www.notion.so/7df73d1b2a0c4d99a215f188c94d59d4" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   override def newBroadcast[T: ClassTag](value_ : T, isLocal: Boolean, id: Long): Broadcast[T] = {
+     new TorrentBroadcast[T](value_, id)
+   }</span></span></span></code></pre><div id="https://www.notion.so/5fffb9a3b4b64660a896bd26d15c89c1" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到，广播变量实际上是一个 TorrentBroadcast 实例，该类是 Broadcast 的一个子类。</span></span></p></div><div id="https://www.notion.so/0b008af92c1d4ef6bebd9d42eeee1342" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">除了将需要广播的对象以及广播变量 ID 传给 TorrentBroadcast 外，其内部其他成员变量如下：</span></span></p></div><ul class="BulletedListWrapper"><li id="https://www.notion.so/6280abe9d1344a47b9a28bdfc37753c9" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">_value：对</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">广播变量值</strong></span><span class="SemanticString">的一个</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">软引用</strong></span></span><blockquote id="https://www.notion.so/d794c1c5f0394e25904d96b009b2f1af" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">NOTE：在 SPARK-25998 中，将原本的 lazy val  改为了软引用，在内存不足时 能够通过 GC 回收广播变量，如果后面需要使用再从 BlockManager 中重新构建获取。修改的原因，主要是做了 Broadcast Join 后，如果不主动释放掉生成的 Dataset，由于该 Dataset 持有广播变量的引用，导致广播变量一直占用内存。</span></span></blockquote></li><li id="https://www.notion.so/97a383cc0f194882a7d5f555b8bacde1" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">compressionCodec：用于对广播对象的压缩编解码器，默认使用 lz4</span></span></li><li id="https://www.notion.so/5c2c08fc79bb4a8ca54cf7f1bc02a629" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">blockSize：广播变量的块大小，一个广播变量可能有多个 block，使用 piece0、piece1 进行标记并作为 broadcastId 的后缀</span></span></li><li id="https://www.notion.so/ae4e4d25737e4fcca398bf2aa8bc987a" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">broadcastId：用于表示广播变量的 ID，格式为：</span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">&quot;broadcast_&quot; + broadcastId</code></span><span class="SemanticString">，若有 piece 则进行拼接</span></span></li><li id="https://www.notion.so/e1335f09be9240a3ae497bafbb557f4a" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">checksums：校验和数组</span></span></li><li id="https://www.notion.so/52f5de7386674b53a196baa28af2d800" class="BulletedList"><span class="SemanticStringArray"><span class="SemanticString">numBlocks：广播变量的块个数</span></span></li></ul><div id="https://www.notion.so/f3d3828df0a74ac68f34c83a782db47f" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其中 numBlocks 会调用 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">writeBlocks(obj)</code></span><span class="SemanticString"> 方法，方法内部会将需要广播的值写入 BlockManager：</span></span></p></div><pre id="https://www.notion.so/a9d6d41718904493bf6e65b85d9e9e67" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   // org.apache.spark.broadcast.TorrentBroadcast#writeBlocks
+   /**
+    * Divide the object into multiple blocks and put those blocks in the block manager.
+    *
+    * @param value the object to divide
+    * @return number of blocks this broadcast variable is divided into
+    */
+   private def writeBlocks(value: T): Int = {
+     import StorageLevel._
+     // 获取 BlockManager
+     val blockManager = SparkEnv.get.blockManager
+     // 将广播变量值以对象的方式存到 BlockManager 中，以避免在 Driver 端重复创建广播变量值
+     if (!blockManager.putSingle(broadcastId, value, MEMORY_AND_DISK, tellMaster = false)) {
+       throw new SparkException(s&quot;Failed to store $broadcastId in BlockManager&quot;)
+     }
+     try {
+       // 按照 blockSize 大小分配 ByteBuffer，将广播变量写入 ByteBuffer 数组
+       val blocks =
+         TorrentBroadcast.blockifyObject(value, blockSize, SparkEnv.get.serializer, compressionCodec)
+       if (checksumEnabled) {
+         checksums = new Array[Int](blocks.length)
+       }
+       // 根据 ByteBuffer 个数构造 BroadcastBlockId，并作为 key 存到 BlockManager 中
+       blocks.zipWithIndex.foreach { case (block, i) =&gt;
+         if (checksumEnabled) {
+           checksums(i) = calcChecksum(block)
+         }
+         val pieceId = BroadcastBlockId(id, &quot;piece&quot; + i)
+         val bytes = new ChunkedByteBuffer(block.duplicate())
+         // 以多个 Block 的形式存储到 BlockManager 中
+         if (!blockManager.putBytes(pieceId, bytes, MEMORY_AND_DISK_SER, tellMaster = true)) {
+           throw new SparkException(s&quot;Failed to store $pieceId of $broadcastId &quot; +
+             s&quot;in local BlockManager&quot;)
+         }
+       }
+       blocks.length
+     } catch {
+       // ...
+     }
+   }</span></span></span></code></pre><div id="https://www.notion.so/3395387d8b97472fbc0cd280e91d0be3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以看到 Driver 端在一开始就会将广播变量以对象的形式存到 BlockManager 中，以及以 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">ChunkedByteBuffer</code></span><span class="SemanticString"> 的形式（内部是一个 ByteBuffer 数组）存储。</span></span></p></div><div id="https://www.notion.so/22f66ae8b99f48bcac1454ce7dc92560" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">至此，Driver 端的广播变量便已经生成完毕，</span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">在内存中分别以对象以及一系列的块（内部是 ByteBuffer 数组）的方式存在</strong></span><span class="SemanticString">。</span></span></p></div><div id="https://www.notion.so/e3a9958720d04d52953065dbecb1a9f7" class="Image Image--PageWidth"><figure><a href="https://gitee.com/zhxuankun/Image/raw/master/ARTS_Tips/image-20211225205230575.png"><img src="https://gitee.com/zhxuankun/Image/raw/master/ARTS_Tips/image-20211225205230575.png" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><blockquote id="https://www.notion.so/651d327d320e40f9837fc2a085244e17" class="ColorfulBlock ColorfulBlock--ColorDefault Quote"><span class="SemanticStringArray"><span class="SemanticString">NOTE： BlockManager 如何管理、存储数据暂不深入，待后续再进行探究。</span></span></blockquote><h2 id="https://www.notion.so/75307c9fadc246cdbd2022fc69e33bbe" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/75307c9fadc246cdbd2022fc69e33bbe"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">广播变量的获取</strong></span></span></h2><div id="https://www.notion.so/893715a0744743aeb0cca56696923818" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">广播变量可以通过 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">value()</code></span><span class="SemanticString"> 方法获取：</span></span></p></div><pre id="https://www.notion.so/98afc9c77ce045ab943165a4133c16ce" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span> spark.range(10).rdd.foreach(x =&gt; println(name.value + &quot;-&quot; + x))</span></span></span></code></pre><div id="https://www.notion.so/e4d519374b7a410aa24942315130c226" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">value()</code></span><span class="SemanticString"> 方法实现如下：</span></span></p></div><pre id="https://www.notion.so/60c14a8fd8e144b08e0c83d317de3f02" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   // org.apache.spark.broadcast.Broadcast#value
+   def value: T = {
+     assertValid()
+     getValue()
+   }</span></span></span></code></pre><div id="https://www.notion.so/af071bc9c42b469aac87e3579acf47de" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">由前面广播变量的创建可知，广播变量的实际类型为 TorrentBroadcast，</span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">getValue()</code></span><span class="SemanticString"> 的实现也是在 TorrentBroadcast 里的：</span></span></p></div><pre id="https://www.notion.so/b7514901ad9e48ed9388085e895a1055" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   // org.apache.spark.broadcast.TorrentBroadcast#getValue
+   override protected def getValue() = synchronized {
+     val memoized: T = if (_value == null) null.asInstanceOf[T] else _value.get
+     if (memoized != null) {
+       memoized
+     } else {
+       // 当广播变量值为空时，重新构建获取广播变量值
+       val newlyRead = readBroadcastBlock()
+       _value = new SoftReference[T](newlyRead)
+       newlyRead
+     }
+   }</span></span></span></code></pre><div id="https://www.notion.so/a11fb9d1fda549eea804004e4a49f455" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">其中 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">readBroadcastBlock</code></span><span class="SemanticString"> 实现如下：</span></span></p></div><pre id="https://www.notion.so/b0a3a87d265f49cd94bf4da4b0e55c83" class="Code"><code><span class="SemanticStringArray"><span class="SemanticString"><span>   // org.apache.spark.broadcast.TorrentBroadcast#readBroadcastBlock
+   private def readBroadcastBlock(): T = Utils.tryOrIOException {
+     // 基于 BroadcastID 加锁
+     TorrentBroadcast.torrentBroadcastLock.withLock(broadcastId) {
+       val broadcastCache = SparkEnv.get.broadcastManager.cachedValues
+       // 如果无法从 cachedValues 中获取到广播值，则从 BlockManager 中获取
+       Option(broadcastCache.get(broadcastId)).map(_.asInstanceOf[T]).getOrElse {
+         setConf(SparkEnv.get.conf)
+         val blockManager = SparkEnv.get.blockManager
+         // 尝试从本地的 memoryStore 或者 diskStore 中根据 blockId 获取广播变量值
+         blockManager.getLocalValues(broadcastId) match {
+           // 如果能从本地获取到广播变量值，则存到 cachedValues 中
+           case Some(blockResult) =&gt;
+             if (blockResult.data.hasNext) {
+               val x = blockResult.data.next().asInstanceOf[T]
+               releaseBlockManagerLock(broadcastId)
+               if (x != null) {
+                 broadcastCache.put(broadcastId, x)
+               }
+               x
+             } else {
+               throw new SparkException(s&quot;Failed to get locally stored broadcast data: $broadcastId&quot;)
+             }
+           // 否则从远端按照块拉取并合并生成 Java 对象，再存到 BlockManager 中
+           case None =&gt;
+             val estimatedTotalSize = Utils.bytesToString(numBlocks * blockSize)
+             logInfo(s&quot;Started reading broadcast variable $id with $numBlocks pieces &quot; +
+               s&quot;(estimated total size $estimatedTotalSize)&quot;)
+             val startTimeNs = System.nanoTime()
+             // 向远端拉取广播变量的 Blocks
+             val blocks = readBlocks()
+             logInfo(s&quot;Reading broadcast variable $id took ${Utils.getUsedTimeNs(startTimeNs)}&quot;)
+ 
+             try {
+               // 合并 blocks 生成 Java 对象
+               val obj = TorrentBroadcast.unBlockifyObject[T](
+                 blocks.map(_.toInputStream()), SparkEnv.get.serializer, compressionCodec)
+               // 存到 BlockManager 中，同个 executor 上后续的 task 都不需要重新拉取
+               val storageLevel = StorageLevel.MEMORY_AND_DISK
+               if (!blockManager.putSingle(broadcastId, obj, storageLevel, tellMaster = false)) {
+                 throw new SparkException(s&quot;Failed to store $broadcastId in BlockManager&quot;)
+               }
+               // cachedValue 同样存一份
+               if (obj != null) {
+                 broadcastCache.put(broadcastId, obj)
+               }
+ 
+               obj
+             } finally {
+               blocks.foreach(_.dispose())
+             }
+         }
+       }
+     }
+   }</span></span></span></code></pre><div id="https://www.notion.so/3700b7db00004717a084b782adc9a72b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">需要注意的是，BlockManager 是根据 BlockId 获取对象的，而广播变量的 BroadcastId 是 BlockId 的子类。</span></span></p></div><div id="https://www.notion.so/b8960c870b4e444783dc6ba979eb9c85" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">关于 </span><span class="SemanticString"><code class="SemanticString__Fragment SemanticString__Fragment--Code">readBlocks</code></span><span class="SemanticString"> 方法，有一点需要注意的是当前 Executor 上的 BlockManager 会向 Driver 端的 BlockManagerMaster 获取 Block 的位置信息，如果相同节点上其他 Executor 有该 Block，则直接从本地节点拉取即可，否则再向 Driver 端拉取。</span></span></p></div></article>
+  <footer class="Footer">
+  <div>&copy; Rianico‘s Blog 2019-2021</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+</body>
+
+</html>
